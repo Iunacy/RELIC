@@ -1,0 +1,15 @@
+/build*/
+/traces/
+/MUJOCO_LOG.TXT
+/docs/
+*.[mM][dD]
+*[bB][aA][tT][cC][hH]*
+*.[cC][sS][vV]
+*.[tT][sS][vV]
+*.log
+*.exe
+*.dll
+*.obj
+*.o
+*.a
+*.lib

@@ -1,0 +1,31 @@
+foreach(run IN ITEMS a b)
+  execute_process(COMMAND "${CLI}" --config "${CONFIG}" --csv "${OUT}_${run}.csv"
+    --mjcf "${OUT}_${run}.xml" --steps 1000
+    RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE error)
+  if(NOT result EQUAL 0)
+    message(FATAL_ERROR "CLI failed (${result}): ${output} ${error}")
+  endif()
+endforeach()
+foreach(ext IN ITEMS csv xml)
+  execute_process(COMMAND "${CMAKE_COMMAND}" -E compare_files "${OUT}_a.${ext}" "${OUT}_b.${ext}"
+    RESULT_VARIABLE different)
+  if(NOT different EQUAL 0)
+    message(FATAL_ERROR "Non-deterministic ${ext} output")
+  endif()
+endforeach()
+file(STRINGS "${OUT}_a.csv" rows)
+list(LENGTH rows count)
+if(NOT count EQUAL 1002)
+  message(FATAL_ERROR "Expected header plus 1001 samples, got ${count} lines")
+endif()
+execute_process(COMMAND "${CLI}" --config "${CONFIG}" --csv "${OUT}_bad.csv" --steps nonsense
+  RESULT_VARIABLE bad_result OUTPUT_QUIET ERROR_VARIABLE bad_error)
+if(NOT bad_result EQUAL 1 OR NOT bad_error MATCHES "expected integer")
+  message(FATAL_ERROR "CLI failed to reject malformed step count: ${bad_result} ${bad_error}")
+endif()
+execute_process(COMMAND "${CLI}" --config "${CONFIG}" --csv "${CONFIG}"
+  RESULT_VARIABLE alias_result OUTPUT_QUIET ERROR_VARIABLE alias_error)
+if(NOT alias_result EQUAL 1 OR NOT alias_error MATCHES "paths must be distinct")
+  message(FATAL_ERROR "CLI failed to protect configuration from output alias")
+endif()
+message(STATUS "Two 1000-step runs: CSV and MJCF byte-identical; 1001 samples; invalid CLI inputs rejected")
