@@ -13,3 +13,6 @@
 *.o
 *.a
 *.lib
+!/experiments/ruckig/**/*.md
+!/experiments/ruckig/*.md
+!/experiments/ruckig/results/*.csv

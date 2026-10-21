@@ -1,0 +1,28 @@
+Repository: https://github.com/pantor/ruckig
+Release: v0.19.4 (latest published release when inspected 2026-10-21)
+Commit: a8db97a4e9c55e5160a3855f739fa3b270df8e4c
+License: MIT, Copyright (c) 2021 Lars Berscheid; vendor/LICENSE unchanged.
+Compatibility: official CMake requires C++20; no external dependencies for
+offline Community state-to-state trajectories. No Eigen/Python/nanobind needed.
+Community restrictions: local intermediate waypoints, positional constraints,
+tracking interface and other Pro facilities are not used. Cloud disabled.
+Synchronization::Time and DurationDiscretization::Discrete are explicitly set.
+Joint positions are independently checked; Community max_position/min_position
+are not relied on. Upstream numerical range: limits below 1e9, duration <=7000s;
+upstream endpoint guarantees use absolute tolerances 1e-8 p/v and 1e-10 a.
+
+Acquisition: shell clone failed DNS (Could not resolve host: github.com).
+Official files were fetched at the exact commit using the GitHub connector,
+not reconstructed or replaced. All 33 downloaded files were verified byte-for-
+byte against GitHub's recursive-tree Git blob hashes. git-blobs.txt records
+those hashes. The offline subset contains all official include/ and src/ruckig/
+files plus upstream CMake/install metadata and license/README. Unused upstream
+tests/examples/cloud third-party dependencies are omitted; their build switches
+are all OFF. The official vendor/CMakeLists.txt is used without modification.
+
+Primary references inspected:
+https://github.com/pantor/ruckig/releases/tag/v0.19.4
+https://github.com/pantor/ruckig/blob/a8db97a4e9c55e5160a3855f739fa3b270df8e4c/README.md
+https://github.com/pantor/ruckig/blob/a8db97a4e9c55e5160a3855f739fa3b270df8e4c/CMakeLists.txt
+https://github.com/pantor/ruckig/blob/a8db97a4e9c55e5160a3855f739fa3b270df8e4c/LICENSE
+https://github.com/pantor/ruckig/tree/a8db97a4e9c55e5160a3855f739fa3b270df8e4c/include/ruckig
