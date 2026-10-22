@@ -1,0 +1,53 @@
+{
+  "before": {
+    "ctest_passed": 36,
+    "ctest_total": 36,
+    "wall_s": 32.94
+  },
+  "after": {
+    "ctest_passed": 42,
+    "ctest_total": 42,
+    "wall_s": 31.5
+  },
+  "experiment_branches": {
+    "ruckig_tests": 36,
+    "ruckig_wall_s": 8.56,
+    "double_s_tests": 32,
+    "double_s_wall_s": 6.55
+  },
+  "behavior": {
+    "primary_executions_before": 30,
+    "primary_executions_after": 30,
+    "exact_trace_and_metric_matches": 30,
+    "ruckig_historical_traces_identical": 24,
+    "double_s_numerical_report_identical": true
+  },
+  "build_checks": {
+    "root_all_options": true,
+    "runtime_without_research": true,
+    "legacy_entry_respects_adaptive_off": true,
+    "setup_script": true,
+    "launch_script": true,
+    "shell_syntax": true
+  },
+  "historical_evidence_files_verified": 17,
+  "live_nebius": "not attempted; key not yet supplied",
+  "known_limitations": [
+    "No top-level RELIC project license has been selected by the owner.",
+    "Double-S remains a failed numerical admission experiment; exit 2 is retained and it never controls actuators.",
+    "Existing Menagerie learned-weight transfer remains disabled.",
+    "Physics, safety and evaluation conventions remain intentionally separate where their assumptions differ."
+  ],
+  "initial_push_failure": "HTTPS Git credentials absent; GitHub CLI declined. User approved a temporary RELIC-only deploy key through the logged-in browser.",
+  "publication_status": "GitHub Confirm access re-authentication pending; remote refs will be verified separately after publishing this evidence commit.",
+  "instructions": "See DEVELOP.txt; Markdown documentation left unchanged per latest user request.",
+  "sanitizers": {
+    "address": true,
+    "undefined": true,
+    "leak_detection": true,
+    "passed": 7,
+    "total": 7,
+    "wall_s": 12.33
+  },
+  "original_active_worktree_project_file_hashes_preserved": true
+}

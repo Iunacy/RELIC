@@ -1,0 +1,139 @@
+RELIC product integration branch
+
+The develop branch combines the C++20/MuJoCo 3.16.0 motion system, offline
+adaptive research and interactive Physical AI application. Existing main and
+historical feature commits remain in its ancestry. Experiments stay opt-in.
+No hardware execution or automatic cloud provisioning is implemented.
+
+Architecture and ownership
+
+User/UI -> NVIDIA/Nebius selection -> deterministic action validator
+        -> scene target resolution -> robot-specific planner
+        -> controller selection -> MuJoCo actuator execution
+        -> observed telemetry -> separate renderer / replay / video
+
+src/ and include/relic/: synthetic robot configuration, analytical IK,
+Cartesian planning, sampled collision/contact checks, Simulation actuator
+stepping and TraceWriter. Production conventional execution remains the default.
+
+adaptive/: seeded synthetic episodes, offline label collection/training,
+scientific evaluation and frozen historical evidence. Native residual.hpp
+provides model loading, causal features and bounded correction withdrawal.
+Interactive execution reuses that guard directly without importing the Python
+training pipeline or requiring its executables at runtime.
+
+interactive/: bounded high-level actions, finite scene targets and a local
+HTTP/UI application. engine.py calls the native bridge for synthetic execution;
+arm.py loads the original Menagerie geometry and uses model Jacobian IK.
+Capture owns separate visualization-only MuJoCo data. Rendering never advances
+or overwrites execution state. Actions cannot contain joint commands or gains.
+
+Supported configurations
+
+Synthetic 3/4-DOF models support the existing production/research workflows.
+The current interactive synthetic comparison uses the 4-DOF configuration with
+conventional, analytical PI and frozen bounded residual controllers.
+Menagerie Koch uses four reaching joints, with wrist roll and gripper held by
+compliant position actuators. Only conventional and analytical PI control are
+supported there. Its geometry, approximate limits and descriptors differ from
+the synthetic arms; existing learned weights are deliberately not transferred.
+There is no grasp, object transport or orientation-control claim.
+
+Build and launch
+
+Requires CMake >=3.24, a C++20 compiler, MuJoCo 3.16.0 C SDK and Python 3 with
+interactive/requirements.txt. Offline research dependencies are separately
+listed in adaptive/requirements.txt. Linux/EGL is the tested graphical path.
+Set MUJOCO_ROOT and RELIC_ML_PYTHON to your SDK/environment, then:
+
+bash interactive/setup.sh
+bash interactive/run.sh
+
+Open http://127.0.0.1:8765 and choose Direct target for offline operation.
+The script uses a fresh build-product directory, preserving older standalone
+build-interactive caches. RELIC_INTERACTIVE_BUILD selects a different build;
+RELIC_INTERACTIVE_EXE overrides native binary selection. The old cmake -S
+interactive entry remains supported and respects RELIC_ADAPTIVE=OFF.
+
+Root CMake owns four independent OFF-by-default switches: RELIC_INTERACTIVE,
+RELIC_ADAPTIVE, RELIC_RUCKIG_EXPERIMENT and RELIC_DOUBLE_S_EXPERIMENT.
+To build the runtime without research executables or research tests:
+
+cmake -S . -B build-runtime -DMUJOCO_ROOT=/path/to/mujoco-3.16.0 -DRELIC_INTERACTIVE=ON -DRELIC_ADAPTIVE=OFF -DBUILD_TESTING=OFF
+cmake --build build-runtime -j4
+
+To build/test the full integration, add -DRELIC_ADAPTIVE=ON,
+-DRELIC_RUCKIG_EXPERIMENT=ON and -DRELIC_DOUBLE_S_EXPERIMENT=ON to the setup
+configuration, select Python3_EXECUTABLE if needed, then:
+
+ctest --test-dir build-product --output-on-failure -j4
+MUJOCO_GL=egl RELIC_INTERACTIVE_EXE=build-product/relic_interactive python -m interactive.qualify --output interactive/runs/qualification-new
+MUJOCO_GL=egl python -m interactive.demo --robot synthetic --target target_left --degraded --output interactive/runs/demo-new
+python -m interactive.capture interactive/runs/demo-new/execution --output interactive/runs/demo-new.mp4
+
+Use the selected Python environment for these commands and fresh output paths.
+qualification checks all three targets, both fixed physical conditions and all
+supported controllers. Its 30 executions are small regression checks, not a new
+training campaign or evidence of generalization. Failed outcomes are preserved.
+
+Optional NVIDIA/Nebius
+
+When the key arrives, keep NEBIUS_API_KEY in a private environment file outside
+Git and run interactive/run.sh --env-file /private/path/nebius.env.
+Default endpoint: https://api.tokenfactory.nebius.com/v1/
+Default model: nvidia/Nemotron-3_5-Lightning
+The client verifies the authenticated model catalog and validates its JSON
+selection against actual scene IDs. It sends requests only on explicit user
+execution. NEBIUS_MODEL and NEBIUS_BASE_URL override these defaults. No key or
+raw user instruction is logged. Live authenticated acceptance is still pending;
+local mock API tests do not constitute live NVIDIA evidence.
+
+Deliberate boundaries and behavior preservation
+
+The production Cartesian executor, research episode executor and interactive
+comparison adapter have different trajectory/settlement/telemetry contracts.
+Their stepping loops were not combined during consolidation. Shared native
+simulation, contact utilities and residual guards already cover compatible
+operations; forcing one controller interface across physical embodiments would
+change assumptions and require a separate design review.
+
+No controller algorithm, trained weight, safety threshold, acceptance criterion
+or scientific protocol changed. Synthetic interactive references remain linear;
+the residual was trained on research quintics. Discrete sampled collision checks
+are not continuous path guarantees. Safe withdrawal can still leave a task
+outside its accuracy tolerance. Existing strong PI research results remain valid;
+this cleanup makes no new claim of learned-model superiority.
+
+Research and experimental evidence
+
+adaptive/evidence/ and adaptive/revision/ retain the original and expanded
+validation reports, protocols, model weights and historical failure results.
+The original study used 1,024 teacher scenarios and 40 held-out trajectory
+families; its aggregate stronger PI result is not superseded by this cleanup.
+Reproduce the historical protocols with adaptive/reproduce.sh or
+adaptive/revise.sh only when explicitly choosing to run those campaigns.
+
+experiments/ruckig/ retains the pinned benchmark and read-only timestep
+observer, with compact diagnostic reports. Raw generated traces remain local
+and are regenerated by its CTests. Original vendor sources/licenses are intact.
+
+experiments/double_s/ retains the pinned numerical audit and failure report.
+Nine rejected profiles and one expected upstream exception remain experimental
+findings; no Double-S profile is admitted to actuator execution. STATUS.txt
+explains why its numerical audit exits 2 while its API smoke CTest passes.
+
+integration/evidence/ records branch inventory, preservation and test results.
+Uncommitted work was privately archived outside the repository before merging.
+Per the latest instruction, existing Markdown edits were neither changed nor
+published; root README and historical Markdown files were left intact. Local
+status snapshots, raw datasets, builds, recordings and credentials are excluded.
+
+Licensing
+
+There is still no top-level owner-selected RELIC license. This consolidation
+cannot make that licensing decision. Menagerie assets retain their original
+Apache-2.0 LICENSE and SHA-256/Git blob manifest. Ruckig and the Double-S source
+subset retain their upstream MIT licenses and pinned provenance. Runtime
+libraries have their own licenses: MuJoCo Apache-2.0, NumPy BSD-3-Clause and
+Pillow HPND; optional GLFW/PyOpenGL and separately installed FFmpeg retain their
+own distribution terms. No third-party binary is vendored by this cleanup.

@@ -1,0 +1,31 @@
+{
+  "status": "complete",
+  "robot": "menagerie",
+  "selection_mode": "manual",
+  "tests": [
+    {
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "status": 400,
+      "expected": 400
+    },
+    {
+      "status": 400,
+      "expected": 400
+    },
+    {
+      "controller": "conventional",
+      "samples": 2501,
+      "final_jpeg_bytes": 51776,
+      "status": "Success"
+    },
+    {
+      "controller": "integral",
+      "samples": 2501,
+      "final_jpeg_bytes": 51743,
+      "status": "Success"
+    }
+  ]
+}

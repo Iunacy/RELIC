@@ -1,0 +1,62 @@
+{
+  "before": {
+    "RELIC": {
+      "head": "94899ed2cf1a3ff75fc09ec70455551d961377d0",
+      "archived_project_files": 203,
+      "ignored_bulk_retained_in_place": 122629
+    },
+    "RELIC-main": {
+      "head": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+      "archived_project_files": 83,
+      "ignored_bulk_retained_in_place": 0
+    },
+    "RELIC-ruckig": {
+      "head": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+      "archived_project_files": 120,
+      "ignored_bulk_retained_in_place": 1855
+    }
+  },
+  "backup_directory": "/home/iris/relic-consolidation-backups/20261022-132036",
+  "backup_refs": {
+    "refs/backup/20261022-132036/main": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+    "refs/backup/20261022-132036/experiment/double-s-benchmark": "c461320c59602a787d4f2a9c6d82187fba953a69",
+    "refs/backup/20261022-132036/experiment/ruckig-benchmark": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+    "refs/backup/20261022-132036/feature/adaptive-v0": "323183dd3cd773384c4d9eb4217e659005c3b99f",
+    "refs/backup/20261022-132036/feature/adaptive-v0-validation": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "refs/backup/20261022-132036/feature/interactive-physical-ai": "94899ed2cf1a3ff75fc09ec70455551d961377d0"
+  },
+  "sources": {
+    "main": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+    "experiment/double-s-benchmark": "029dd20a0eb66e0215a1ef93551dff2893eb4d37",
+    "experiment/ruckig-benchmark": "6a6887afc0b7b6869dbff66cfede4d42d2473089",
+    "feature/adaptive-v0": "323183dd3cd773384c4d9eb4217e659005c3b99f",
+    "feature/adaptive-v0-validation": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "feature/interactive-physical-ai": "94899ed2cf1a3ff75fc09ec70455551d961377d0"
+  },
+  "before_graph": "* 94899ed (HEAD -> feature/interactive-physical-ai) record interactive validation\n* 423bd04 connect validated task execution\n* c0e46f1 add menagerie arm viewer\n* cf0e905 (feature/adaptive-v0-validation) record adaptive validation results\n* 660a185 add reproducible control comparisons\n* beba39a scale validated data preparation\n* b3d8162 fix adaptive validation\n* 323183d (origin/feature/adaptive-v0, feature/adaptive-v0) add adaptive control pipeline\n| * f0ff3e2 (origin/main, origin/experiment/ruckig-benchmark, origin/HEAD, main, experiment/ruckig-benchmark) add ruckig experiment\n|/  \n* c461320 (origin/experiment/double-s-benchmark, experiment/double-s-benchmark) add relic sim\n* 9d78373 Initial commit\n",
+  "after_graph": "* a5fc4c9 (HEAD -> develop) fix integration\n*   28d88c8 merge double-s audit\n|\\  \n| * 029dd20 (experiment/double-s-benchmark) save double-s audit\n* |   1b29cdb merge diagnostics\n|\\ \\  \n| * | 6a6887a (experiment/ruckig-benchmark) save ruckig diagnostics\n* | | 408456a merge relic\n|\\| | \n| * | f0ff3e2 (origin/main, origin/experiment/ruckig-benchmark, origin/HEAD, main) add ruckig experiment\n| |/  \n* | 94899ed (feature/interactive-physical-ai) record interactive validation\n* | 423bd04 connect validated task execution\n* | c0e46f1 add menagerie arm viewer\n* | cf0e905 (feature/adaptive-v0-validation) record adaptive validation results\n* | 660a185 add reproducible control comparisons\n* | beba39a scale validated data preparation\n* | b3d8162 fix adaptive validation\n* | 323183d (origin/feature/adaptive-v0, feature/adaptive-v0) add adaptive control pipeline\n|/  \n* c461320 (origin/experiment/double-s-benchmark) add relic sim\n* 9d78373 Initial commit\n",
+  "conflicts": [
+    {
+      "merge": "main",
+      "files": [
+        ".gitignore"
+      ],
+      "resolution": "retained adaptive exclusions and Ruckig report exceptions"
+    },
+    {
+      "merge": "experiment/double-s-benchmark",
+      "files": [
+        ".gitignore",
+        "CMakeLists.txt"
+      ],
+      "resolution": "retained independent OFF-by-default Ruckig and Double-S switches and both ignore sets"
+    }
+  ],
+  "excluded_uncommitted_work": [
+    "Existing Markdown edits and untracked Markdown files, per latest user instruction",
+    "Historical .status scratch snapshots",
+    "Raw generated diagnostic CSV.gz, model dumps and plot",
+    "Bulk adaptive datasets/runs and generated builds/recordings"
+  ],
+  "main_unchanged": true
+}

@@ -1,0 +1,235 @@
+{
+  "core_research_assets_unchanged_from": "94899ed",
+  "menagerie_files_verified": 28,
+  "ruckig_files_verified": 33,
+  "double_s_files_verified": 6,
+  "tracked_files_scanned": 256,
+  "oversized_files": [],
+  "forbidden_artifacts": [],
+  "credential_pattern_findings": [],
+  "largest_files": [
+    [
+      1016784,
+      "interactive/vendor/low_cost_robot_arm/assets/gripper_static_finger_collision_1.stl"
+    ],
+    [
+      911483,
+      "adaptive/revision/comparison.json"
+    ],
+    [
+      723189,
+      "interactive/vendor/low_cost_robot_arm/low_cost_robot_arm.png"
+    ],
+    [
+      709484,
+      "interactive/vendor/low_cost_robot_arm/assets/gripper_static_finger_motor.stl"
+    ],
+    [
+      703784,
+      "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist_extension_motor.stl"
+    ],
+    [
+      702984,
+      "interactive/vendor/low_cost_robot_arm/assets/shoulder_to_elbow_motor.stl"
+    ],
+    [
+      688334,
+      "interactive/vendor/low_cost_robot_arm/assets/shoulder_rotation_motor.stl"
+    ],
+    [
+      517084,
+      "interactive/vendor/low_cost_robot_arm/assets/elbow_to_wrist_motor.stl"
+    ],
+    [
+      513684,
+      "interactive/vendor/low_cost_robot_arm/assets/base_link_motor.stl"
+    ],
+    [
+      444484,
+      "interactive/vendor/low_cost_robot_arm/assets/shoulder_rotation_collision.stl"
+    ]
+  ],
+  "scan_limit": "Known credential patterns and prohibited paths; not a proof that arbitrary secrets cannot exist.",
+  "closed_loop_comparisons": [
+    {
+      "case": "menagerie-target_center-False",
+      "controller": "conventional",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_center-False",
+      "controller": "integral",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_center-True",
+      "controller": "conventional",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_center-True",
+      "controller": "integral",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_left-False",
+      "controller": "conventional",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_left-False",
+      "controller": "integral",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_left-True",
+      "controller": "conventional",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_left-True",
+      "controller": "integral",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_right-False",
+      "controller": "conventional",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_right-False",
+      "controller": "integral",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_right-True",
+      "controller": "conventional",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "menagerie-target_right-True",
+      "controller": "integral",
+      "samples": 2501,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_center-False",
+      "controller": "conventional",
+      "samples": 1376,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_center-False",
+      "controller": "integral",
+      "samples": 1376,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_center-False",
+      "controller": "mlp",
+      "samples": 1376,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_center-True",
+      "controller": "conventional",
+      "samples": 1376,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_center-True",
+      "controller": "integral",
+      "samples": 1376,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_center-True",
+      "controller": "mlp",
+      "samples": 1376,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_left-False",
+      "controller": "conventional",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_left-False",
+      "controller": "integral",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_left-False",
+      "controller": "mlp",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_left-True",
+      "controller": "conventional",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_left-True",
+      "controller": "integral",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_left-True",
+      "controller": "mlp",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_right-False",
+      "controller": "conventional",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_right-False",
+      "controller": "integral",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_right-False",
+      "controller": "mlp",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_right-True",
+      "controller": "conventional",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_right-True",
+      "controller": "integral",
+      "samples": 1688,
+      "exact_trace_match": true
+    },
+    {
+      "case": "synthetic-target_right-True",
+      "controller": "mlp",
+      "samples": 1688,
+      "exact_trace_match": true
+    }
+  ]
+}

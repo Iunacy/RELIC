@@ -1,0 +1,69 @@
+Test project /home/iris/RELIC-double-s-publish/build-publish
+      Start  1: batch003_cartesian_repro_3
+      Start  2: batch003_cartesian_repro_4
+      Start  3: batch003_motion_trajectory
+      Start  4: batch003_motion_adaptive
+ 1/32 Test  #3: batch003_motion_trajectory .......   Passed    0.01 sec
+      Start  5: batch003_motion_selection
+ 2/32 Test  #1: batch003_cartesian_repro_3 .......   Passed    0.16 sec
+      Start  6: batch003_motion_contacts
+ 3/32 Test  #5: batch003_motion_selection ........   Passed    0.65 sec
+      Start  7: batch003_motion_execution
+ 4/32 Test  #4: batch003_motion_adaptive .........   Passed    2.49 sec
+      Start  8: batch003_motion_failures
+ 5/32 Test  #2: batch003_cartesian_repro_4 .......   Passed    3.11 sec
+      Start  9: batch003_motion_diagnostics
+ 6/32 Test  #9: batch003_motion_diagnostics ......   Passed    0.02 sec
+      Start 10: batch003_ik_branches
+ 7/32 Test #10: batch003_ik_branches .............   Passed    0.02 sec
+      Start 11: batch003_ik_boundaries
+ 8/32 Test #11: batch003_ik_boundaries ...........   Passed    0.04 sec
+      Start 12: batch003_ik_wrist
+ 9/32 Test #12: batch003_ik_wrist ................   Passed    0.02 sec
+      Start 13: batch003_ik_inputs
+10/32 Test #13: batch003_ik_inputs ...............   Passed    0.01 sec
+      Start 14: batch003_ik_geometry
+11/32 Test #14: batch003_ik_geometry .............   Passed    0.01 sec
+      Start 15: batch003_ik_isolation
+12/32 Test #15: batch003_ik_isolation ............   Passed    0.03 sec
+      Start 16: batch003_ik_generated
+13/32 Test  #8: batch003_motion_failures .........   Passed    1.10 sec
+      Start 17: batch002_targeted
+14/32 Test #17: batch002_targeted ................   Passed    0.03 sec
+      Start 18: batch002_fuzz
+15/32 Test #18: batch002_fuzz ....................   Passed    0.25 sec
+      Start 19: batch002_integration
+16/32 Test  #7: batch003_motion_execution ........   Passed    3.36 sec
+      Start 20: models
+17/32 Test #20: models ...........................   Passed    0.01 sec
+      Start 21: fk
+18/32 Test #21: fk ...............................   Passed    0.02 sec
+      Start 22: validation
+19/32 Test #22: validation .......................   Passed    0.01 sec
+      Start 23: feasibility
+20/32 Test #23: feasibility ......................   Passed    0.01 sec
+      Start 24: config
+21/32 Test #24: config ...........................   Passed    0.01 sec
+      Start 25: isolation
+22/32 Test #25: isolation ........................   Passed    0.01 sec
+      Start 26: reset
+23/32 Test #26: reset ............................   Passed    0.03 sec
+      Start 27: actuators
+24/32 Test #27: actuators ........................   Passed    0.03 sec
+      Start 28: lifetime
+25/32 Test #16: batch003_ik_generated ............   Passed    0.90 sec
+      Start 29: trace
+26/32 Test #29: trace ............................   Passed    0.01 sec
+      Start 30: cli_repro_3
+27/32 Test #19: batch002_integration .............   Passed    0.37 sec
+      Start 31: cli_repro_4
+28/32 Test #28: lifetime .........................   Passed    0.17 sec
+      Start 32: experiment_double_s_api_smoke
+29/32 Test #32: experiment_double_s_api_smoke ....   Passed    0.00 sec
+30/32 Test #30: cli_repro_3 ......................   Passed    0.18 sec
+31/32 Test #31: cli_repro_4 ......................   Passed    0.18 sec
+32/32 Test  #6: batch003_motion_contacts .........   Passed    6.38 sec
+
+100% tests passed out of 32
+
+Total Test time (real) =   6.55 sec

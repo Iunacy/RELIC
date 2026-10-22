@@ -1,0 +1,19 @@
+Test project /home/iris/RELIC-develop/build-consolidation-sanitize
+    Start 34: ruckig_qualification
+    Start  7: batch003_motion_execution
+1/7 Test #34: ruckig_qualification .............   Passed    1.28 sec
+    Start 33: ruckig_diagnostics
+2/7 Test  #7: batch003_motion_execution ........   Passed    5.13 sec
+    Start 35: ruckig_adapter_execution
+3/7 Test #35: ruckig_adapter_execution .........   Passed    3.10 sec
+    Start 37: experiment_double_s_api_smoke
+4/7 Test #37: experiment_double_s_api_smoke ....   Passed    0.02 sec
+    Start 38: adaptive_native
+5/7 Test #38: adaptive_native ..................   Passed    0.12 sec
+6/7 Test #33: ruckig_diagnostics ...............   Passed    9.47 sec
+    Start 32: ruckig_diagnostics_analysis
+7/7 Test #32: ruckig_diagnostics_analysis ......   Passed    1.57 sec
+
+100% tests passed out of 7
+
+Total Test time (real) =  12.33 sec

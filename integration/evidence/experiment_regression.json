@@ -1,0 +1,103 @@
+{
+  "double_s_exit": 2,
+  "double_s_output": "Audit completed: 9 rejected profiles; 1 upstream exceptions.\nScalar admission does not establish multi-joint synchronization. No profiles sent to actuators.\n",
+  "double_s_exact_report_match": true,
+  "ruckig_diagnostic_trace_checks": [
+    {
+      "file": "4_fast_ruckig_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_fast_linear_matched_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_zero_ruckig_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_fast_ruckig_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_nominal_ruckig_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_fast_linear_matched_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_fast_linear_matched_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_zero_linear_matched_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_nominal_ruckig_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_zero_ruckig_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_nominal_linear_matched_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_nominal_linear_matched_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_zero_linear_matched_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_zero_linear_matched_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_zero_ruckig_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_nominal_linear_matched_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_zero_linear_matched_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_nominal_ruckig_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_nominal_ruckig_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_fast_ruckig_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_fast_linear_matched_0.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_fast_ruckig_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "3_zero_ruckig_1.csv.gz",
+      "exact_bytes_match": true
+    },
+    {
+      "file": "4_nominal_linear_matched_1.csv.gz",
+      "exact_bytes_match": true
+    }
+  ]
+}
