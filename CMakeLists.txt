@@ -132,3 +132,8 @@ if(RELIC_ADAPTIVE)
     OUTPUT_VARIABLE RELIC_ADAPTIVE_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE)
   add_subdirectory(adaptive)
 endif()
+
+option(RELIC_INTERACTIVE "Build interactive target-reaching application" OFF)
+if(RELIC_INTERACTIVE)
+  add_subdirectory(interactive)
+endif()

@@ -17,7 +17,9 @@ CONFIG = REPO/'examples/synthetic_4dof.cfg'
 
 
 def executable():
-    value = Path(os.getenv('RELIC_INTERACTIVE_EXE', str(REPO/'build-interactive/relic_interactive'))).resolve()
+    preferred = REPO/'build-product/relic_interactive'
+    default = preferred if preferred.is_file() else REPO/'build-interactive/relic_interactive'
+    value = Path(os.getenv('RELIC_INTERACTIVE_EXE', str(default))).resolve()
     if not value.is_file():
         raise ValueError('native_bridge_missing_run_bash_interactive_setup_sh')
     return value
