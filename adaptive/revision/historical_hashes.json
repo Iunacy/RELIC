@@ -1,0 +1,19 @@
+{
+  "adaptive/evidence/campaign_audit.json": "b08e374e8846fb59ec8d0889633ed764c805c8c42e25404a1645515fff6c9dca",
+  "adaptive/evidence/demo_feedback.json": "ce3bfa027c0d2f78cb093e3a1af5863ba8384d47e40153923a360fac1283c61e",
+  "adaptive/evidence/failed_v1_evaluation.json": "f2efc4e845c665fdc4eab031b7adee7f37dd21f222c9cc9b79ad2ed47d7f5c98",
+  "adaptive/evidence/final_evaluation.json": "72a6c9560a95de18addb52ad94ef30297e4055d3e4eed69d8b2670f64e34499a",
+  "adaptive/evidence/final_executable_evaluation.json": "9002fb7983c8d0b12c95fb8760cd8cfe10cd8aaf6d168df96e29bb5272b5fe3d",
+  "adaptive/evidence/final_repeatability.json": "663cc17c70f212572d7b7abe44266d2c1aa5ebb72c49c26871448180a3b93a51",
+  "adaptive/evidence/generation_report.json": "c4a22c65d028aa74238e50193103af82fac6baf429eeeeec64750416dcdb08b9",
+  "adaptive/evidence/ilc_summary.json": "0b24b5c6eae0d3d5f57f2da11bf3b531399b822ac32603a0a52cb1b87cb745a1",
+  "adaptive/evidence/label_audit.json": "28b3728b8c1af78cdb45910769ae40f6e292f397aa5521a46b420f2c11365a99",
+  "adaptive/evidence/training_summary.json": "fadcafc03d2cdc64f135da024ad32b880e62783a0a7abf68f4362a3e8df11c03",
+  "adaptive/fixtures/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+  "adaptive/fixtures/episode/metadata.json": "c67f7627fb6ff18000f21ee0894b047f55ed68717cd2c79039ae6f68b92db2a5",
+  "adaptive/fixtures/episode/nominal.xml": "a44bb3b6d342fc7729b0d79a5190627b3b4f9e67dd28e17ea5743262e1d8d254",
+  "adaptive/fixtures/episode/telemetry.csv.gz": "322622bdbca236af57c3de9360127521a040611be0ed0eec53b556af7d4e5c7a",
+  "adaptive/fixtures/episode_origin.json": "42e7baa3294c36287363c501592f18b101ba30de3ef4236f4c9c05bed1b20010",
+  "adaptive/fixtures/model_provenance.json": "647d2b17f8cdf27b1a8c9d7c52565ce8eaa370676224a508f13df4147f3861b3",
+  "adaptive/fixtures/shared.txt": "7526b7c534a6803d7259422aa29f639e904b9e759d208250d163ff3a2bc18bf5"
+}

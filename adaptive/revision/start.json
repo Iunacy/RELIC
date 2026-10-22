@@ -1,0 +1,18 @@
+{
+  "start_commit": "323183dd3cd773384c4d9eb4217e659005c3b99f",
+  "start_branch": "feature/adaptive-v0",
+  "revision_branch": "feature/adaptive-v0-validation",
+  "preexisting_modified": [
+    ".gitignore",
+    "CMakeLists.txt"
+  ],
+  "preexisting_untracked": [
+    "adaptive/*.md",
+    "adaptive/*-main.status",
+    "adaptive/*-ruckig.status",
+    "experiments/"
+  ],
+  "ruckig_commit": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+  "ruckig_status": " M .gitignore\n M experiments/ruckig/CMakeLists.txt\n M experiments/ruckig/README.md\n M experiments/ruckig/adapter.cpp\n M experiments/ruckig/adapter.hpp\n M experiments/ruckig/reproduce.sh\n?? experiments/ruckig/analyze_diagnostics.py\n?? experiments/ruckig/diagnostics.cpp\n?? experiments/ruckig/results/diagnostics/\n?? experiments/ruckig/results/tracking_diagnostics.md\n",
+  "ruckig_diff_sha256": "7569507ed8880d244c83ab8d968108ca4faef91f7510d7034bb0c31493cbbdbe"
+}

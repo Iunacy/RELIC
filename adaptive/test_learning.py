@@ -95,6 +95,23 @@ class LearningTests(unittest.TestCase):
         self.assertEqual(before[:prefix], after[:prefix])
         self.assertNotEqual(before[prefix:], after[prefix:])
 
+    def test_nonzero_invalid_output_withdraws_in_closed_loop(self):
+        control=self.out/'injection.control'
+        control.write_text('RELIC_CONTROL_V1 .15 0 0 .05 300\n')
+        for dof in [3,4]:
+            spec=dict(self.spec,dof=dof)
+            folder=self.out/f'injected-{dof}'
+            result=l.run_native(EXE,EXAMPLES,folder,spec,'analytical',self.bounds,control=control)
+            self.assertEqual(result['completed_ticks'],result['planned_ticks'])
+            self.assertEqual(result['last_fallback_reason'],'injected_invalid_output')
+            rows=l.read_rows(folder)
+            before=[row for row in rows if int(row['tick'])==299]
+            self.assertTrue(any(abs(float(row['correction_rad']))>1e-6 for row in before))
+            for joint in range(dof):
+                tail=[float(row['correction_rad']) for row in rows if int(row['joint'])==joint and int(row['tick'])>=300]
+                self.assertTrue(all(abs(b)<=abs(a)+1e-12 and abs(b-a)<=.001+1e-12 for a,b in zip(tail,tail[1:])))
+                self.assertAlmostEqual(tail[-1],0.)
+
     def test_fallback_and_closed_loop_repeatability(self):
         bad = self.out/'invalid.txt'
         bad.write_text('wrong-version')

@@ -49,7 +49,7 @@ struct MLP {
 };
 struct Correction {
   Vec command,applied;
-  bool fallback=false;
+  bool fallback=false,stopped=false;
   std::string reason="none";
 };
 
@@ -57,6 +57,14 @@ struct Correction {
 inline Correction guarded(Simulation& sim,const Vec& desired,const Vec& previous_command,const Vec& previous_correction,
   const Vec& candidate,const Bounds& bounds,const std::string& invalid="none") {
   Correction result;result.command=desired;result.applied.assign(desired.size(),0);
+  if(desired.size()!=previous_command.size() || desired.size()!=previous_correction.size() || desired.empty() || desired.size()>4) {
+    result.stopped=true;result.reason="withdrawal_invalid_state_dimension";return result;
+  }
+  for(std::size_t j=0;j<desired.size();++j)if(!std::isfinite(desired[j]) || !std::isfinite(previous_command[j]) ||
+      !std::isfinite(previous_correction[j]) || !std::isfinite(bounds.rate[j]) || bounds.rate[j]<=0 ||
+      !std::isfinite(bounds.magnitude[j]) || bounds.magnitude[j]<=0) {
+    result.stopped=true;result.reason="withdrawal_invalid_state_or_bounds";return result;
+  }
   std::string why=invalid;
   if(candidate.size()!=desired.size())why="correction_dimension";
   if(why=="none")for(std::size_t j=0;j<candidate.size();++j)
@@ -66,10 +74,17 @@ inline Correction guarded(Simulation& sim,const Vec& desired,const Vec& previous
     if(!safe_segment(sim,previous_command,result.command,true))why="corrected_command_or_path";
   }
   if(why!="none") {
-    result.fallback=true;result.reason=why;result.command=desired;std::fill(result.applied.begin(),result.applied.end(),0);
-    for(std::size_t j=0;j<desired.size();++j)if(std::abs(previous_correction[j])>bounds.rate[j]+1e-12)
-      throw std::runtime_error("fallback_cannot_meet_correction_rate");
-    if(!safe_segment(sim,previous_command,desired,true))throw std::runtime_error("fallback_command_or_path_unsafe");
+    result.fallback=true;result.reason=why;result.command=desired;
+    for(std::size_t j=0;j<desired.size();++j) {
+      result.applied[j]=std::clamp(0.0,previous_correction[j]-bounds.rate[j],previous_correction[j]+bounds.rate[j]);
+      result.command[j]+=result.applied[j];
+      if(std::abs(result.applied[j])>bounds.magnitude[j]+1e-12) {
+        result.stopped=true;result.reason="withdrawal_infeasible_magnitude";return result;
+      }
+    }
+    if(!safe_segment(sim,previous_command,result.command,true)) {
+      result.stopped=true;result.reason="withdrawal_infeasible_command_or_sampled_path";
+    }
   }
   return result;
 }

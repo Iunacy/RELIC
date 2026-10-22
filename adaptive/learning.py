@@ -51,9 +51,11 @@ def examples_from_trace(folder, stride=4, targets=None):
             previous[j] = float(row['correction_rad'])
 
 
-def run_native(exe, examples, out, m, controller, bounds, model='none'):
+def run_native(exe, examples, out, m, controller, bounds, model='none', control=None):
     out.mkdir(parents=True, exist_ok=False)
     args = [str(exe), str(examples), str(out)] + [str(m[k]) for k in ['seed', 'family', 'dof', 'category', 'severity', 'partition', 'episode']] + [controller, str(bounds), str(model)]
+    if control is not None:
+        args.append(str(control))
     began = time.perf_counter()
     result = subprocess.run(args, capture_output=True, text=True, timeout=60)
     if result.returncode:
@@ -68,6 +70,9 @@ def run_native(exe, examples, out, m, controller, bounds, model='none'):
     meta.update(trace_sha256=p.digest(out/'telemetry.csv.gz'), model_sha256=p.digest(out/'nominal.xml'), orchestrator_wall_s=time.perf_counter()-began,
                 bounds_sha256=p.digest(bounds), inference_model_sha256=p.digest(Path(model)) if Path(model).is_file() else None)
     meta['randomized_model_sha256'] = hashlib.sha256((meta['model_sha256'] + json.dumps(meta['physics'], sort_keys=True, separators=(',', ':'))).encode()).hexdigest()
+    if control is not None:
+        meta['control_configuration'] = Path(control).read_text()
+        meta['control_configuration_sha256'] = p.digest(Path(control))
     meta['native_argv'] = args
     p.atomic_json(out/'metadata.json', meta)
     (out/'native.json').unlink()

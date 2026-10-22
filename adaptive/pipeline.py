@@ -19,7 +19,7 @@ if not __debug__:
     raise RuntimeError('Dataset validation requires Python assertions enabled; do not use -O')
 
 SCHEMA = 'relic.episode.v1'
-CATEGORIES = ['nominal', 'gain', 'force', 'friction', 'mass', 'payload', 'combined', 'recovery']
+CATEGORIES = ['nominal', 'gain', 'force', 'friction', 'mass', 'payload', 'combined', 'restored_nominal']
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -69,7 +69,12 @@ def validate_episode(folder, check_hash=True):
             assert hashlib.sha256((m['model_sha256'] + json.dumps(m['physics'], sort_keys=True, separators=(',', ':'))).encode()).hexdigest() == m['randomized_model_sha256'], 'randomized model checksum'
     assert len(m['initial_q_rad']) == len(m['goal_q_rad']) == m['dof'], 'metadata dimensions'
     assert m['completed_ticks'] <= m['planned_ticks'] and m['command_ticks'] <= m['planned_ticks'], 'termination ticks'
-    assert m['outcome'] in ['Success', 'NonConvergence', 'InvalidPath', 'DisallowedContact', 'ObservedJointLimit', 'NumericalWarning', 'SimulationError'], 'outcome'
+    assert m['outcome'] in ['Success', 'NonConvergence', 'InvalidPath', 'DisallowedContact', 'ObservedJointLimit', 'NumericalWarning', 'SimulationError', 'WithdrawalInfeasible'], 'outcome'
+    if 'joint_rmse_by_joint_rad' in m['metrics']:
+        per_joint=m['metrics']['joint_rmse_by_joint_rad']
+        assert len(per_joint)==m['dof'] and all(math.isfinite(v) and v>=0 for v in per_joint),'per-joint RMSE mapping'
+        if m['completed_ticks']==m['planned_ticks']:
+            assert abs(math.sqrt(sum(v*v for v in per_joint)/m['dof'])-m['metrics']['joint_rmse_rad'])<1e-10,'per-joint RMSE consistency'
     assert bool(m['termination_reason']) and m['failure_class'] == ('none' if m['task_success'] else m['outcome']), 'failure recording'
     assert m['task_success'] == (m['outcome'] == 'Success'), 'outcome/success consistency'
     if m['task_success']:
@@ -152,7 +157,7 @@ def validate_dataset(path, full=True):
         partitions[m['partition']] = partitions.get(m['partition'], 0) + 1
         categories[m['category']] = categories.get(m['category'], 0) + 1
         models.append(m)
-    for category in set(x['category'] for x in models) - {'nominal', 'recovery'}:
+    for category in set(x['category'] for x in models) - {'nominal', 'recovery', 'restored_nominal'}:
         changed = [m['physics'] for m in models if m['category'] == category]
         assert all(any(p[k] != default for k, default in [('gain_scale', 1), ('force_scale', 1), ('damping_scale', 1), ('friction_Nm', 0), ('mass_scale', 1), ('payload_kg', 0)]) for p in changed), 'no physical degradation'
     manifest = dict(schema_version=SCHEMA, episodes=len(models), families=len(groups), partitions=partitions,

@@ -7,7 +7,9 @@ The optional adaptive pipeline generates seeded physical-degradation episodes, v
 Run the tested qualification, training, evaluation, and motion demonstration workflow with:
 
 ```sh
-bash adaptive/reproduce.sh
+bash adaptive/revise.sh
 ```
 
 Set `MUJOCO_ROOT` to a MuJoCo 3.16.0 SDK and `RELIC_ML_PYTHON` to a Python environment with the packages in `adaptive/requirements.txt`. Small fixtures and measured reproducibility reports are retained under `adaptive/fixtures` and `adaptive/evidence`. Bulk datasets, generated builds, and temporary runs are excluded from Git.
+
+The validation revision uses paired held-out families, stronger analytical competitors and rate-limited correction withdrawal. The original campaign remains reproducible with `adaptive/reproduce.sh`; its results are retained as historical development evidence.

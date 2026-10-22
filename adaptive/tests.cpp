@@ -34,7 +34,22 @@ int main(int argc,char** argv){try {
    auto bad=zero;bad[0]=NAN;r=guarded(sim,q,q,zero,bad,b);check(r.fallback && r.command==q && r.reason=="correction_nonfinite_or_magnitude","invalid correction fallback");
    r=guarded(sim,q,q,zero,Vec(4,0),b);check(r.fallback,"dimension fallback");
    bad=zero;bad[0]=.2;r=guarded(sim,q,q,zero,bad,b);check(r.fallback,"magnitude fallback");
-   bool stop=false;try {guarded(sim,q,q,Vec(3,.05),bad,b);}catch(const std::runtime_error&){stop=true;}check(stop,"unsafe fallback rate must terminate");
+   bad[0]=NAN;
+   for(double sign:{-1.,1.}) {
+   Vec withdrawal(3,sign*.05),previous=q;for(int j=0;j<3;++j)previous[j]+=withdrawal[j];
+   for(int tick=0;tick<50;++tick) {
+     const auto next=guarded(sim,q,previous,withdrawal,bad,b);
+     check(next.fallback && !next.stopped,"nonzero correction must withdraw without throwing");
+     for(int j=0;j<3;++j)check(std::abs(next.applied[j])<=std::abs(withdrawal[j]) &&
+       std::abs(next.applied[j]-withdrawal[j])<=b.rate[j]+1e-12,"withdrawal magnitude/rate");
+     check(safe_segment(sim,previous,next.command,true),"withdrawal intermediate path");
+     previous=next.command;withdrawal=next.applied;
+   }
+   for(double x:withdrawal)check(std::abs(x)<1e-12,"withdrawal must reach zero");
+   }
+   auto impossible=q;impossible[0]+=.1;
+   const auto stopped=guarded(sim,impossible,q,zero,bad,b);
+   check(stopped.stopped && stopped.reason=="withdrawal_infeasible_command_or_sampled_path","infeasible withdrawal must stop distinctly");
 
 
    const auto f=features(cfg,1,.2,.1,.3,.1,.2,.01,.02,.03);
