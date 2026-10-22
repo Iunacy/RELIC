@@ -1,0 +1,15 @@
+set(PROJECT_VERSION_MAJOR 3)
+set(PROJECT_VERSION_MINOR 3)
+set(PROJECT_VERSION_PATCH 2)
+set(PROJECT_VERSION 3.3.2)
+configure_file(upstream/cpp/cmake/version.hpp.in
+  include/interpolatecpp/version.hpp @ONLY)
+add_library(relic_experiment_interpolatecpp STATIC upstream/cpp/src/double_s_trajectory.cpp)
+target_include_directories(relic_experiment_interpolatecpp PUBLIC
+  upstream/cpp/include "${CMAKE_CURRENT_BINARY_DIR}/include")
+target_compile_definitions(relic_experiment_interpolatecpp PUBLIC INTERPOLATECPP_STATIC_DEFINE)
+add_executable(relic_double_s_audit audit.cpp)
+target_link_libraries(relic_double_s_audit PRIVATE relic_experiment_interpolatecpp)
+if(BUILD_TESTING)
+  add_test(NAME experiment_double_s_api_smoke COMMAND relic_double_s_audit --smoke)
+endif()

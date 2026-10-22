@@ -13,3 +13,5 @@
 *.o
 *.a
 *.lib
+
+!/experiments/double_s/results.csv
