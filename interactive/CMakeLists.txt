@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.24)
+project(RELICInteractive LANGUAGES CXX)
+set(RELIC_ADAPTIVE ON CACHE BOOL "Build existing residual adapter" FORCE)
+add_subdirectory(.. engine)
+relic_executable(relic_interactive bridge.cpp)
+target_include_directories(relic_interactive PRIVATE ../adaptive)
+execute_process(COMMAND git rev-parse HEAD WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+  OUTPUT_VARIABLE RELIC_INTERACTIVE_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE)
+target_compile_definitions(relic_interactive PRIVATE RELIC_INTERACTIVE_COMMIT="${RELIC_INTERACTIVE_COMMIT}")
+include(CTest)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+if(BUILD_TESTING)
+  add_test(NAME interactive_integration COMMAND "${Python3_EXECUTABLE}" -m interactive.tests)
+  set_tests_properties(interactive_integration PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    ENVIRONMENT "MUJOCO_GL=egl;RELIC_INTERACTIVE_EXE=$<TARGET_FILE:relic_interactive>" TIMEOUT 120)
+endif()

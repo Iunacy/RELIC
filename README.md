@@ -15,3 +15,7 @@ Set `MUJOCO_ROOT` to a MuJoCo 3.16.0 SDK and `RELIC_ML_PYTHON` to a Python envir
 The validation revision uses paired held-out families, stronger analytical competitors and rate-limited correction withdrawal. The original campaign remains reproducible with `adaptive/reproduce.sh`; its results are retained as historical development evidence.
 
 After building the adaptive executable, `python adaptive/revision_demo.py --fixtures` runs a short five-controller demonstration using the committed small model, without collecting the campaign.
+
+The interactive Physical AI demo adds the original Menagerie Koch arm, known Cartesian targets, measured actuator execution and a local browser interface. Run `bash interactive/setup.sh` once, then `bash interactive/run.sh` and open `http://127.0.0.1:8765`. Choose direct target selection for offline use. Synthetic-arm mode compares conventional, analytical PI and the existing bounded learned residual; learned weights are disabled for the imported arm.
+
+NVIDIA Nemotron task selection is implemented through Nebius Token Factory; successful live verification is pending the API key. See [setup, safety boundaries and recording instructions](interactive/README.md). Historical adaptive results and original synthetic model configurations are preserved.
