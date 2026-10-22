@@ -39,7 +39,7 @@
     "Physics, safety and evaluation conventions remain intentionally separate where their assumptions differ."
   ],
   "initial_push_failure": "HTTPS Git credentials absent; GitHub CLI declined. User approved a temporary RELIC-only deploy key through the logged-in browser.",
-  "publication_status": "GitHub Confirm access re-authentication pending; remote refs will be verified separately after publishing this evidence commit.",
+  "publication_status": "Published through authenticated GitHub CLI HTTPS credentials; remote refs verified. See publication.json for the snapshot before this evidence-only commit.",
   "instructions": "See DEVELOP.txt; Markdown documentation left unchanged per latest user request.",
   "sanitizers": {
     "address": true,
@@ -49,5 +49,7 @@
     "total": 7,
     "wall_s": 12.33
   },
-  "original_active_worktree_project_file_hashes_preserved": true
+  "original_active_worktree_project_file_hashes_preserved": true,
+  "authentication_resolution": "GitHub browser authorization had completed, but the synchronous xdg-open child blocked CLI completion. Ending only that launcher allowed authentication to finish; HTTPS credential helper configured and verified.",
+  "temporary_access_cleanup": "No temporary deploy key was added to GitHub. Its absence was verified and unused local key/login helper files were removed."
 }

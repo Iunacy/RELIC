@@ -1,0 +1,18 @@
+{
+  "snapshot_stage": "remote verification before final publication-evidence-only commit",
+  "repository": "https://github.com/hoaitrongueh/RELIC",
+  "remote_heads": {
+    "develop": "aa216ab1ef4dd6897f15c5cd5c301d51c209eb01",
+    "experiment/double-s-benchmark": "029dd20a0eb66e0215a1ef93551dff2893eb4d37",
+    "experiment/ruckig-benchmark": "6a6887afc0b7b6869dbff66cfede4d42d2473089",
+    "feature/adaptive-v0": "323183dd3cd773384c4d9eb4217e659005c3b99f",
+    "feature/adaptive-v0-validation": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "feature/interactive-physical-ai": "94899ed2cf1a3ff75fc09ec70455551d961377d0",
+    "main": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3"
+  },
+  "push": "atomic, fast-forward updates and new branches; no force push",
+  "main_unchanged": true,
+  "pull_request_to_main": "clean; main is an ancestor of develop; no pull request created",
+  "temporary_deploy_key_absent": true,
+  "unused_local_auth_files_removed": true
+}
