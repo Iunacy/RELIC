@@ -199,13 +199,17 @@ def collect(out,qualification=False):
         selected=selected[:32]
     campaign=out/('teacher-qualification' if qualification else 'teacher-campaign')
     campaign.mkdir(exist_ok=True)
+    existing_summary=json.loads((campaign/'summary.json').read_text()) if (campaign/'summary.json').exists() else None
     began=time.perf_counter();results=[]
     with futures.ProcessPoolExecutor(max_workers=6) as pool:
         for result in pool.map(teacher_task,[(campaign,m,3,0) for m in selected]):
             results.append(result)
             p.atomic_json(campaign/'teacher_manifest.json',results)
             if len(results)%16==0:print(f'{len(results)}/{len(selected)} teacher episodes',flush=True)
-    summarize_teachers(campaign,results,time.perf_counter()-began)
+    if existing_summary is not None:
+        assert existing_summary['episodes']==len(results),'completed campaign size changed; use a new output directory'
+        p.atomic_json(campaign/'resume_validation.json',dict(cached_scenarios=len(results),wall_s=time.perf_counter()-began,original_summary_sha256=p.digest(campaign/'summary.json')))
+    else:summarize_teachers(campaign,results,time.perf_counter()-began)
 
 
 def summarize_teachers(campaign,results,wall):

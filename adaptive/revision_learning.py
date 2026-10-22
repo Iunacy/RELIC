@@ -177,9 +177,12 @@ def evaluate(out,baselines_only=False):
             if method in tuned:control=tuned[method]['control']
             tasks.append((out/'evaluation',m,method,model,control))
         if not baselines_only and m['dof']==4:tasks.append((out/'evaluation',m,'common_transfer',models/'per_3_full.txt',None))
+    timing=out/('evaluation/baseline-timing.json' if baselines_only else 'evaluation/timing.json')
+    previously_complete=timing.exists() and all((task[0]/task[2]/task[1]['episode']/'metadata.json').exists() for task in tasks)
     began=time.perf_counter();results=r.execute(tasks)
     p.atomic_json(out/('evaluation/baseline-index.json' if baselines_only else 'evaluation/index.json'),[dict(episode=m['episode'],controller=m['controller'],outcome=m['outcome']) for m in sorted(results,key=lambda m:(m['episode'],m['controller']))])
-    p.atomic_json(out/('evaluation/baseline-timing.json' if baselines_only else 'evaluation/timing.json'),dict(episodes=len(results),wall_s=time.perf_counter()-began,protocol_sha256=p.digest(out/'protocol.json')))
+    target=timing.with_name('baseline-resume-timing.json' if baselines_only else 'resume-timing.json') if previously_complete else timing
+    p.atomic_json(target,dict(episodes=len(results),cached_validation=previously_complete,wall_s=time.perf_counter()-began,protocol_sha256=p.digest(out/'protocol.json')))
 
 
 def bootstrap(values,seed=20261022,reps=4000):

@@ -1,0 +1,2709 @@
+{
+  "episodes": 640,
+  "families": 40,
+  "groups": {
+    "category:combined": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.0036291052606189614,
+          0.00508683302178163
+        ],
+        "families": 40,
+        "mean": 0.004364289953944377
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          0.00044221653818832203,
+          0.0006305007709201699
+        ],
+        "families": 40,
+        "mean": 0.0005354710883884656
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.006461709711982669,
+          0.011031119501537097
+        ],
+        "families": 40,
+        "mean": 0.00866152086275859
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0373568422882962,
+              -0.03175816604005313
+            ],
+            "families": 40,
+            "mean": -0.03465697712838076
+          },
+          "success_delta": {
+            "ci95": [
+              0.6625,
+              0.9
+            ],
+            "families": 40,
+            "mean": 0.7875
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.011858623226737638,
+              -0.009066551740124093
+            ],
+            "families": 40,
+            "mean": -0.01047351012948659
+          },
+          "success_delta": {
+            "ci95": [
+              0.175,
+              0.475
+            ],
+            "families": 40,
+            "mean": 0.325
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.00419005860438573,
+              -0.0033235843534304764
+            ],
+            "families": 40,
+            "mean": -0.0037432341918392843
+          },
+          "success_delta": {
+            "ci95": [
+              0.2875,
+              0.5875
+            ],
+            "families": 40,
+            "mean": 0.4375
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              0.0008013622977115157,
+              0.0014527555637597449
+            ],
+            "families": 40,
+            "mean": 0.0011190438093772314
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0007978586580771322,
+              0.00016674719177166948
+            ],
+            "families": 40,
+            "mean": -0.0003278036273668467
+          },
+          "success_delta": {
+            "ci95": [
+              0.05,
+              0.1875
+            ],
+            "families": 40,
+            "mean": 0.1125
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              0.0005783702676031327,
+              0.0013139957351601813
+            ],
+            "families": 40,
+            "mean": 0.000940574110112971
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0006785433171076048,
+              0.00019138393381827284
+            ],
+            "families": 40,
+            "mean": -0.00025012329683821237
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.019124005217271894,
+          0.03517499051673622
+        ],
+        "families": 40,
+        "mean": 0.02679019960208956
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "category:force": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.00017068499563547155,
+          0.0002243792816122482
+        ],
+        "families": 40,
+        "mean": 0.00019880623756826543
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          1.7990243477699813e-05,
+          2.329968975491549e-05
+        ],
+        "families": 40,
+        "mean": 2.0780897214835353e-05
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.00020070224702696472,
+          0.00025652753778109233
+        ],
+        "families": 40,
+        "mean": 0.00022829374913630281
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.027666368128039645,
+              -0.02331703927218575
+            ],
+            "families": 40,
+            "mean": -0.025586707596939585
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0005764330908231855,
+              -0.00048034329155199597
+            ],
+            "families": 40,
+            "mean": -0.0005298044364692939
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0002480184561036312,
+              -0.0002123357593765609
+            ],
+            "families": 40,
+            "mean": -0.00023075359314085896
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008525391232788196,
+              -0.0005705337088819245
+            ],
+            "families": 40,
+            "mean": -0.000701337627194387
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0016647739280074827,
+              -0.001266906348800853
+            ],
+            "families": 40,
+            "mean": -0.0014577583749626189
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008406717351437234,
+              -0.0005847509333162731
+            ],
+            "families": 40,
+            "mean": -0.0007043225139882704
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0017449594447272215,
+              -0.001459481769511685
+            ],
+            "families": 40,
+            "mean": -0.0015993051756106977
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.0005229960926738643,
+          0.0007498341116714701
+        ],
+        "families": 40,
+        "mean": 0.0006302037077373327
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "category:friction": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.00043205338812444004,
+          0.0005720125178459949
+        ],
+        "families": 40,
+        "mean": 0.0005042770976567264
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          4.7284324360973495e-05,
+          6.390041868475647e-05
+        ],
+        "families": 40,
+        "mean": 5.553377688976531e-05
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.00048468833114203875,
+          0.0006215523601236321
+        ],
+        "families": 40,
+        "mean": 0.0005519748038338179
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.02859601223650629,
+              -0.024180073861812153
+            ],
+            "families": 40,
+            "mean": -0.026472831850824885
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0016430633643303818,
+              -0.0013496187815417787
+            ],
+            "families": 40,
+            "mean": -0.001498952305450251
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0006797804525691426,
+              -0.0005621743739862912
+            ],
+            "families": 40,
+            "mean": -0.0006215021432889488
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0006332561657958343,
+              -0.00033120464611443375
+            ],
+            "families": 40,
+            "mean": -0.00046986297463824363
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.001459763925688045,
+              -0.0010354439076178626
+            ],
+            "families": 40,
+            "mean": -0.0012435639288812892
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.000621017703145199,
+              -0.00033667927336187604
+            ],
+            "families": 40,
+            "mean": -0.0004671454268708186
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0015001041251299443,
+              -0.0011765338047063307
+            ],
+            "families": 40,
+            "mean": -0.0013326168023665903
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.001179968247348748,
+          0.0017318509310720596
+        ],
+        "families": 40,
+        "mean": 0.0014338618568794526
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "category:gain": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.002568033052682643,
+          0.0038971536128173698
+        ],
+        "families": 40,
+        "mean": 0.003215273527395603
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          0.0002636834750277125,
+          0.0003929795722686285
+        ],
+        "families": 40,
+        "mean": 0.00032541743284538664
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.0037705596733053053,
+          0.0072933259526744175
+        ],
+        "families": 40,
+        "mean": 0.005406117631779439
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.03472695638861705,
+              -0.029221368407425275
+            ],
+            "families": 40,
+            "mean": -0.032079263894518685
+          },
+          "success_delta": {
+            "ci95": [
+              0.0875,
+              0.3
+            ],
+            "families": 40,
+            "mean": 0.1875
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.008844041146149397,
+              -0.006309015625855979
+            ],
+            "families": 40,
+            "mean": -0.007526336219448054
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.003233679751855848,
+              -0.0024833846694609423
+            ],
+            "families": 40,
+            "mean": -0.0028276134719196037
+          },
+          "success_delta": {
+            "ci95": [
+              0.05,
+              0.275
+            ],
+            "families": 40,
+            "mean": 0.1625
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              0.00040081940886415397,
+              0.0010000247623360384
+            ],
+            "families": 40,
+            "mean": 0.0006904060105367742
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0009683921855936115,
+              -0.00015628407278489852
+            ],
+            "families": 40,
+            "mean": -0.0005752869740493452
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              0.0003913014392440739,
+              0.0009705210973905055
+            ],
+            "families": 40,
+            "mean": 0.0006761304640478287
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0009087969188498853,
+              -0.00014481197351216997
+            ],
+            "families": 40,
+            "mean": -0.0005431838897264476
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.010885606622203232,
+          0.023573274901043394
+        ],
+        "families": 40,
+        "mean": 0.01672249801723396
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "category:mass": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.00017347202751463346,
+          0.0002261970940702289
+        ],
+        "families": 40,
+        "mean": 0.00020062997548752083
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          1.792341675815479e-05,
+          2.3022831289208596e-05
+        ],
+        "families": 40,
+        "mean": 2.060896044027045e-05
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.00023469900471035333,
+          0.00028621058978301356
+        ],
+        "families": 40,
+        "mean": 0.00025990383124639357
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.02767702356057456,
+              -0.023298133637826013
+            ],
+            "families": 40,
+            "mean": -0.02558685056680344
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0007707151746121752,
+              -0.0006313979072422031
+            ],
+            "families": 40,
+            "mean": -0.0006987437428935364
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0003014345259843228,
+              -0.00026309144731394355
+            ],
+            "families": 40,
+            "mean": -0.0002823945505761283
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008204973797758745,
+              -0.0005355654557815228
+            ],
+            "families": 40,
+            "mean": -0.0006688648849480025
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0016334435864790327,
+              -0.0012326994850298857
+            ],
+            "families": 40,
+            "mean": -0.001425518200957732
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008132669064890189,
+              -0.0005495486892652382
+            ],
+            "families": 40,
+            "mean": -0.0006727566428079591
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0017427390574914583,
+              -0.0014595760629494974
+            ],
+            "families": 40,
+            "mean": -0.00159866506616876
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.0006115404419015811,
+          0.0008367504844046679
+        ],
+        "families": 40,
+        "mean": 0.0007193727835107038
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "category:nominal": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.00017068499563547155,
+          0.0002243792816122482
+        ],
+        "families": 40,
+        "mean": 0.00019880623756826543
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          1.7990243477699813e-05,
+          2.329968975491549e-05
+        ],
+        "families": 40,
+        "mean": 2.0780897214835353e-05
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.00020070224702696472,
+          0.00025652753778109233
+        ],
+        "families": 40,
+        "mean": 0.00022829374913630281
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.027666368128039645,
+              -0.02331703927218575
+            ],
+            "families": 40,
+            "mean": -0.025586707596939585
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0005764330908231855,
+              -0.00048034329155199597
+            ],
+            "families": 40,
+            "mean": -0.0005298044364692939
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0002480184561036312,
+              -0.0002123357593765609
+            ],
+            "families": 40,
+            "mean": -0.00023075359314085896
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008525391232788196,
+              -0.0005705337088819245
+            ],
+            "families": 40,
+            "mean": -0.000701337627194387
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0016647739280074827,
+              -0.001266906348800853
+            ],
+            "families": 40,
+            "mean": -0.0014577583749626189
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008406717351437234,
+              -0.0005847509333162731
+            ],
+            "families": 40,
+            "mean": -0.0007043225139882704
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0017449594447272215,
+              -0.001459481769511685
+            ],
+            "families": 40,
+            "mean": -0.0015993051756106977
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.0005229960926738643,
+          0.0007498341116714701
+        ],
+        "families": 40,
+        "mean": 0.0006302037077373327
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "category:payload": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.00017245139368275863,
+          0.0002254119029922548
+        ],
+        "families": 40,
+        "mean": 0.00019995622064949541
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          1.7865501991522436e-05,
+          2.306184883716773e-05
+        ],
+        "families": 40,
+        "mean": 2.0598714851365864e-05
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.00022203614853650064,
+          0.0002763375908192757
+        ],
+        "families": 40,
+        "mean": 0.0002484133426800131
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.027678253573936714,
+              -0.023300073413449158
+            ],
+            "families": 40,
+            "mean": -0.025588405311612744
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0006932864528930863,
+              -0.0005761338706711713
+            ],
+            "families": 40,
+            "mean": -0.000634709015398972
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.00028156269082224946,
+              -0.00024482854433463335
+            ],
+            "families": 40,
+            "mean": -0.0002634548694437658
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008314789685717838,
+              -0.0005490983381515777
+            ],
+            "families": 40,
+            "mean": -0.0006809961626717773
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0016414597636494714,
+              -0.0012440872208818517
+            ],
+            "families": 40,
+            "mean": -0.0014366363457746021
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008222638545763536,
+              -0.0005631575390935301
+            ],
+            "families": 40,
+            "mean": -0.0006844998002019348
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0017452656562271184,
+              -0.0014629230063975573
+            ],
+            "families": 40,
+            "mean": -0.0016016025619123373
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.0005750544914074063,
+          0.0008007834188579457
+        ],
+        "families": 40,
+        "mean": 0.0006816770517491385
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "category:restored_nominal": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.00017068499563547155,
+          0.0002243792816122482
+        ],
+        "families": 40,
+        "mean": 0.00019880623756826543
+      },
+      "episodes": 80,
+      "final_cartesian_m": {
+        "ci95": [
+          1.7990243477699813e-05,
+          2.329968975491549e-05
+        ],
+        "families": 40,
+        "mean": 2.0780897214835353e-05
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.00020070224702696472,
+          0.00025652753778109233
+        ],
+        "families": 40,
+        "mean": 0.00022829374913630281
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.027666368128039645,
+              -0.02331703927218575
+            ],
+            "families": 40,
+            "mean": -0.025586707596939585
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "gravity": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0005764330908231855,
+              -0.00048034329155199597
+            ],
+            "families": 40,
+            "mean": -0.0005298044364692939
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0002480184561036312,
+              -0.0002123357593765609
+            ],
+            "families": 40,
+            "mean": -0.00023075359314085896
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008525391232788196,
+              -0.0005705337088819245
+            ],
+            "families": 40,
+            "mean": -0.000701337627194387
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0016647739280074827,
+              -0.001266906348800853
+            ],
+            "families": 40,
+            "mean": -0.0014577583749626189
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008406717351437234,
+              -0.0005847509333162731
+            ],
+            "families": 40,
+            "mean": -0.0007043225139882704
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 80,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0017449594447272215,
+              -0.001459481769511685
+            ],
+            "families": 40,
+            "mean": -0.0015993051756106977
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.0005229960926738643,
+          0.0007498341116714701
+        ],
+        "families": 40,
+        "mean": 0.0006302037077373327
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 80
+    },
+    "dof:3": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.0010298845193469413,
+          0.0013881421879628928
+        ],
+        "families": 40,
+        "mean": 0.0012089622890310433
+      },
+      "episodes": 320,
+      "final_cartesian_m": {
+        "ci95": [
+          0.00011540048765480009,
+          0.0001569594110642886
+        ],
+        "families": 40,
+        "mean": 0.0001359913259501964
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.0014699613878854656,
+          0.002332999923687772
+        ],
+        "families": 40,
+        "mean": 0.0018854555221391026
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.029787218024669302,
+              -0.02424538149303971
+            ],
+            "families": 40,
+            "mean": -0.027104340556468244
+          },
+          "success_delta": {
+            "ci95": [
+              0.103125,
+              0.153125
+            ],
+            "families": 40,
+            "mean": 0.128125
+          }
+        },
+        "gravity": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.003184884575349511,
+              -0.0023839229448929205
+            ],
+            "families": 40,
+            "mean": -0.0027658297365682387
+          },
+          "success_delta": {
+            "ci95": [
+              0.021875,
+              0.059375
+            ],
+            "families": 40,
+            "mean": 0.040625
+          }
+        },
+        "integral": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0011605245792223491,
+              -0.0009250448177523738
+            ],
+            "families": 40,
+            "mean": -0.0010403576789423182
+          },
+          "success_delta": {
+            "ci95": [
+              0.04375,
+              0.1
+            ],
+            "families": 40,
+            "mean": 0.071875
+          }
+        },
+        "per_full": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.000568833303888032,
+              -0.00014436877248253508
+            ],
+            "families": 40,
+            "mean": -0.0003393957105077986
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0012442956494062016,
+              -0.0008004468720579637
+            ],
+            "families": 40,
+            "mean": -0.0010175315997565885
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.015625
+            ],
+            "families": 40,
+            "mean": 0.00625
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.000586219030456026,
+              -0.00013779171453902694
+            ],
+            "families": 40,
+            "mean": -0.0003408107709994947
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.00146470293871518,
+              -0.0010660772619978146
+            ],
+            "families": 40,
+            "mean": -0.001260753748824835
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.004055969702152585,
+          0.006908444394316158
+        ],
+        "families": 40,
+        "mean": 0.005421764813488432
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 320
+    },
+    "dof:4": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.0008701245467829073,
+          0.0012549331131950683
+        ],
+        "families": 40,
+        "mean": 0.0010612490829285867
+      },
+      "episodes": 320,
+      "final_cartesian_m": {
+        "ci95": [
+          9.680458567590173e-05,
+          0.00014168918777024628
+        ],
+        "families": 40,
+        "mean": 0.00011900184031474359
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.0014765182481814108,
+          0.0027773450165080016
+        ],
+        "families": 40,
+        "mean": 0.002067747407787688
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.03075267054845398,
+              -0.025494441892969816
+            ],
+            "families": 40,
+            "mean": -0.028181772329271576
+          },
+          "success_delta": {
+            "ci95": [
+              0.09375,
+              0.1375
+            ],
+            "families": 40,
+            "mean": 0.115625
+          }
+        },
+        "gravity": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.003147146573722251,
+              -0.0025310918014974505
+            ],
+            "families": 40,
+            "mean": -0.002839586443953083
+          },
+          "success_delta": {
+            "ci95": [
+              0.021875,
+              0.059375
+            ],
+            "families": 40,
+            "mean": 0.040625
+          }
+        },
+        "integral": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0011627983449610262,
+              -0.0009793839819650654
+            ],
+            "families": 40,
+            "mean": -0.001067257322680259
+          },
+          "success_delta": {
+            "ci95": [
+              0.05,
+              0.10625
+            ],
+            "families": 40,
+            "mean": 0.078125
+          }
+        },
+        "per_full": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.00042310696482470773,
+              8.242012411359577e-06
+            ],
+            "families": 40,
+            "mean": -0.00018917606047399625
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0016496799738339972,
+              -0.0010198541692587719
+            ],
+            "families": 40,
+            "mean": -0.0013279894507228294
+          },
+          "success_delta": {
+            "ci95": [
+              0.009375,
+              0.0375
+            ],
+            "families": 40,
+            "mean": 0.021875
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0004713422051642266,
+              -3.886465504143584e-05
+            ],
+            "families": 40,
+            "mean": -0.0002393554384216863
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 320,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0015097570974456946,
+              -0.001036951909420531
+            ],
+            "families": 40,
+            "mean": -0.001270273037136275
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.004421069642886803,
+          0.009278163760043845
+        ],
+        "families": 40,
+        "mean": 0.006637790295180271
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 320
+    },
+    "partition:combination_test": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.000642689446618769,
+          0.0012857185152827394
+        ],
+        "families": 10,
+        "mean": 0.0009750858966054113
+      },
+      "episodes": 160,
+      "final_cartesian_m": {
+        "ci95": [
+          8.239575526129494e-05,
+          0.00015215706300511094
+        ],
+        "families": 10,
+        "mean": 0.00011780658652623794
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.001196604429880714,
+          0.0021431291302432963
+        ],
+        "families": 10,
+        "mean": 0.0016545727454692328
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.030864049196039578,
+              -0.02140292849344742
+            ],
+            "families": 10,
+            "mean": -0.02634927401894676
+          },
+          "success_delta": {
+            "ci95": [
+              0.125,
+              0.125
+            ],
+            "families": 10,
+            "mean": 0.125
+          }
+        },
+        "gravity": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0031329760198481656,
+              -0.002234635126162141
+            ],
+            "families": 10,
+            "mean": -0.0027052555809540337
+          },
+          "success_delta": {
+            "ci95": [
+              0.0125,
+              0.0875
+            ],
+            "families": 10,
+            "mean": 0.05
+          }
+        },
+        "integral": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0012831696773996347,
+              -0.0009129769595573291
+            ],
+            "families": 10,
+            "mean": -0.001095930487365587
+          },
+          "success_delta": {
+            "ci95": [
+              0.04375,
+              0.1125
+            ],
+            "families": 10,
+            "mean": 0.08125
+          }
+        },
+        "per_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.00032274337761745256,
+              -3.754365442808467e-05
+            ],
+            "families": 10,
+            "mean": -0.00017110456280192358
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0013435023341261338,
+              -0.0006715110950282114
+            ],
+            "families": 10,
+            "mean": -0.0009852967267372894
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0375
+            ],
+            "families": 10,
+            "mean": 0.01875
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.00039233203522552265,
+              -8.526466637046421e-05
+            ],
+            "families": 10,
+            "mean": -0.00023518557734846234
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0013132100089047482,
+              -0.0008582369005174502
+            ],
+            "families": 10,
+            "mean": -0.0010793861565172736
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.003253092397237759,
+          0.006566241780545241
+        ],
+        "families": 10,
+        "mean": 0.004786431165239123
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 10,
+        "mean": 1.0
+      },
+      "successes": 160
+    },
+    "partition:severity_test": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.0013785472800637146,
+          0.002058744746590534
+        ],
+        "families": 10,
+        "mean": 0.0017343087957976517
+      },
+      "episodes": 160,
+      "final_cartesian_m": {
+        "ci95": [
+          0.0001593924143284077,
+          0.00023745169896043617
+        ],
+        "families": 10,
+        "mean": 0.00019942624198982556
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.002710926951730529,
+          0.005088167182515429
+        ],
+        "families": 10,
+        "mean": 0.0038771691384603423
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.031763740639048695,
+              -0.021192748502776384
+            ],
+            "families": 10,
+            "mean": -0.026660416967247996
+          },
+          "success_delta": {
+            "ci95": [
+              0.19375,
+              0.24375
+            ],
+            "families": 10,
+            "mean": 0.21875
+          }
+        },
+        "gravity": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.004703854924052977,
+              -0.0032448971062035144
+            ],
+            "families": 10,
+            "mean": -0.003978931876111084
+          },
+          "success_delta": {
+            "ci95": [
+              0.0875,
+              0.125
+            ],
+            "families": 10,
+            "mean": 0.1125
+          }
+        },
+        "integral": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0014783211273585656,
+              -0.0010547749907769642
+            ],
+            "families": 10,
+            "mean": -0.0012568503949897402
+          },
+          "success_delta": {
+            "ci95": [
+              0.1375,
+              0.2375
+            ],
+            "families": 10,
+            "mean": 0.19375
+          }
+        },
+        "per_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.00026781131585929246,
+              0.00025724384962803616
+            ],
+            "families": 10,
+            "mean": -4.969887292407502e-06
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0017571559175621235,
+              -0.0006150336919321569
+            ],
+            "families": 10,
+            "mean": -0.0011535388549407627
+          },
+          "success_delta": {
+            "ci95": [
+              0.0125,
+              0.0625
+            ],
+            "families": 10,
+            "mean": 0.0375
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.000313247350078764,
+              0.0002531762453334967
+            ],
+            "families": 10,
+            "mean": -3.317840837077282e-05
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0017195265120917437,
+              -0.0007447549834655662
+            ],
+            "families": 10,
+            "mean": -0.0012190944974149742
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.008205986776904884,
+          0.01725809084319778
+        ],
+        "families": 10,
+        "mean": 0.012616151926853197
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 10,
+        "mean": 1.0
+      },
+      "successes": 160
+    },
+    "partition:trajectory_test": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.000668096087535034,
+          0.0011435486575142473
+        ],
+        "families": 10,
+        "mean": 0.0009033581049174716
+      },
+      "episodes": 160,
+      "final_cartesian_m": {
+        "ci95": [
+          6.881723018968238e-05,
+          0.0001130770643945727
+        ],
+        "families": 10,
+        "mean": 9.074978536070528e-05
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.0009927847933607938,
+          0.00157787756765102
+        ],
+        "families": 10,
+        "mean": 0.0012808675504448336
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.033545769996175374,
+              -0.023856798994206153
+            ],
+            "families": 10,
+            "mean": -0.028813984623861245
+          },
+          "success_delta": {
+            "ci95": [
+              0.0375,
+              0.1125
+            ],
+            "families": 10,
+            "mean": 0.075
+          }
+        },
+        "gravity": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0027049492482581127,
+              -0.0019367560036710253
+            ],
+            "families": 10,
+            "mean": -0.002297466413522712
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0010439161259131258,
+              -0.0008124447143742633
+            ],
+            "families": 10,
+            "mean": -0.0009242047396575437
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0375
+            ],
+            "families": 10,
+            "mean": 0.0125
+          }
+        },
+        "per_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0007546245650070461,
+              -8.904837844103915e-05
+            ],
+            "families": 10,
+            "mean": -0.0003894126643256185
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0018326888100177001,
+              -0.0009719376700257334
+            ],
+            "families": 10,
+            "mean": -0.0013690010085373188
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.000754154350473739,
+              -0.00013684899529421525
+            ],
+            "families": 10,
+            "mean": -0.00041016854701755965
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0018300603912554875,
+              -0.0011498616182844922
+            ],
+            "families": 10,
+            "mean": -0.0014720234113517181
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.002671985487985854,
+          0.005084264000510471
+        ],
+        "families": 10,
+        "mean": 0.0038232496742618776
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 10,
+        "mean": 1.0
+      },
+      "successes": 160
+    },
+    "partition:transfer_test": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.0008217690529429066,
+          0.0010248980959993376
+        ],
+        "families": 10,
+        "mean": 0.0009276699465987255
+      },
+      "episodes": 160,
+      "final_cartesian_m": {
+        "ci95": [
+          8.895040198331127e-05,
+          0.00011499070328537595
+        ],
+        "families": 10,
+        "mean": 0.00010200371865311123
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.0009102324655677491,
+          0.0012706739736071508
+        ],
+        "families": 10,
+        "mean": 0.0010937964254791725
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.031123047335778004,
+              -0.026041031712895586
+            ],
+            "families": 10,
+            "mean": -0.02874855016142363
+          },
+          "success_delta": {
+            "ci95": [
+              0.03125,
+              0.10625
+            ],
+            "families": 10,
+            "mean": 0.06875
+          }
+        },
+        "gravity": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.002544272443949352,
+              -0.00191680054708596
+            ],
+            "families": 10,
+            "mean": -0.0022291784904548135
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "integral": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.001040204240179,
+              -0.0008301358268372235
+            ],
+            "families": 10,
+            "mean": -0.0009382443812322831
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0375
+            ],
+            "families": 10,
+            "mean": 0.0125
+          }
+        },
+        "per_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008729244729438017,
+              -0.00016348478841702964
+            ],
+            "families": 10,
+            "mean": -0.0004916564275436401
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0015465294372898558,
+              -0.000857410808994186
+            ],
+            "families": 10,
+            "mean": -0.0011832055107434652
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0008645125986979271,
+              -0.0001441469261180751
+            ],
+            "families": 10,
+            "mean": -0.0004817998861055675
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 160,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0015150741487979164,
+              -0.0010648105945676631
+            ],
+            "families": 10,
+            "mean": -0.001291549506638254
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 10,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.0023318421517420276,
+          0.003437900982016775
+        ],
+        "families": 10,
+        "mean": 0.002893277450983208
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 10,
+        "mean": 1.0
+      },
+      "successes": 160
+    },
+    "primary": {
+      "command_end_cartesian_m": {
+        "ci95": [
+          0.0010712996698332925,
+          0.0014614576900828732
+        ],
+        "families": 40,
+        "mean": 0.0012688627500386078
+      },
+      "episodes": 560,
+      "final_cartesian_m": {
+        "ci95": [
+          0.00012022304543344947,
+          0.00016510952639196317
+        ],
+        "families": 40,
+        "mean": 0.00014274168112070353
+      },
+      "joint_rmse_rad": {
+        "ci95": [
+          0.0017095259068680652,
+          0.0027948313592299485
+        ],
+        "families": 40,
+        "mean": 0.002226359710081551
+      },
+      "paired": {
+        "conventional": {
+          "complete_pairs": 560,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.03014991777060116,
+              -0.02555643547210147
+            ],
+            "families": 40,
+            "mean": -0.027936820563717102
+          },
+          "success_delta": {
+            "ci95": [
+              0.11249999999999998,
+              0.1643303571428573
+            ],
+            "families": 40,
+            "mean": 0.1392857142857143
+          }
+        },
+        "gravity": {
+          "complete_pairs": 560,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.003504785336695082,
+              -0.002769653652348133
+            ],
+            "families": 40,
+            "mean": -0.0031274086122308558
+          },
+          "success_delta": {
+            "ci95": [
+              0.025,
+              0.06785714285714285
+            ],
+            "families": 40,
+            "mean": 0.04642857142857143
+          }
+        },
+        "integral": {
+          "complete_pairs": 560,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0012820646702892302,
+              -0.0010699029971986938
+            ],
+            "families": 40,
+            "mean": -0.0011713866304784927
+          },
+          "success_delta": {
+            "ci95": [
+              0.05357142857142857,
+              0.11964285714285712
+            ],
+            "families": 40,
+            "mean": 0.08571428571428572
+          }
+        },
+        "per_full": {
+          "complete_pairs": 560,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0003747742742058826,
+              -4.61004823851938e-05
+            ],
+            "families": 40,
+            "mean": -0.0002018499223903989
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "per_matched": {
+          "complete_pairs": 560,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0013593158469310692,
+              -0.0009080183538063089
+            ],
+            "families": 40,
+            "mean": -0.0011320465467078646
+          },
+          "success_delta": {
+            "ci95": [
+              0.007142857142857143,
+              0.026785714285714284
+            ],
+            "families": 40,
+            "mean": 0.01607142857142857
+          }
+        },
+        "shared_full": {
+          "complete_pairs": 560,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0004009348083265217,
+              -7.386753789432702e-05
+            ],
+            "families": 40,
+            "mean": -0.00023090604624235057
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        },
+        "shared_matched": {
+          "complete_pairs": 560,
+          "rmse_delta_rad": {
+            "ci95": [
+              -0.0014016333866225777,
+              -0.0010305268070407588
+            ],
+            "families": 40,
+            "mean": -0.0012178288526048203
+          },
+          "success_delta": {
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "families": 40,
+            "mean": 0.0
+          }
+        }
+      },
+      "peak_error_rad": {
+        "ci95": [
+          0.004954682155147696,
+          0.008830234643014592
+        ],
+        "families": 40,
+        "mean": 0.006801145246705354
+      },
+      "success": {
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "families": 40,
+        "mean": 1.0
+      },
+      "successes": 560
+    }
+  },
+  "outcomes": {
+    "Success": 640
+  },
+  "primary_episodes": 560,
+  "selected": {
+    "config": {
+      "integral_limit": 0.2,
+      "ki": 4.0,
+      "kp": 1.0,
+      "lead": 0.1
+    },
+    "control": "/home/iris/RELIC/adaptive/runs/revision-20261022/robustness-8.control",
+    "index": 8,
+    "mean_rmse": 0.0010140903344709115,
+    "safe": true
+  },
+  "status": "exploratory robustness",
+  "wall_s": 589.7188073550005
+}

@@ -1,0 +1,237 @@
+{
+  "acceptance": "learning.acceptance: complete; Success/NonConvergence; no fallback/contact; RMSE < .995 best; final <= max(best+.00025,.0005); identical replay hash",
+  "analytical_grid": [
+    {
+      "ki": 0,
+      "kp": 0,
+      "lead": 0.05
+    },
+    {
+      "ki": 0.5,
+      "kp": 0.1,
+      "lead": 0.05
+    },
+    {
+      "ki": 1.0,
+      "kp": 0.2,
+      "lead": 0.05
+    },
+    {
+      "ki": 0,
+      "kp": 0,
+      "lead": 0.1
+    },
+    {
+      "ki": 0.5,
+      "kp": 0.1,
+      "lead": 0.1
+    },
+    {
+      "ki": 1.0,
+      "kp": 0.2,
+      "lead": 0.1
+    },
+    {
+      "ki": 0,
+      "kp": 0,
+      "lead": 0.15
+    },
+    {
+      "ki": 0.5,
+      "kp": 0.1,
+      "lead": 0.15
+    },
+    {
+      "ki": 1.0,
+      "kp": 0.2,
+      "lead": 0.15
+    }
+  ],
+  "bootstrap": {
+    "confidence": 0.95,
+    "replications": 4000,
+    "seed": 20261022,
+    "unit": "base trajectory family; both embodiments and all conditions retained"
+  },
+  "bounds_origin": "historical training-only calibration, frozen before revision; unchanged production gains",
+  "bounds_sha256": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+  "categories": [
+    "nominal",
+    "gain",
+    "force",
+    "friction",
+    "mass",
+    "payload",
+    "combined",
+    "restored_nominal"
+  ],
+  "convergence_attempts": 8,
+  "embodied_evaluation_trajectories": 80,
+  "embodied_training_trajectories": 128,
+  "epochs": 24,
+  "family_order": {
+    "combination_test": [
+      9202610228027,
+      9202610224705,
+      9202610225780,
+      9202610226955,
+      9202610225426,
+      9202610222199,
+      9202610224808,
+      9202610228847,
+      9202610221808,
+      9202610228401
+    ],
+    "development": [
+      9202610220658,
+      9202610220483,
+      9202610222501,
+      9202610224925,
+      9202610228779,
+      9202610225962,
+      9202610220562,
+      9202610224385
+    ],
+    "severity_test": [
+      9202610226801,
+      9202610227436,
+      9202610223121,
+      9202610228314,
+      9202610222252,
+      9202610229615,
+      9202610223117,
+      9202610229322,
+      9202610227094,
+      9202610221556
+    ],
+    "train": [
+      9202610229592,
+      9202610223447,
+      9202610227822,
+      9202610225464,
+      9202610227879,
+      9202610220528,
+      9202610225709,
+      9202610229087,
+      9202610221924,
+      9202610225290,
+      9202610227501,
+      9202610223193,
+      9202610224312,
+      9202610226735,
+      9202610222218,
+      9202610228597,
+      9202610229460,
+      9202610225608,
+      9202610225529,
+      9202610222651,
+      9202610226550,
+      9202610223894,
+      9202610221739,
+      9202610228089,
+      9202610220006,
+      9202610223187,
+      9202610220222,
+      9202610228827,
+      9202610223163,
+      9202610228137,
+      9202610223604,
+      9202610227193,
+      9202610227628,
+      9202610220090,
+      9202610225090,
+      9202610225838,
+      9202610227532,
+      9202610227169,
+      9202610228859,
+      9202610221960,
+      9202610224114,
+      9202610226329,
+      9202610226887,
+      9202610229287,
+      9202610220086,
+      9202610223317,
+      9202610223511,
+      9202610226811,
+      9202610227170,
+      9202610228750,
+      9202610229555,
+      9202610226601,
+      9202610228999,
+      9202610226076,
+      9202610229578,
+      9202610227403,
+      9202610227788,
+      9202610225719,
+      9202610221313,
+      9202610222568,
+      9202610220576,
+      9202610223074,
+      9202610228458,
+      9202610222856
+    ],
+    "trajectory_test": [
+      9202610222678,
+      9202610221812,
+      9202610225339,
+      9202610228318,
+      9202610223551,
+      9202610228619,
+      9202610224130,
+      9202610224300,
+      9202610228727,
+      9202610226802
+    ],
+    "transfer_test": [
+      9202610222502,
+      9202610227295,
+      9202610222909,
+      9202610229978,
+      9202610229724,
+      9202610221925,
+      9202610223986,
+      9202610224992,
+      9202610226888,
+      9202610226935
+    ]
+  },
+  "full_protocol_sha256": "c7a6cdb3c446f15c522dcf63c3e97e46fdd66caf40cf1cce0d8257b22f0d0f10",
+  "incomplete_policy": "report all failures; continuous paired deltas only if both complete, report omitted count; success counts every condition",
+  "inference_features": "relic.local.v1 causal pre-state, past errors and applied correction; no future observations or randomized physics",
+  "lag_lead_ticks": [
+    0,
+    20
+  ],
+  "learning_curve_family_counts": [
+    8,
+    16,
+    32,
+    64
+  ],
+  "matched_rows_per_embodiment": 60000,
+  "matched_updates_per_embodiment": 480,
+  "primary_categories": [
+    "nominal",
+    "gain",
+    "force",
+    "friction",
+    "mass",
+    "payload",
+    "combined"
+  ],
+  "primary_metrics": [
+    "joint_rmse_rad",
+    "command_end_cartesian_m",
+    "final_cartesian_m",
+    "task_success"
+  ],
+  "restored_nominal": "fresh reset with exactly nominal physics; reproducibility control, not degradation-then-recovery",
+  "safety": "same native monitor and bounds for all methods; invalid residual latches validated rate-limited withdrawal; infeasible withdrawal terminates",
+  "seed": 20261022,
+  "spec_count": 1792,
+  "stride": 16,
+  "teacher_attempts": 3,
+  "transfer": "per_3dof weights on joints 0..2 of 4dof; wrist conventional; common-joint RMSE separate from full-arm success",
+  "tuning": "development only; lowest mean RMSE among candidates completing every run without safety failures; tie by config order",
+  "version": "relic.validation.v1"
+}

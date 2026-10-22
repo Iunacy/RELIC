@@ -1,0 +1,13 @@
+{
+  "production_source_and_models_unchanged": true,
+  "ruckig_status_unchanged": true,
+  "ruckig_diff_sha256": "7569507ed8880d244c83ab8d968108ca4faef91f7510d7034bb0c31493cbbdbe",
+  "ruckig_commit": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+  "historic_protected_files": 17,
+  "root_preexisting_changes_not_committed": [
+    ".gitignore",
+    "CMakeLists.txt"
+  ],
+  "prior_untracked_documents_and_experiments_preserved": true,
+  "bulk_data_or_build_files_tracked": false
+}

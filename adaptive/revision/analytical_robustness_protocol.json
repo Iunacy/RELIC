@@ -1,0 +1,132 @@
+{
+  "development_families": [
+    9202610220658,
+    9202610220483,
+    9202610222501,
+    9202610224925,
+    9202610228779,
+    9202610225962,
+    9202610220562,
+    9202610224385
+  ],
+  "grid": [
+    {
+      "integral_limit": 0.2,
+      "ki": 1.0,
+      "kp": 0.2,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 1.0,
+      "kp": 0.5,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 1.0,
+      "kp": 1.0,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 2.0,
+      "kp": 0.2,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 2.0,
+      "kp": 0.5,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 2.0,
+      "kp": 1.0,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 4.0,
+      "kp": 0.2,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 4.0,
+      "kp": 0.5,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 4.0,
+      "kp": 1.0,
+      "lead": 0.1
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 1.0,
+      "kp": 0.2,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 1.0,
+      "kp": 0.5,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 1.0,
+      "kp": 1.0,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 2.0,
+      "kp": 0.2,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 2.0,
+      "kp": 0.5,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 2.0,
+      "kp": 1.0,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 4.0,
+      "kp": 0.2,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 4.0,
+      "kp": 0.5,
+      "lead": 0.15
+    },
+    {
+      "integral_limit": 0.2,
+      "ki": 4.0,
+      "kp": 1.0,
+      "lead": 0.15
+    }
+  ],
+  "rationale": "integral state cap .2 rad permits use of every per-joint applied-correction bound; applied limits remain identical",
+  "selection": "development only; lowest mean RMSE among candidates completing every run without safety failures; tie by config order",
+  "status": "exploratory robustness analysis registered after the single predeclared severe demo, before full-cohort scores examined; primary protocol retained",
+  "unchanged": [
+    "models",
+    "success thresholds",
+    "ILC gate",
+    "evaluation families",
+    "safety monitoring"
+  ]
+}

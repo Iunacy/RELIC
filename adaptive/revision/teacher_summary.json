@@ -1,0 +1,122 @@
+{
+  "acceptance": {
+    "combined": {
+      "acceptance_rate": 0.9895833333333334,
+      "accepted": 380,
+      "attempts": 384
+    },
+    "force": {
+      "acceptance_rate": 1.0,
+      "accepted": 384,
+      "attempts": 384
+    },
+    "friction": {
+      "acceptance_rate": 1.0,
+      "accepted": 384,
+      "attempts": 384
+    },
+    "gain": {
+      "acceptance_rate": 1.0,
+      "accepted": 384,
+      "attempts": 384
+    },
+    "mass": {
+      "acceptance_rate": 1.0,
+      "accepted": 384,
+      "attempts": 384
+    },
+    "nominal": {
+      "acceptance_rate": 1.0,
+      "accepted": 384,
+      "attempts": 384
+    },
+    "payload": {
+      "acceptance_rate": 1.0,
+      "accepted": 384,
+      "attempts": 384
+    },
+    "restored_nominal": {
+      "acceptance_rate": 1.0,
+      "accepted": 384,
+      "attempts": 384
+    },
+    "severity_0.2": {
+      "acceptance_rate": 1.0,
+      "accepted": 330,
+      "attempts": 330
+    },
+    "severity_0.3": {
+      "acceptance_rate": 1.0,
+      "accepted": 738,
+      "attempts": 738
+    },
+    "severity_0.4": {
+      "acceptance_rate": 1.0,
+      "accepted": 690,
+      "attempts": 690
+    },
+    "severity_0.5": {
+      "acceptance_rate": 1.0,
+      "accepted": 726,
+      "attempts": 726
+    },
+    "severity_0.6": {
+      "acceptance_rate": 0.9931972789115646,
+      "accepted": 584,
+      "attempts": 588
+    }
+  },
+  "categories": {
+    "combined": 128,
+    "force": 128,
+    "friction": 128,
+    "gain": 128,
+    "mass": 128,
+    "nominal": 128,
+    "payload": 128,
+    "restored_nominal": 128
+  },
+  "dofs": {
+    "3": 512,
+    "4": 512
+  },
+  "embodied_families": 128,
+  "episode_per_s": 0.6391592478201861,
+  "episodes": 1024,
+  "independent_base_families": 64,
+  "nominal_restored_identical_pairs": 128,
+  "physical_coverage": {
+    "damping_scale": {
+      "max": 2.262295970303474,
+      "min": 1,
+      "unique_values": 129
+    },
+    "force_scale": {
+      "max": 1,
+      "min": 0.15500434471996088,
+      "unique_values": 129
+    },
+    "friction_Nm": {
+      "max": 0.22510326198542502,
+      "min": 0,
+      "unique_values": 129
+    },
+    "gain_scale": {
+      "max": 1,
+      "min": 0.5712741618200488,
+      "unique_values": 129
+    },
+    "mass_scale": {
+      "max": 1.4305189813324344,
+      "min": 1,
+      "unique_values": 129
+    },
+    "payload_kg": {
+      "max": 0.08483650306044888,
+      "min": 0,
+      "unique_values": 129
+    }
+  },
+  "unique_trajectory_fingerprints": 128,
+  "wall_s": 1602.1046452700011
+}

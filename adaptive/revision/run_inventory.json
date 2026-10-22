@@ -1,0 +1,50 @@
+{
+  "additional_robustness_evaluation_runs": 640,
+  "bulk_run_bytes": 16671314000,
+  "fixture_model_sha256": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761",
+  "generator_sha256": "393a0a680d5be9e341e1a5103c4f7d3bc15948aab42d009c10a5783251bbe986",
+  "interrupted_preparation": "serial preprocessing was stopped and resumed with four readers; existing arrays verified identical; serial log retained",
+  "main_teacher_accepted": 3068,
+  "main_teacher_attempts": 3072,
+  "main_teacher_native_runs": 7164,
+  "main_teacher_rejections": [
+    {
+      "attempt": 2,
+      "category": "combined",
+      "episode": "r000486",
+      "reason": "final_error_regressed",
+      "severity": 0.62
+    },
+    {
+      "attempt": 2,
+      "category": "combined",
+      "episode": "r000494",
+      "reason": "final_error_regressed",
+      "severity": 0.62
+    },
+    {
+      "attempt": 2,
+      "category": "combined",
+      "episode": "r001014",
+      "reason": "final_error_regressed",
+      "severity": 0.6699999999999999
+    },
+    {
+      "attempt": 2,
+      "category": "combined",
+      "episode": "r001022",
+      "reason": "final_error_regressed",
+      "severity": 0.6699999999999999
+    }
+  ],
+  "main_teacher_scenarios": 1024,
+  "native_compiled_base_commit": "323183dd3cd773384c4d9eb4217e659005c3b99f",
+  "native_episode_directories": 23617,
+  "outcomes": {
+    "NonConvergence": 951,
+    "Success": 22666
+  },
+  "primary_evaluation_runs": 8640,
+  "process_failure_files": [],
+  "repository_head_at_export": "660a18579d0f4b7bcff2c060010a39886bf137f4"
+}

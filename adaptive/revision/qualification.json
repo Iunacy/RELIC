@@ -1,0 +1,10 @@
+{
+  "episodes": 176,
+  "nonzero_injections": 16,
+  "outcomes": {
+    "NonConvergence": 8,
+    "Success": 168
+  },
+  "protocol_sha256": "c7a6cdb3c446f15c522dcf63c3e97e46fdd66caf40cf1cce0d8257b22f0d0f10",
+  "wall_s": 26.638503215999663
+}

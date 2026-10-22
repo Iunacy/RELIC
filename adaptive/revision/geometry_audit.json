@@ -1,0 +1,1474 @@
+{
+  "coverage": {
+    "combination_test": {
+      "base_families": 10,
+      "duration_range_s": [
+        0.878,
+        3.466
+      ],
+      "embodied_families": 20,
+      "negative_motion_by_joint": [
+        6,
+        12,
+        12,
+        4
+      ],
+      "positive_motion_by_joint": [
+        14,
+        8,
+        8,
+        6
+      ]
+    },
+    "development": {
+      "base_families": 8,
+      "duration_range_s": [
+        1.242,
+        3.766
+      ],
+      "embodied_families": 16,
+      "negative_motion_by_joint": [
+        6,
+        6,
+        6,
+        5
+      ],
+      "positive_motion_by_joint": [
+        10,
+        10,
+        10,
+        3
+      ]
+    },
+    "severity_test": {
+      "base_families": 10,
+      "duration_range_s": [
+        1.086,
+        4.922
+      ],
+      "embodied_families": 20,
+      "negative_motion_by_joint": [
+        12,
+        6,
+        4,
+        4
+      ],
+      "positive_motion_by_joint": [
+        8,
+        14,
+        16,
+        6
+      ]
+    },
+    "train": {
+      "base_families": 64,
+      "duration_range_s": [
+        0.888,
+        5.658
+      ],
+      "embodied_families": 128,
+      "negative_motion_by_joint": [
+        64,
+        58,
+        60,
+        36
+      ],
+      "positive_motion_by_joint": [
+        64,
+        70,
+        68,
+        28
+      ]
+    },
+    "trajectory_test": {
+      "base_families": 10,
+      "duration_range_s": [
+        0.836,
+        3.24
+      ],
+      "embodied_families": 20,
+      "negative_motion_by_joint": [
+        6,
+        8,
+        4,
+        5
+      ],
+      "positive_motion_by_joint": [
+        14,
+        12,
+        16,
+        5
+      ]
+    },
+    "transfer_test": {
+      "base_families": 10,
+      "duration_range_s": [
+        0.918,
+        4.738
+      ],
+      "embodied_families": 20,
+      "negative_motion_by_joint": [
+        8,
+        6,
+        16,
+        3
+      ],
+      "positive_motion_by_joint": [
+        12,
+        14,
+        4,
+        7
+      ]
+    }
+  },
+  "cross_partition_pairs": 7984,
+  "embodied_families": 224,
+  "fingerprints": [
+    {
+      "dof": 3,
+      "family": 9202610229592,
+      "fingerprint": "def7db8cdd22b06a1d3275115b59a1fcd91ff5e0f1b46e14116f1382d640631c",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229592,
+      "fingerprint": "a6410ca78a2aaf70e62334225aaf99e7373c97b5439575a42b3b3ef7360c95e7",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223447,
+      "fingerprint": "bb87eae3884972c375f4329ddd0aa213e00b1a7003f83d6b224361e6225602c8",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223447,
+      "fingerprint": "b4c58207e28a876c83bab9729dcd5579f9ab3651dbdb4c06f097750db147b1d0",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227822,
+      "fingerprint": "a4a833fb2185c0c2aa57552e51965ec550a9ce7876c8d134893ffb9ff50e2d5a",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227822,
+      "fingerprint": "288fde9d3979ac4c627b6367d66f3778ab3a757b61d8a13aa6ef8a675d9eec4c",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225464,
+      "fingerprint": "983299c70a74951ee95d4af35c1825a214c892b0e968ad8baf1ad7249486fcb0",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225464,
+      "fingerprint": "8c297d5c1b087f8f8cc5b1565ee2d6ad6eb1ad2617da8e3ef46a4bc68dec3d35",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227879,
+      "fingerprint": "f842d9b0362156be4ed7be6e6ea6ff0c4e9d83d1773bc5d354e0e922ad914d95",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227879,
+      "fingerprint": "7d7387eebd4686d7e79fd6a58611d3e28e728f36a85834578866b48eb1f1cd0c",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220528,
+      "fingerprint": "32761f5a586a052f6254fe69a897bf0349b72bc5f5e601a539539977791d2f51",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220528,
+      "fingerprint": "05887e9612e4e3fa2289306f25e462dba3190ae6ee5b25c8209b00141005ecad",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225709,
+      "fingerprint": "242083d1e876153fa74c6f9aa3f1bd882d5e8098502da3a987c8daf1031becbf",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225709,
+      "fingerprint": "c2271058ff9774f890c23d8ef9e96eca0debb377cc036cd366331520a47127ee",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229087,
+      "fingerprint": "1ec3dca33fa2f6f79b5954df30d4266eb04c79985bb47de4f57383c3ebf5b107",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229087,
+      "fingerprint": "c8d6d87927c322f359d7c01c70065a3d4e09bacb3ba7ef34751857775d716572",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221924,
+      "fingerprint": "ad9eaaa69d1c682485a82f400b323666227dbe417cd3c1dcc7c84ca1c8e92a32",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221924,
+      "fingerprint": "6d4088e97022d1cadfa5855b12260f2aeee4bd3435f941849f221eecd3d3ef0b",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225290,
+      "fingerprint": "92ecf5c852da886d614e7b786bc049944f3bec0f0e5006d50532b9f6413e4f38",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225290,
+      "fingerprint": "06c3e7599b5f26091e26765079d46358a179f2482dbae7f71e13eec29e58d002",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227501,
+      "fingerprint": "fe9db8794b8d7d4781bd7cd123c6110d4b9a91b18b57a6543318ac52fc6e9df9",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227501,
+      "fingerprint": "7d85c2b77ef854b34e2d2fdbb75c4ff28410d0885be737615354bf38fcd20b77",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223193,
+      "fingerprint": "14993c9ee9e647436fbc3a55255858ce7736ca95448a2d3597cf06d5d9acb732",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223193,
+      "fingerprint": "94d7aad459783dcbe04e3e1e61e7761b2cee9d324a2e959057c4663a3d681a55",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224312,
+      "fingerprint": "3f1a43511e3221eb09a530a0cbb1d32605ade063033ec6231234f2d775ed0687",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224312,
+      "fingerprint": "bde981daa1906545b9a16eb8269c3967d3f640afbeae2e3e650c878a69c4fa66",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226735,
+      "fingerprint": "a64f15253ad04dd59e032308919db1e078393f84a531da5e459029fbd31223be",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226735,
+      "fingerprint": "2b29b2448c0b4544d8e8513bd0620e36ceefd8350c02eec106f9725e8afd6104",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222218,
+      "fingerprint": "48be168d50742779f08882353c7cfa82f343b32f0fa26dcebe3ecb4a311bddfa",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222218,
+      "fingerprint": "3e2cf41f3eb4c59ba10c9b6ebbdf606ed877ad8b8c2b532791dd26e11612671b",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228597,
+      "fingerprint": "eaf1639711880afb8d1813afd2e51ed77b0bb16e717e00d0eaa882f4fbdc60fe",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228597,
+      "fingerprint": "37581a58833439358a8b484823e604fe077e020fc387acf1fa2324a9a369b060",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229460,
+      "fingerprint": "e032851508b5f595bdaffe9d5fa7b68ae40d3eaf13a9c820114c9e66049f3afe",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229460,
+      "fingerprint": "a42fa6d6c6db07b3638b85e243e05432e2bb51f18893b9a2c217ae6f200549db",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225608,
+      "fingerprint": "1c7bfcbcff00b51d5ad7ab0bb37bbb812afc371f98d6778f324b031ad1f87705",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225608,
+      "fingerprint": "c9db71b130fb222f817320ec27aa3fc27c4d9c6bf8e03e2cd0cbfc2eb2ed7351",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225529,
+      "fingerprint": "34beafa13337aef7a639b4a257e8a32c12b0a4dc77a7d042bf6f3e1f72b38bd9",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225529,
+      "fingerprint": "cd442eca23c7614a7e4aef01d4fce8eaaed2106da22dddc513762a3d4aa6138c",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222651,
+      "fingerprint": "d2112caba85d81f8da29632ee406ae23a3d693e5aaf7cd76aed21cfa18b303f0",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222651,
+      "fingerprint": "4f8da7e92000c1812c9f7bb2ff01dcb9d05c8b5983bd9f28be88e973d9f497ce",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226550,
+      "fingerprint": "f121c3d4fc2edfd1dfd7c8ec5387304ac144c48e53468c45467f283dc2c8b6d6",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226550,
+      "fingerprint": "739a9d106b5f4fd981df56d50c25c835f125053fce56accd82b3a5053de0f530",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223894,
+      "fingerprint": "8e6df39d9d81c77374120f249edde418509a17530af340a22a730fd1a72842ba",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223894,
+      "fingerprint": "60b456edbdf5840653e9b695adc9b312ad3b038030da5854c993eec7901fee69",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221739,
+      "fingerprint": "5a5ca369c8e801e09580f5fe709e2223d4c1fa01f13c661bf20008c72f1e2155",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221739,
+      "fingerprint": "eac412e86c10f7ef7a18c09427802b648d5dd5d247a60925b3a51eef93a32c7f",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228089,
+      "fingerprint": "5d09d0e15ff569f745a9725b19af90055792c5e275045c17645ef54081811006",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228089,
+      "fingerprint": "ca733b384006eda1815c56c670d91afd55c60bbb5bd2d5cef26625b7d61ca59e",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220006,
+      "fingerprint": "d5e44e583356d1db9677a1a0f60557aa1b9c0bee064113262b9d572616688c4d",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220006,
+      "fingerprint": "4ec8313d1c40bc5cf7a6b861b69e8034b53dec8efa587bb46c9e66584a1ae9ab",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223187,
+      "fingerprint": "ce2b7cbcbbc32d76bf68224f0101691d2a08b3e91cdab06ff38b8904d0b58788",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223187,
+      "fingerprint": "57a1bf2a3129a6368bda2fd3d9c9a123f0ab4625473aabcd3573170299bedb8d",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220222,
+      "fingerprint": "fd4f70e6aa27301df9163e5602a60451421ef6ca3039ad6e7c008d087e72d1d5",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220222,
+      "fingerprint": "cff411133fc2d7e40a28e3de603dce671614e4a095dfef3220dcbfd0064f6ddd",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228827,
+      "fingerprint": "51c16498e9624d9912f678342550e6eeade25c857290335f7637843030bd3560",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228827,
+      "fingerprint": "3b11044c0727bf868343a5ed14dd5ed213864a0f0e78eaace9cf1a6f718b44c5",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223163,
+      "fingerprint": "e1d56f09d21a305ecc93ccfb2b6291102a1ffdde03c6e56613a7d7c258b9a8b0",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223163,
+      "fingerprint": "f92d7bcbf915c91f00d6d9d1d59f92181e56c4bf5ea2cbd7c6988f10fd60a35e",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228137,
+      "fingerprint": "7be39ba36629ca339af6b723e52cde51b564ca8b151e2f2d67b1208deed220b9",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228137,
+      "fingerprint": "9bb84fb91b08a236787fff973b81816a629e7f99a9aa31e06ddb3d2b9e15b082",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223604,
+      "fingerprint": "becd3a873e7024bd6339a289444fae7831f99a8954a353318b2678570e6cb719",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223604,
+      "fingerprint": "e9f1b3dea6b252e0e980b36f4aeb7be5348b33941eae19cebb014c457b242914",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227193,
+      "fingerprint": "0456560e502a04b166b9064861cb53dca5d1d18e0d31b5cff2e581f6065050c6",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227193,
+      "fingerprint": "e0620ec4da4c67971e82af96f7b4f1ad6c6224eb48bbe2338ef97e74e970d80d",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227628,
+      "fingerprint": "904607ae665bc2672da220a4b7bb13b7856b25a16bdcc419b7e70d2a4177af70",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227628,
+      "fingerprint": "82995bda32a02a490060f8fee5852fcc96d9e0230b05f481fe814d5c70b8ed3a",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220090,
+      "fingerprint": "62cc87474a6271e9314aa014e0f24f27f5a37b9c3215202ec70fd457401faf5e",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220090,
+      "fingerprint": "b13f651769590522928e667cf16103e7e87936ea4bb51620c2a998d936fd5cea",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225090,
+      "fingerprint": "bb8134a7fda9295a4a00f67c58a1bfe7dcfa69810b978694ffda75e3c0702396",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225090,
+      "fingerprint": "3a34daae8ff3b3d81d82dfef5552107a8f1a892576a2e9e7de10a70d5f25eb22",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225838,
+      "fingerprint": "407fae02be53331b9e98191c03ace0a0c704d0b286ba6d3df83c73670742ee4c",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225838,
+      "fingerprint": "c54c82f7d55d61a63f3bb71ce476d771d9d2b01e4d5b1c9ca7b50d934a8d27b9",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227532,
+      "fingerprint": "84958b0e2b6459ea37a5e6d9ca7a3857dc2f2b25fe00f3c3880477ff7fa44957",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227532,
+      "fingerprint": "aff9f08a437f7a43fe3036ff7bff0924d790df70ed6e5bd0514eab8024ee4b12",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227169,
+      "fingerprint": "9bbdfeb59b53997d02b23e037a3a85da4b6eeafa8c2d1b0b18d024420ab9e92c",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227169,
+      "fingerprint": "1d75337ee2639aa2069265584259484b5d79fb7d9ace7a6525218a157a363228",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228859,
+      "fingerprint": "4ac9a6edf901c06be7114193898dfd68d5224842765a23222d78f30035f63da3",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228859,
+      "fingerprint": "73dec12ec560f1e890422d8e74169cec316f3993f5a1002afc90ce928c16f0a3",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221960,
+      "fingerprint": "17644b307866843c83ee48fd480c54f1ba87f838b2d7195007e6b9a81780db5e",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221960,
+      "fingerprint": "8a667a958d52e5c931ed8b5ceb483a12c7056ce3a7d9007660e643385d49e012",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224114,
+      "fingerprint": "a96d943fb492efff04024f492ff8018503d7e06fe3fdfb3abfea84eed9789340",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224114,
+      "fingerprint": "6b8fb4900b73482aef06d1c4db76a39c797e7a03fc1084556c54f1b8988a9d85",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226329,
+      "fingerprint": "f405994bc5bb9ea0bdb4d68d2bc66b7a3532788f623fcafcb9a19aab4e31cf15",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226329,
+      "fingerprint": "37112120836bd2d854f6fc7ad9bf479f5392c293ef7b3489d9ac64c63db49b17",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226887,
+      "fingerprint": "2c40d892466a3781e96f0408f969fb2f52df1195251dd02bc961c8834e267742",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226887,
+      "fingerprint": "0f6bc9cd3926a3046593b2993197f26093520e27e7f38a9767782ba34dc2fbc0",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229287,
+      "fingerprint": "d4c6f8dfb14aee9a99d69e824e466ed053640eedf80340ae4dfe29ad1fec6d14",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229287,
+      "fingerprint": "d8ee0668344ea026642d3c7f574598259472d8025e9bbc2e2965f2bac46a43cb",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220086,
+      "fingerprint": "75c505ea2c6d706d19f0de890a3a639ce7167abfe13fc84aaf25e6d8c8fdb364",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220086,
+      "fingerprint": "da81b9f0b3a0c210e4667d292d13f68e3e734b146525a6cbcd1ba75b8792eb3b",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223317,
+      "fingerprint": "2825c802c160b2dc24bf3f0e85b359f0c02ab2f342996099ccef1e4a040fc9bf",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223317,
+      "fingerprint": "c75659b5384afc5eedbff551aa9fc09cf1af37738ae82bee7cf70bac3f9e6ea6",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223511,
+      "fingerprint": "bdd196d25281adde225f516b0cc46644b028518515b2b0b40c87326536dd4ada",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223511,
+      "fingerprint": "81d6bd1a97fd8ba8fc54c02b952fa2c658f4ac20458d218c0f1276a4d4d80a5c",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226811,
+      "fingerprint": "8ac4a3ad63a36ca5acb4ad0159caed8fe7e7653f622c1d0bf0abf290b7d0a38d",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226811,
+      "fingerprint": "0f8be45b866f6a3d92636263b109469cb492a7a646f4097db0f803b434e71d54",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227170,
+      "fingerprint": "ff193fd54c0989f45a31ac87410c57453f49050e19f4151692f7aa135f918483",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227170,
+      "fingerprint": "e44f36bdccbeae0b79350ea5bbbe46e427bb7754612314d52a604b2532f3847d",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228750,
+      "fingerprint": "9c98dfd4620246900b8c5b34265d16f4a430c55998e017fac162286aa3a580e0",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228750,
+      "fingerprint": "7633174f5c6587e764b4ab2c8a428e405139aa0782b437aff7b27aafeaba0e2b",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229555,
+      "fingerprint": "8d8c97d2a80faa8674d0fcc16f74bfb7c5ab1854e7dab2bc8b4a620893a2f7eb",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229555,
+      "fingerprint": "4a05df07df9331a43fcf73a7d19bfb7bf1ff4267aec2da1a5a1c3e0b16f3e1e6",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226601,
+      "fingerprint": "7e4f87e74809e247562fe44581a6f9fb80a34ff8525774e55e220d0e9f0b4dab",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226601,
+      "fingerprint": "842da97c9ad95962ec657a43b6d74af89b3c66f16f1ed8d4b4b82becfb0399be",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228999,
+      "fingerprint": "6e013150053a5f3245cd4b9ebf40575eda22aa2f9460e7003d455ba2ef0fccf5",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228999,
+      "fingerprint": "4ac975a951af51c21db6a5d08e590c48c881bbb53497660550409545e8a092a4",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226076,
+      "fingerprint": "490d69b8ca5010e64a681b398686e12e633b18d2f0fb0eb2bc9986e680cfbe92",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226076,
+      "fingerprint": "99223591b1b4097b2e38ff0202b986795cb8cd4912787aaa3fd33a43157e1f7e",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229578,
+      "fingerprint": "2ab3eea5cde65a56a41661a400c04bc5754b7470659fd3258497556c5e135146",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229578,
+      "fingerprint": "749da269017033f440e282954b532c6e956c1043960e96f690aea39238b63b1b",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227403,
+      "fingerprint": "441557100f9bc16c8e5c24d7e64153a3b9e55907c2d4045e5ea1fe9f11b8cca2",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227403,
+      "fingerprint": "9539c967d3b9f4a296d014e2ebc7b449d71000def3f249baee7b94bf851012df",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227788,
+      "fingerprint": "76c1fd8c2cb8f9a71c6a9c641ea369d449751a0d18ef0ce08d333c183deb9d42",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227788,
+      "fingerprint": "0f636028c31a0fdcb69dada32fa7d09adf421ad3e3151a00cac663b3c8b49b18",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225719,
+      "fingerprint": "54c0223b3f9e558e4b98d6628f4a8ba0147c2ea74defadd0e3ca59ed2f47e618",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225719,
+      "fingerprint": "fa5029ffea27314816e8eb863221cefb93ae279f34518e8ca2985fd98f4a2ed1",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221313,
+      "fingerprint": "52d06232aae3547ce76a7a8b6ed1a636fae4d2da00546454136882a073ad739c",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221313,
+      "fingerprint": "b1914774bf63ed21bb28caac31d0570099deb5c28d1192115d82894b53658980",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222568,
+      "fingerprint": "0660ec02a430cb502892edd995cb350b5b6e9623a692ed41b0e962ecff24d64d",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222568,
+      "fingerprint": "f0db6df9d2763655567187098c230770ba201b3ce15b4171c444310c2f7f79e4",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220576,
+      "fingerprint": "59723246c6374446c3d8534bdf5f3e29f6596143028d5fec7b829c0de2c44689",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220576,
+      "fingerprint": "11de0515bcdc4f63b3b71a700ad24c7e71d2c4ee897d2f28716e4833ff0cd8b1",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223074,
+      "fingerprint": "5a5b104df5e2f56ef2b2929104136be78a2d9bc046d8d3a2a1726d142fe6dc50",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223074,
+      "fingerprint": "620c9e374c54a0e6fc958bc13d51fcc7230a6ecb60d3dccddb25afe78aa7b469",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228458,
+      "fingerprint": "74ab8b1aa699c3d0b2e62b43cc69ebb5fc8e791f70a632f2cc8a458f503629aa",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228458,
+      "fingerprint": "6701fce2f55e617f81277ba5dcfcb8ca8907df11c88eb280eb3326f9b9413ecc",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222856,
+      "fingerprint": "d0dc2cf13345fa08819bd07c6a6eeb15e140baa9841835e5e1520962f35aace3",
+      "partition": "train"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222856,
+      "fingerprint": "7533a1613688a529736961dfeea3b24e575b7466c66ca947f4e42bce88b434b4",
+      "partition": "train"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220658,
+      "fingerprint": "9ce9c3602f74bd5bfd997334bb591b41de687f8d10b2fcb9337facdb59997d54",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220658,
+      "fingerprint": "a73fb05bf052bce288d24ec4ce582ecdd61f1d11e25bb646b9ccaaad8173c41a",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220483,
+      "fingerprint": "6d6f7a82f468807db171869bfe7a06e6b3fcf85bab302e81a4469edab008fb82",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220483,
+      "fingerprint": "8ac0ac3c195d4865f8b333025a48ced25f23a57288d60b8eb3cbdeacf7cf105a",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222501,
+      "fingerprint": "927c43620ca2fbba04dc271ac848b8c191db1305f0221c8f7864e62b9a2180b8",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222501,
+      "fingerprint": "2d1ea2ce22ae59d6ebbc2d805b4eb2217f7e18d6c94fc3c18b981cffb4c338b5",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224925,
+      "fingerprint": "ab8a6cd55a96020cb6f57a79dcf6407dded3d82549ce211e8db5633cb0526f25",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224925,
+      "fingerprint": "1aea7131e44a54c564a6d36d7b9cd6e8828b17753aa69a760ce16998dfe76afd",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228779,
+      "fingerprint": "8c03da110660af042e17f5537c4987afe9317b9779ce15f7ad85e42cbdd96298",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228779,
+      "fingerprint": "e48fbcd442f4fde6d97effaef8b7ba952901d4e4400242acf21f717a3cfda7cb",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225962,
+      "fingerprint": "9b770b6f7c1e16f34c0434a6ac4f2e3517fadb0a3f4c81b2be5339f842c0009f",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225962,
+      "fingerprint": "711f98b3b5ee62782bd90f23072a2a12c04c405dfa91f39bd575b53e31182d15",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610220562,
+      "fingerprint": "b74e88dde7d78b268147449529b31d514eaf8107648441fe8c56266df14b6c04",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610220562,
+      "fingerprint": "b8d84aef2dec022d4bfcc2ac411d04a45f3bd07ccb8b243fc143c5d4ff83a5dd",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224385,
+      "fingerprint": "2a39efd7d5765d6d3625ad0bdb3028a699545e1a532f4866837c096cb6e7996d",
+      "partition": "development"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224385,
+      "fingerprint": "5e711b2af3fd8724a920a23d628c4e437fc0c7519d61de357d568125813c9423",
+      "partition": "development"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222678,
+      "fingerprint": "28e9ddaebf8b44f2d3449f10a5745c728b6b48f9d76410ed7a74fa9a8561f62e",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222678,
+      "fingerprint": "b1bf03e6e8adf763e8d12f566e25a2a91a77f8aef56454458c4ee69f42421076",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221812,
+      "fingerprint": "1be3fda1a21aaa5f032b15acd71167810c26fabb7705b4eadcde64e335ac3145",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221812,
+      "fingerprint": "c7b2fc2204a3c17248920934aca48dc9ea70fcb085a745041d62981847d81b00",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225339,
+      "fingerprint": "54b677484e0f5bfdf92c5a1a86b1752c797993761436dfc3193d96e5850ed595",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225339,
+      "fingerprint": "4d9554005b06458a307f7fb08d7826894ab5c22b3399799b65b94389e1e1c446",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228318,
+      "fingerprint": "36aa91f5fe14930c2e0b62643a35a164caa2dd81e70e56ede3043a895f608c27",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228318,
+      "fingerprint": "e12a1cefc4004360719d770f759e843ca0f3fb834fc0d56e31e76af2f808533c",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223551,
+      "fingerprint": "d476bceea0d0155b7862754743d72061c45203953aefd3fd95e0ce0dcf6f8d58",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223551,
+      "fingerprint": "5c28526894eca35a5c3ba7d9134db8878e7d623e1693cb13a7b08c6c94707de5",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228619,
+      "fingerprint": "649d2a34b77746a53f6a6d8a15578bd02d2055429affbec1af17b987da56d407",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228619,
+      "fingerprint": "6d4a0882a444e021ac08614739df3b673db5906f0ecfeab93dd57e87e85467cd",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224130,
+      "fingerprint": "83171d5273e95b9e809f755093831b1b1e61382e8a63493e4b238963ee50ba7a",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224130,
+      "fingerprint": "68a15dab21674fb50146f9dc217ba4c5c601b18664b068f711adaf5c4cb267ed",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224300,
+      "fingerprint": "c6d1d9bd6c995d5d50cd42d59dd9c537594a9837e3994b58f5090506d9bc7b6b",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224300,
+      "fingerprint": "0f60382ebd9a63004e977fe3b64ac9d65845c50402cb70271d14f039d207216f",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228727,
+      "fingerprint": "c431fe8feb7ab2804650d6dd48f00e8763fdad1c583ad4ba1cdc3c7a6eed8bb6",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228727,
+      "fingerprint": "c63b6f3a354ff8a4402f688006a706ec6e5f1a7f4557b2bc63c5f34fa5edfdd9",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226802,
+      "fingerprint": "fb1bfa55dfc67f8f4966c6ccb3200ae98c6133e457e444579953fcdcb90ae312",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226802,
+      "fingerprint": "fd221ba649034fd2bf6b16db59b0df55c9ba2e4e14841173e15c09fcdee3eea1",
+      "partition": "trajectory_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228027,
+      "fingerprint": "d2eee0ebd33e7692c00d236f354bd1673e93d811f7180d0368eee5ff046d4cc9",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228027,
+      "fingerprint": "50708f55354346a438dc457f420fea2843e3395006eb548de1e9b0734ee90a19",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224705,
+      "fingerprint": "cd22dc97aabd7576ead6591061e4f2a4f62fbcab333c327bfb1fdfa70edba4a5",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224705,
+      "fingerprint": "041378224b5cd2a68df2975b03b0970a08bd74c041feaf7cfa4209427d1d972e",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225780,
+      "fingerprint": "af7af6a1845f57c079d62d06699a67bfdf008034c380b5efad643c1022a6570e",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225780,
+      "fingerprint": "269d413a2ab49ad0bdabf2120f1ef301f79827bfc5bdbb18990ffa72c01c82a9",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226955,
+      "fingerprint": "ddd68f62c26dddf6aa39b0f305d7460c4e5f898a4ffa3a50cc416a7962d2b178",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226955,
+      "fingerprint": "469f93e4fecf66f48cc6ae4baed9916d1fd55994c9b03b970ab27643ae45f434",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610225426,
+      "fingerprint": "6986fd16f837ce9d6eb6183a16c10b14b5f2e59dc4e547d3af7d3cfc3507a95c",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610225426,
+      "fingerprint": "f27056277941294c917c19a23c46508b471b859415492ee92dececceae3f83e5",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222199,
+      "fingerprint": "c52b627bfafd93364b633de1e5a10f860fa2116a82501fab51d0eddd3edb1032",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222199,
+      "fingerprint": "c8ed1ccb0484180a6f832bbbdc15f4d40451a05b278a077a76783770d82cd813",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224808,
+      "fingerprint": "df0bdd8c5423c4c8b7a546ec1c72b8056744e4fd60c8e54665706cc8cd27bee8",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224808,
+      "fingerprint": "41dc305d1d1255bac61fe0a80248e7de066c24ae192c0369487d4b0ffd2c6290",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228847,
+      "fingerprint": "ac21e3356b53b4f7dcf7d3659d01e9cb6089202606d9da4f853c6d212d020212",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228847,
+      "fingerprint": "cc49da18923ffe09412e24044a4af18bc31a9a125bb1cd972999f299f8bc6805",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221808,
+      "fingerprint": "850db4f74662e1eb21e4ce6a38fddc9ae21ea9714e6fea038ef9f2dcfeff00cf",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221808,
+      "fingerprint": "dca77437332542cc4ce3eb3e112a4187252b865624b5cc92b9640d6932acb44e",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228401,
+      "fingerprint": "bd9db86f10baa35d619cccdba59d311ebea49d133f24536af88336a6ef456f9c",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228401,
+      "fingerprint": "b2253b13cc61449de282f9859f9855151efa439e105c22a2fb14320fe4ec2751",
+      "partition": "combination_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226801,
+      "fingerprint": "263f6b587c9cc3e0e1ca8149c1f847f1c05cd59e7159b0cad4850f15773a75be",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226801,
+      "fingerprint": "3a883e1ee5c824df0296543eafdbbd863ee65684d52997886fcb0730adccde93",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227436,
+      "fingerprint": "f444c08d5e532bedd3350efff180ff66894d9d1e5a8ccb8feff027f1955dfbcb",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227436,
+      "fingerprint": "1acee6263c651d73733cca300addb8546dbe890d2f15c36c8b4f199da8fd62f5",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223121,
+      "fingerprint": "b6ba52d6749ee896d2034bb68259c499bf87dd7076fc4f471d26b01b3b54ccba",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223121,
+      "fingerprint": "5dac40290f6d40248f17e294840e99b7c1ef98dfab0101ec0dd3ff4cf889750b",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610228314,
+      "fingerprint": "55e4f1f9f6928d2b02bdc7381295f58fe829e3048e6a802aea90724dc5ddd439",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610228314,
+      "fingerprint": "c6cb5f98434c82d880c3b797276221ac54a4da2a5bc6aa40254129c4f1e03802",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222252,
+      "fingerprint": "d091b35c3a11127a6de38c917e0dff1595491f8386247a14d1d5c8ae5075828e",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222252,
+      "fingerprint": "0e18f1bb7b2c32e98d9c25a810f4d154b87b08d2b661f68d27c81d447c786788",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229615,
+      "fingerprint": "4dc4b6f43e7eea87b1dab398c2b834ee43ac6d93cdd8a0f06bb7a5d4ae98bf9f",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229615,
+      "fingerprint": "7db9bef8b37817e3f7809b310ee013e9f145b9e9561cd9e2dc59b852603d33f1",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223117,
+      "fingerprint": "4d3d48b931c2dcac9205657678eed4587706fcabbb08975e17c12543bae3121d",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223117,
+      "fingerprint": "4c5347bb6ec39e5306980aef8a96d48e32c20e167d99b74c991a9b0c3f6832fe",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229322,
+      "fingerprint": "34d30945a12379b184f759e4e974b55ac04665f64db6fd91a089446f3f1f8982",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229322,
+      "fingerprint": "cc7d37428278b14a81fd2a6728dcf7d24852f0cb888db87d830088101ea15462",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227094,
+      "fingerprint": "73c038e33ddff47cdee41527a60229ba5b4b558963a181c38c98c1aae69ab99d",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227094,
+      "fingerprint": "4d70d3828d44548d9090d915ff0f2b228cf92e34fa385b04b956968f2ef320d2",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221556,
+      "fingerprint": "db8fc0d80ce7c9080accdc7b0dea05b0cc5aa55e5678ad3017bac9e6529d6c86",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221556,
+      "fingerprint": "db0965f9052728cf2b5ca17edaf64aa5b7e28ae2fdb066decb124fd8f72cbdbb",
+      "partition": "severity_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222502,
+      "fingerprint": "bd7b0edfde01b056ab15ed6a73c3243b68396a8ad900ee585735ba059432b233",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222502,
+      "fingerprint": "c787026d41cd54629cae4be4b2e814eac1c04cc87df116eca438ab5124977474",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610227295,
+      "fingerprint": "e13293aa362ec034c152d32d961342ebf39073b28bc4594f45bc4f577ffeffdb",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610227295,
+      "fingerprint": "849c48207828f514c49073917257f489fe403e3e4c778215d200cc15beeabadd",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610222909,
+      "fingerprint": "e57336382d546c32f73d1720bd41d09cdecf857374a1642e6d04e0a44ff8da0d",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610222909,
+      "fingerprint": "28e5d1d7b0f42a5b5db88b686133a16e9f1d6f576d92c166ca80b0473fb39f6d",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229978,
+      "fingerprint": "a8fbd80c6be8773899f95f55ed9e5f6fe30552a04f65f246dec18b5fe2b18467",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229978,
+      "fingerprint": "9fcb5343c760a68129e0bcefc06fc9005cb7439149d4d738ae33888cb138c0be",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610229724,
+      "fingerprint": "b0a5d28abb267448317446e308c3d511a0eb6bbc5c24c364511c87a25ce0732c",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610229724,
+      "fingerprint": "72fd6ba3c9a386e148d5ca259f310245c389aeab58b027e06bfb0689f5fb8946",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610221925,
+      "fingerprint": "816bdc4fe5a28de135b4349a43a171abafef218e83058e72ca0c617cb5b234c9",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610221925,
+      "fingerprint": "4eb2886d3817620cc572f139c531a6a8a1bdc678c93648a7816d368b9842955f",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610223986,
+      "fingerprint": "1b58243229dfe77a9b62ab311d579442b7404663d42216961528b56f22ae2362",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610223986,
+      "fingerprint": "e4165858dcee7c5053c6f464c9c244e82e6a472b5054d948a72510623684dac0",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610224992,
+      "fingerprint": "ca5249c75e14dd4e2fa40aa8c9a236ab8a0d85cd9212869e988c0aa8e04dbb1d",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610224992,
+      "fingerprint": "d141c91baf3ef13170453855aa4a6fed26ba6f934766476b9b084b331a4c7a1d",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226888,
+      "fingerprint": "bb82031a6ab950fa4c873a79f97d1f63c138d53cbe0f8d537a23b26e9fa7e0a0",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226888,
+      "fingerprint": "2630e2e46708e492e019ba2f3241f73f40ea4c995538b98c01b0f28232ab30f6",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 3,
+      "family": 9202610226935,
+      "fingerprint": "c49a623d8e61c5dcfafb9e307b81a81377436b171940e0a261ad41f03d50da16",
+      "partition": "transfer_test"
+    },
+    {
+      "dof": 4,
+      "family": 9202610226935,
+      "fingerprint": "0dc4daa5135fa785b4c3ddcb80112a4128784c6ada1a8cacef1d54355ba52e30",
+      "partition": "transfer_test"
+    }
+  ],
+  "minimum_endpoint_max_norm_rad": 0.09041905945565043,
+  "near_duplicate_rule": "max endpoint joint distance < .05 rad AND duration difference < .1 s"
+}

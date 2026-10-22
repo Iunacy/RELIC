@@ -1,0 +1,20 @@
+{
+  "initial_baseline_tests": 34,
+  "initial_baseline_passed": 34,
+  "final_release_tests": 35,
+  "final_release_passed": 35,
+  "final_release_wall_s": 6.7,
+  "sanitizer_tests": 5,
+  "sanitizer_passed": 5,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "sanitizer_wall_s": 32.24,
+  "release_log_sha256": "4acfd509a4d3c86ff53cb78227035276139463960e260b86d94215121f480be4",
+  "sanitizer_log_sha256": "a2e90c2f71dabeb2d5fa50e3a46131817820cfeebaa51bda0edcd779aeaab55f",
+  "completed_campaign_resumption_preserves_summary": true,
+  "repeatability_runs": 80,
+  "historical_byte_identical_runs": 16,
+  "quick_fixture_demo_controllers": 5
+}

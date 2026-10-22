@@ -1,0 +1,120 @@
+{
+  "full": {
+    "dof:3": {
+      "episodes": 280,
+      "shared_minus_expert_rmse_rad": {
+        "ci95": [
+          -5.622106882134827e-05,
+          8.854330622604281e-05
+        ],
+        "families": 40,
+        "mean": 7.814875827734469e-06
+      },
+      "shared_minus_expert_success": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "families": 40,
+        "mean": 0.0
+      }
+    },
+    "dof:4": {
+      "episodes": 280,
+      "shared_minus_expert_rmse_rad": {
+        "ci95": [
+          -7.920769050405083e-06,
+          0.00011111032109084594
+        ],
+        "families": 40,
+        "mean": 5.029737187616889e-05
+      },
+      "shared_minus_expert_success": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "families": 40,
+        "mean": 0.0
+      }
+    },
+    "primary": {
+      "episodes": 560,
+      "shared_minus_expert_rmse_rad": {
+        "ci95": [
+          -9.951605381001015e-06,
+          7.399583226687457e-05
+        ],
+        "families": 40,
+        "mean": 2.9056123851951692e-05
+      },
+      "shared_minus_expert_success": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "families": 40,
+        "mean": 0.0
+      }
+    }
+  },
+  "matched": {
+    "dof:3": {
+      "episodes": 280,
+      "shared_minus_expert_rmse_rad": {
+        "ci95": [
+          0.00016469500023325362,
+          0.0003367073715753112
+        ],
+        "families": 40,
+        "mean": 0.00025157358467682535
+      },
+      "shared_minus_expert_success": {
+        "ci95": [
+          0.0,
+          0.017857142857142856
+        ],
+        "families": 40,
+        "mean": 0.007142857142857143
+      }
+    },
+    "dof:4": {
+      "episodes": 280,
+      "shared_minus_expert_rmse_rad": {
+        "ci95": [
+          -0.0002215539821884633,
+          6.142248052141345e-05
+        ],
+        "families": 40,
+        "mean": -8.000897288291394e-05
+      },
+      "shared_minus_expert_success": {
+        "ci95": [
+          0.010714285714285714,
+          0.04285714285714286
+        ],
+        "families": 40,
+        "mean": 0.024999999999999998
+      }
+    },
+    "primary": {
+      "episodes": 560,
+      "shared_minus_expert_rmse_rad": {
+        "ci95": [
+          6.4048535266121554e-06,
+          0.0001618756603481517
+        ],
+        "families": 40,
+        "mean": 8.578230589695571e-05
+      },
+      "shared_minus_expert_success": {
+        "ci95": [
+          0.007142857142857143,
+          0.026785714285714284
+        ],
+        "families": 40,
+        "mean": 0.01607142857142857
+      }
+    }
+  }
+}

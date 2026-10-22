@@ -37,6 +37,20 @@ def main():
         result.append(dict(method=method,outcome=meta['outcome'],metrics=meta['metrics'],
                            fallbacks=meta['fallbacks'],termination_reason=meta['termination_reason'],
                            telemetry=str(out/'demo'/method/spec['episode']/'telemetry.csv.gz')))
+    if args.fixtures:
+        config=json.loads((r.ROOT/'adaptive/revision/analytical_full_range.json').read_text())
+        control=out/'full-range.control'
+        text=f"RELIC_CONTROL_V1 {config['lead']} {config['ki']} {config['kp']} .2 -1\n"
+        if control.exists():assert control.read_text()==text
+        else:control.write_text(text)
+    else:
+        control=Path(json.loads((out/'analytical_robustness_selected.json').read_text())['control'])
+    meta=r.run_task((out/'demo-strong',spec,'integral','none',control))
+    result.append(dict(method='integral_full_range_exploratory',outcome=meta['outcome'],metrics=meta['metrics'],
+                       fallbacks=meta['fallbacks'],termination_reason=meta['termination_reason'],
+                       telemetry=str(out/'demo-strong/integral'/spec['episode']/'telemetry.csv.gz')))
+    previous=out/'demo_feedback.json';archive=out/'demo_feedback_primary.json'
+    if previous.exists() and not archive.exists():shutil.copy2(previous,archive)
     feedback=dict(selection='predeclared first severity-test family, 4dof combined fault',spec=spec,controllers=result)
     p.atomic_json(out/'demo_feedback.json',feedback)
     print(json.dumps(feedback,indent=2))

@@ -8,9 +8,14 @@ def plot(out):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     comparison=json.loads((out/'comparison.json').read_text())['methods']
+    robustness=out/'analytical_robustness.json'
+    if robustness.exists():
+        extra=json.loads(robustness.read_text())
+        if 'groups' in extra:comparison['integral full range*']=extra
     models={m['name']:m for m in json.loads((out/'models/report.json').read_text())}
     figure,axes=plt.subplots(2,2,figsize=(13,9),layout='constrained')
     names=['conventional','analytical','gravity','integral','shared_matched','per_matched','shared_full','per_full']
+    if 'integral full range*' in comparison:names.insert(4,'integral full range*')
     for i,name in enumerate(names):
         item=comparison[name]['groups']['primary']['joint_rmse_rad'];mean=item['mean'];lo,hi=item['ci95']
         axes[0,0].errorbar(mean*1000,i,xerr=[[max(0,mean-lo)*1000],[max(0,hi-mean)*1000]],fmt='o',capsize=3,color='#175e86')
@@ -43,6 +48,7 @@ def plot(out):
     axes[1,1].set_ylabel('Validation MSE normalized by joint correction bound')
     axes[1,1].set_title('Offline prediction error; not a closed-loop success test');axes[1,1].legend()
     for axis in axes.flat:axis.grid(alpha=.2)
+    figure.suptitle('* Full-range PI is a separate exploratory robustness analysis; see protocol',fontsize=10)
     target=out/'comparison.png';figure.savefig(target,dpi=170);plt.close(figure)
     return target
 

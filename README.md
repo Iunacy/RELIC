@@ -14,4 +14,4 @@ Set `MUJOCO_ROOT` to a MuJoCo 3.16.0 SDK and `RELIC_ML_PYTHON` to a Python envir
 
 The validation revision uses paired held-out families, stronger analytical competitors and rate-limited correction withdrawal. The original campaign remains reproducible with `adaptive/reproduce.sh`; its results are retained as historical development evidence.
 
-After building the adaptive executable, `python adaptive/revision_demo.py --fixtures` runs a short four-controller demonstration using the committed small model, without collecting the campaign.
+After building the adaptive executable, `python adaptive/revision_demo.py --fixtures` runs a short five-controller demonstration using the committed small model, without collecting the campaign.

@@ -1,0 +1,942 @@
+{
+  "expanded": {
+    "base_families": 32,
+    "conditions": 64,
+    "curves": [
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 1,
+        "lead": {
+          "0": {
+            "accepted": 64,
+            "proposal_magnitude_saturation_rate": 0.006932284162695334,
+            "proposal_rate_saturation_rate": 0.003161365399534523,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.004751110338970286,
+                0.00719400324178906
+              ],
+              "families": 32,
+              "mean": 0.005887241690580778
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          },
+          "20": {
+            "accepted": 64,
+            "proposal_magnitude_saturation_rate": 0.006932284162695334,
+            "proposal_rate_saturation_rate": 0.003679485758616868,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0030962845337831548,
+                0.00527922205772452
+              ],
+              "families": 32,
+              "mean": 0.004080429367697917
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0020144189550633687,
+            -0.0016029707932560372
+          ],
+          "families": 32,
+          "mean": -0.0018068123228828616
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 2,
+        "lead": {
+          "0": {
+            "accepted": 64,
+            "proposal_magnitude_saturation_rate": 0.009600465477114042,
+            "proposal_rate_saturation_rate": 0.008071040673833536,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0021867770592234543,
+                0.004337204985925055
+              ],
+              "families": 32,
+              "mean": 0.003143652469020466
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          },
+          "20": {
+            "accepted": 64,
+            "proposal_magnitude_saturation_rate": 0.008855147955225535,
+            "proposal_rate_saturation_rate": 0.0076388119250803506,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.00134707044452021,
+                0.003240056413109024
+              ],
+              "families": 32,
+              "mean": 0.0021746021257263116
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.001146009982063336,
+            -0.0008052484336833396
+          ],
+          "families": 32,
+          "mean": -0.0009690503432941541
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 3,
+        "lead": {
+          "0": {
+            "accepted": 62,
+            "proposal_magnitude_saturation_rate": 0.010304222542391666,
+            "proposal_rate_saturation_rate": 0.010816801507259227,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0011309679628165267,
+                0.0031884807274575014
+              ],
+              "families": 32,
+              "mean": 0.002027492546605403
+            },
+            "rejected": 2,
+            "rejection_reasons": {
+              "final_error_regressed": 2
+            }
+          },
+          "20": {
+            "accepted": 62,
+            "proposal_magnitude_saturation_rate": 0.00934833204034135,
+            "proposal_rate_saturation_rate": 0.009678044996121024,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.000692645636028934,
+                0.0025106187336613765
+              ],
+              "families": 32,
+              "mean": 0.001483498211571571
+            },
+            "rejected": 2,
+            "rejection_reasons": {
+              "final_error_regressed": 2
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0006970331941468862,
+            -0.00041002740172257104
+          ],
+          "families": 32,
+          "mean": -0.0005439943350338319
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 4,
+        "lead": {
+          "0": {
+            "accepted": 62,
+            "proposal_magnitude_saturation_rate": 0.009952344009752853,
+            "proposal_rate_saturation_rate": 0.011160367948575861,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0007084226184613394,
+                0.002764303069260096
+              ],
+              "families": 32,
+              "mean": 0.0016006989987535653
+            },
+            "rejected": 2,
+            "rejection_reasons": {
+              "final_error_regressed": 2
+            }
+          },
+          "20": {
+            "accepted": 62,
+            "proposal_magnitude_saturation_rate": 0.009503491078355315,
+            "proposal_rate_saturation_rate": 0.0106477889837083,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0004612535582835558,
+                0.0022783786526429173
+              ],
+              "families": 32,
+              "mean": 0.001246919418838827
+            },
+            "rejected": 2,
+            "rejection_reasons": {
+              "final_error_regressed": 2
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0004963342002338683,
+            -0.0002359130283430577
+          ],
+          "families": 32,
+          "mean": -0.0003537795799147382
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 5,
+        "lead": {
+          "0": {
+            "accepted": 61,
+            "proposal_magnitude_saturation_rate": 0.00996065610107503,
+            "proposal_rate_saturation_rate": 0.011188074919649784,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0005381421661020533,
+                0.0025862555256726534
+              ],
+              "families": 32,
+              "mean": 0.0014251278998770314
+            },
+            "rejected": 3,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 1
+            }
+          },
+          "20": {
+            "accepted": 60,
+            "proposal_magnitude_saturation_rate": 0.009564446414717943,
+            "proposal_rate_saturation_rate": 0.011038457275850604,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.00038422639841217125,
+                0.002199585708577759
+              ],
+              "families": 32,
+              "mean": 0.0011613610298770469
+            },
+            "rejected": 4,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 2
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0004028863540436151,
+            -0.00015342132034905189
+          ],
+          "families": 32,
+          "mean": -0.00026376686999998473
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 6,
+        "lead": {
+          "0": {
+            "accepted": 59,
+            "proposal_magnitude_saturation_rate": 0.009902471461819794,
+            "proposal_rate_saturation_rate": 0.01134600465477114,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0004684414597733232,
+                0.002491382526741355
+              ],
+              "families": 32,
+              "mean": 0.0013446860718033422
+            },
+            "rejected": 5,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 3
+            }
+          },
+          "20": {
+            "accepted": 57,
+            "proposal_magnitude_saturation_rate": 0.009592153385791865,
+            "proposal_rate_saturation_rate": 0.011224093982045883,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0003573715895994233,
+                0.002161246665920586
+              ],
+              "families": 32,
+              "mean": 0.0011296842148036863
+            },
+            "rejected": 7,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 5
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.00034917882422900304,
+            -0.00011099941399806338
+          ],
+          "families": 32,
+          "mean": -0.0002150018569996558
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 7,
+        "lead": {
+          "0": {
+            "accepted": 59,
+            "proposal_magnitude_saturation_rate": 0.009894159370497617,
+            "proposal_rate_saturation_rate": 0.011692341793195168,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0004325393527037365,
+                0.0024327577145915125
+              ],
+              "families": 32,
+              "mean": 0.0013020257424911515
+            },
+            "rejected": 5,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 3
+            }
+          },
+          "20": {
+            "accepted": 57,
+            "proposal_magnitude_saturation_rate": 0.009608777568436219,
+            "proposal_rate_saturation_rate": 0.011423584173778123,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0003445763313905998,
+                0.002141952972321139
+              ],
+              "families": 32,
+              "mean": 0.0011165872859767918
+            },
+            "rejected": 7,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 5
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0003156447778500554,
+            -8.58906287384933e-05
+          ],
+          "families": 32,
+          "mean": -0.0001854384565143599
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 8,
+        "lead": {
+          "0": {
+            "accepted": 58,
+            "proposal_magnitude_saturation_rate": 0.009930178432893715,
+            "proposal_rate_saturation_rate": 0.012058073811370942,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.00041332212243845286,
+                0.002401252945359146
+              ],
+              "families": 32,
+              "mean": 0.0012771710475352927
+            },
+            "rejected": 6,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 4
+            }
+          },
+          "20": {
+            "accepted": 54,
+            "proposal_magnitude_saturation_rate": 0.00962263105397318,
+            "proposal_rate_saturation_rate": 0.011700653884517345,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.00033936439547103904,
+                0.0021309122814370546
+              ],
+              "families": 32,
+              "mean": 0.0011098740353523986
+            },
+            "rejected": 10,
+            "rejection_reasons": {
+              "final_error_regressed": 2,
+              "no_rmse_improvement": 8
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 64
+          },
+          "20": {
+            "Success": 64
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0002939103087645556,
+            -7.115793241464268e-05
+          ],
+          "families": 32,
+          "mean": -0.00016729701218289408
+        }
+      }
+    ],
+    "interpretation": "fixed-iteration offline training-only probe; accepted-best monotonicity follows the acceptance gate, not a convergence proof"
+  },
+  "original": {
+    "base_families": 2,
+    "conditions": 32,
+    "curves": [
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 1,
+        "lead": {
+          "0": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.0017533792399897984,
+            "proposal_rate_saturation_rate": 0.0,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0016805035601217743,
+                0.0040659818168264665
+              ],
+              "families": 2,
+              "mean": 0.0028732426884741204
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          },
+          "20": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.0017533792399897984,
+            "proposal_rate_saturation_rate": 0.00033650712686672903,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0011111967742845825,
+                0.002708713115343995
+              ],
+              "families": 2,
+              "mean": 0.0019099549448142886
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0013572687014824717,
+            -0.0005693067858371918
+          ],
+          "families": 2,
+          "mean": -0.0009632877436598318
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 2,
+        "lead": {
+          "0": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.0022953328232593728,
+            "proposal_rate_saturation_rate": 0.0,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0005654381900586614,
+                0.0016768029309460256
+              ],
+              "families": 2,
+              "mean": 0.0011211205605023435
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          },
+          "20": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.0021571877922298734,
+            "proposal_rate_saturation_rate": 0.0005702910255320355,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0003615457995520295,
+                0.001124027044552087
+              ],
+              "families": 2,
+              "mean": 0.0007427864220520583
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0005527758863939386,
+            -0.0002038923905066319
+          ],
+          "families": 2,
+          "mean": -0.0003783341384502853
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 3,
+        "lead": {
+          "0": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.0024193091331576413,
+            "proposal_rate_saturation_rate": 0.00022315735781688344,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.0002053948560831542,
+                0.0008308662756206834
+              ],
+              "families": 2,
+              "mean": 0.0005181305658519188
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          },
+          "20": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.0022634532007141037,
+            "proposal_rate_saturation_rate": 0.0007119782368443425,
+            "proposed_rmse_rad": {
+              "ci95": [
+                0.00012533453467849116,
+                0.0006048779368560463
+              ],
+              "families": 2,
+              "mean": 0.0003651062357672687
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0002259883387646371,
+            -8.006032140466302e-05
+          ],
+          "families": 2,
+          "mean": -0.00015302433008465007
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 4,
+        "lead": {
+          "0": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.0023520077077842953,
+            "proposal_rate_saturation_rate": 0.0004073507325228825,
+            "proposed_rmse_rad": {
+              "ci95": [
+                9.72499643031343e-05,
+                0.0005492577075725212
+              ],
+              "families": 2,
+              "mean": 0.00032325383593782776
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          },
+          "20": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.002291790642976565,
+            "proposal_rate_saturation_rate": 0.0010166057411658024,
+            "proposed_rmse_rad": {
+              "ci95": [
+                5.494015260682272e-05,
+                0.0004428344859306998
+              ],
+              "families": 2,
+              "mean": 0.00024888731926876127
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -0.0001064232216418214,
+            -4.230981169631158e-05
+          ],
+          "families": 2,
+          "mean": -7.43665166690665e-05
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 5,
+        "lead": {
+          "0": {
+            "accepted": 32,
+            "proposal_magnitude_saturation_rate": 0.002291790642976565,
+            "proposal_rate_saturation_rate": 0.00047819433817903597,
+            "proposed_rmse_rad": {
+              "ci95": [
+                6.69725777212805e-05,
+                0.00045858995361211573
+              ],
+              "families": 2,
+              "mean": 0.00026278126566669813
+            },
+            "rejected": 0,
+            "rejection_reasons": {}
+          },
+          "20": {
+            "accepted": 31,
+            "proposal_magnitude_saturation_rate": 0.002302417183824988,
+            "proposal_rate_saturation_rate": 0.0012291365581342628,
+            "proposed_rmse_rad": {
+              "ci95": [
+                3.531836781711656e-05,
+                0.0003962358288552853
+              ],
+              "families": 2,
+              "mean": 0.00021577709833620092
+            },
+            "rejected": 1,
+            "rejection_reasons": {
+              "no_rmse_improvement": 1
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -6.235412475683046e-05,
+            -3.165420990416395e-05
+          ],
+          "families": 2,
+          "mean": -4.70041673304972e-05
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 6,
+        "lead": {
+          "0": {
+            "accepted": 31,
+            "proposal_magnitude_saturation_rate": 0.002256368840148488,
+            "proposal_rate_saturation_rate": 0.0005242426818555358,
+            "proposed_rmse_rad": {
+              "ci95": [
+                5.6145146058114596e-05,
+                0.00042715126483800425
+              ],
+              "families": 2,
+              "mean": 0.00024164820544805943
+            },
+            "rejected": 1,
+            "rejection_reasons": {
+              "no_rmse_improvement": 1
+            }
+          },
+          "20": {
+            "accepted": 31,
+            "proposal_magnitude_saturation_rate": 0.002309501544390603,
+            "proposal_rate_saturation_rate": 0.001303522344073224,
+            "proposed_rmse_rad": {
+              "ci95": [
+                2.854580499293113e-05,
+                0.0003827448677956035
+              ],
+              "families": 2,
+              "mean": 0.00020564533639426733
+            },
+            "rejected": 1,
+            "rejection_reasons": {
+              "no_rmse_improvement": 1
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -4.4406397042400735e-05,
+            -2.7599341065183465e-05
+          ],
+          "families": 2,
+          "mean": -3.6002869053792104e-05
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 7,
+        "lead": {
+          "0": {
+            "accepted": 31,
+            "proposal_magnitude_saturation_rate": 0.002270537561279719,
+            "proposal_rate_saturation_rate": 0.0005525801241179971,
+            "proposed_rmse_rad": {
+              "ci95": [
+                5.00482037052637e-05,
+                0.000413317679965402
+              ],
+              "families": 2,
+              "mean": 0.00023168294183533285
+            },
+            "rejected": 1,
+            "rejection_reasons": {
+              "no_rmse_improvement": 1
+            }
+          },
+          "20": {
+            "accepted": 30,
+            "proposal_magnitude_saturation_rate": 0.002309501544390603,
+            "proposal_rate_saturation_rate": 0.0013849924905778004,
+            "proposed_rmse_rad": {
+              "ci95": [
+                2.4924936542819866e-05,
+                0.0003771870209167922
+              ],
+              "families": 2,
+              "mean": 0.00020105597872980603
+            },
+            "rejected": 2,
+            "rejection_reasons": {
+              "no_rmse_improvement": 2
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -3.613065904860982e-05,
+            -2.512326716244384e-05
+          ],
+          "families": 2,
+          "mean": -3.062696310552683e-05
+        }
+      },
+      {
+        "incomplete": {
+          "0": 0,
+          "20": 0
+        },
+        "iteration": 8,
+        "lead": {
+          "0": {
+            "accepted": 31,
+            "proposal_magnitude_saturation_rate": 0.002281164102128142,
+            "proposal_rate_saturation_rate": 0.0006198815494913429,
+            "proposed_rmse_rad": {
+              "ci95": [
+                4.5614666293109296e-05,
+                0.0004054516316005699
+              ],
+              "families": 2,
+              "mean": 0.0002255331489468396
+            },
+            "rejected": 1,
+            "rejection_reasons": {
+              "no_rmse_improvement": 1
+            }
+          },
+          "20": {
+            "accepted": 30,
+            "proposal_magnitude_saturation_rate": 0.002309501544390603,
+            "proposal_rate_saturation_rate": 0.0014664626370823768,
+            "proposed_rmse_rad": {
+              "ci95": [
+                2.247755499983004e-05,
+                0.00037378029161151325
+              ],
+              "families": 2,
+              "mean": 0.00019812892330567164
+            },
+            "rejected": 2,
+            "rejection_reasons": {
+              "no_rmse_improvement": 2
+            }
+          }
+        },
+        "outcomes": {
+          "0": {
+            "Success": 32
+          },
+          "20": {
+            "Success": 32
+          }
+        },
+        "paired_lead_minus_zero_rmse_rad": {
+          "ci95": [
+            -3.167133998905666e-05,
+            -2.3137111293279255e-05
+          ],
+          "families": 2,
+          "mean": -2.740422564116796e-05
+        }
+      }
+    ],
+    "interpretation": "fixed-iteration offline training-only probe; accepted-best monotonicity follows the acceptance gate, not a convergence proof"
+  }
+}

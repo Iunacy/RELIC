@@ -1,0 +1,135 @@
+{
+  "controllers": [
+    {
+      "fallbacks": 0,
+      "method": "conventional",
+      "metrics": {
+        "command_end_cartesian_m": 0.015533850707881078,
+        "contact_observations": 0,
+        "correction_magnitude_saturations": 0,
+        "correction_rate_saturations": 0,
+        "final_cartesian_m": 0.011229228975065484,
+        "final_joint_peak_rad": 0.017268010041582182,
+        "final_velocity_peak_rad_s": 0.006524529365995348,
+        "joint_rmse_by_joint_rad": [
+          0.050298479956542866,
+          0.010717737885625732,
+          0.009472203083652866,
+          0.13374204606699977
+        ],
+        "joint_rmse_rad": 0.07180087831769391,
+        "peak_error_rad": 0.2030661770431491
+      },
+      "outcome": "NonConvergence",
+      "telemetry": "/home/iris/RELIC/adaptive/runs/revision-20261022/demo/conventional/r001486/telemetry.csv.gz",
+      "termination_reason": "fixed settlement tolerance not met"
+    },
+    {
+      "fallbacks": 0,
+      "method": "gravity",
+      "metrics": {
+        "command_end_cartesian_m": 0.010698004954530162,
+        "contact_observations": 0,
+        "correction_magnitude_saturations": 0,
+        "correction_rate_saturations": 10,
+        "final_cartesian_m": 0.008649159584512555,
+        "final_joint_peak_rad": 0.01320960600380583,
+        "final_velocity_peak_rad_s": 0.004420819385611924,
+        "joint_rmse_by_joint_rad": [
+          0.030665481238511587,
+          0.00820710579757656,
+          0.007142575025131653,
+          0.07961117608738628
+        ],
+        "joint_rmse_rad": 0.04300198850393016,
+        "peak_error_rad": 0.12053069046438328
+      },
+      "outcome": "NonConvergence",
+      "telemetry": "/home/iris/RELIC/adaptive/runs/revision-20261022/demo/gravity/r001486/telemetry.csv.gz",
+      "termination_reason": "fixed settlement tolerance not met"
+    },
+    {
+      "fallbacks": 0,
+      "method": "integral",
+      "metrics": {
+        "command_end_cartesian_m": 0.006507552828238176,
+        "contact_observations": 0,
+        "correction_magnitude_saturations": 111,
+        "correction_rate_saturations": 10,
+        "final_cartesian_m": 0.007495491309061424,
+        "final_joint_peak_rad": 0.023169832654612754,
+        "final_velocity_peak_rad_s": 0.019979446969305405,
+        "joint_rmse_by_joint_rad": [
+          0.018726930205195697,
+          0.004318377204654174,
+          0.00417988544994535,
+          0.052596208329478006
+        ],
+        "joint_rmse_rad": 0.028076586640849256,
+        "peak_error_rad": 0.08569845278382736
+      },
+      "outcome": "NonConvergence",
+      "telemetry": "/home/iris/RELIC/adaptive/runs/revision-20261022/demo/integral/r001486/telemetry.csv.gz",
+      "termination_reason": "fixed settlement tolerance not met"
+    },
+    {
+      "fallbacks": 0,
+      "method": "shared_full",
+      "metrics": {
+        "command_end_cartesian_m": 0.0007823249651942272,
+        "contact_observations": 0,
+        "correction_magnitude_saturations": 0,
+        "correction_rate_saturations": 0,
+        "final_cartesian_m": 0.00015712107067596546,
+        "final_joint_peak_rad": 0.00028745543692232367,
+        "final_velocity_peak_rad_s": 0.0001682354057622306,
+        "joint_rmse_by_joint_rad": [
+          0.0026301348643447964,
+          0.00045459684421029204,
+          0.0004998077861788599,
+          0.044780537086742636
+        ],
+        "joint_rmse_rad": 0.022431398626120442,
+        "peak_error_rad": 0.08022973182595153
+      },
+      "outcome": "Success",
+      "telemetry": "/home/iris/RELIC/adaptive/runs/revision-20261022/demo/shared_full/r001486/telemetry.csv.gz",
+      "termination_reason": "completed fixed settlement window"
+    },
+    {
+      "fallbacks": 0,
+      "method": "integral_full_range_exploratory",
+      "metrics": {
+        "command_end_cartesian_m": 0.0066861446207043184,
+        "contact_observations": 0,
+        "correction_magnitude_saturations": 326,
+        "correction_rate_saturations": 208,
+        "final_cartesian_m": 0.0008741575196146767,
+        "final_joint_peak_rad": 0.002127239834175343,
+        "final_velocity_peak_rad_s": 0.00892744677995598,
+        "joint_rmse_by_joint_rad": [
+          0.008997800576948574,
+          0.001887319019873077,
+          0.001763301855930035,
+          0.04573360146985159
+        ],
+        "joint_rmse_rad": 0.02334091860415766,
+        "peak_error_rad": 0.08044663729678381
+      },
+      "outcome": "Success",
+      "telemetry": "/home/iris/RELIC/adaptive/runs/revision-20261022/demo-strong/integral/r001486/telemetry.csv.gz",
+      "termination_reason": "completed fixed settlement window"
+    }
+  ],
+  "selection": "predeclared first severity-test family, 4dof combined fault",
+  "spec": {
+    "category": "combined",
+    "dof": 4,
+    "episode": "r001486",
+    "family": 9202610226801,
+    "index": 1486,
+    "partition": "severity_test",
+    "seed": 1456953531769,
+    "severity": 0.9299999999999999
+  }
+}
