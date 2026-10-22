@@ -1,0 +1,22 @@
+Double-S numerical admission audit
+
+This optional experiment is quarantined from actuator execution. Of 12 scalar
+cases, nine profiles failed numerical admission, one raised the expected
+upstream endpoint-velocity exception, and two passed scalar checks. Passing a
+scalar case does not establish multi-joint synchronization or safe execution.
+No Double-S profiles were sent to MuJoCo actuators.
+
+Pinned minimal InterpolatePy C++ subset:
+29c31ea9149698ed9fc613faf5b039e38d63fc79 (version 3.3.2).
+Original MIT license and SHA256SUMS are retained under upstream/.
+
+cmake -S . -B build-double-s -DMUJOCO_ROOT=/path/to/mujoco-3.16.0 -DRELIC_DOUBLE_S_EXPERIMENT=ON
+cmake --build build-double-s -j4
+ctest --test-dir build-double-s --output-on-failure
+build-double-s/experiments/double_s/relic_double_s_audit build-double-s/numerical-audit.csv
+
+The numerical audit intentionally exits 2 for rejected profiles; the API smoke
+CTest only establishes that the pinned public API can be called. Existing
+results.csv records the rejected outcomes. No algorithm, bound or admission
+criterion was changed during repository consolidation. Original uncommitted
+Markdown analysis remains backed up in the original worktree and private archive.
