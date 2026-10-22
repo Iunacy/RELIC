@@ -26,13 +26,14 @@ def plot(out):
     axes[0,1].set_xticks(fit_counts);axes[0,1].set_xlabel('Families contributing gradient updates (7/14/28/56)')
     axes[0,1].set_ylabel('Joint RMSE (mrad)');axes[0,1].set_title('Shared model learning curve; fixed final cohort')
     for lead in [0,20]:
-        directory=out/f'convergence-lead-{lead}'
+        directory=out/f'convergence-expanded-lead-{lead}'
+        if not (directory/'convergence.json').exists():directory=out/f'convergence-lead-{lead}'
         values=json.loads((directory/'convergence.json').read_text())
         teachers=json.loads((directory/'teacher_manifest.json').read_text())
         baseline=sum(m['baseline_rmse'] for m in teachers)/len(teachers)
         axes[1,0].plot(range(9),[baseline*1000]+[row['mean_proposal_rmse']*1000 for row in values],'o-',label=f'{lead*2} ms lead')
     axes[1,0].set_xlabel('ILC proposal iteration');axes[1,0].set_ylabel('Mean proposed-run joint RMSE (mrad)')
-    axes[1,0].set_title('Training-only convergence probe; all proposals retained');axes[1,0].legend()
+    axes[1,0].set_title('Training-only convergence; all proposals retained');axes[1,0].legend()
     for i,name in enumerate(['shared_matched','per_3_matched','per_4_matched','shared_full','per_3_full','per_4_full']):
         item=models[name]
         axes[1,1].scatter(i,item['validation_mse'],marker='o',color='#175e86',label='MLP' if i==0 else None)

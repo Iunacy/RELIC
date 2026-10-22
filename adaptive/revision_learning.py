@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from collections import Counter, defaultdict
+import concurrent.futures as futures
 import hashlib
 import json
 import math
@@ -10,50 +11,56 @@ import pipeline as p
 import revision as r
 
 
-def prepare(out):
+def prepare_one(task):
     import numpy as np
+    out,directory,stride,m=task
+    if not m['accepted']:return None
+    baseline=out/'teacher-campaign/teachers'/m['episode']/'baseline'
+    gate_best=json.loads((baseline/'metadata.json').read_text())
+    for attempt in m['attempts']:
+        trial_path=Path(attempt['path']);trial=json.loads((trial_path/'metadata.json').read_text())
+        assert p.digest(trial_path/'telemetry.csv.gz')==trial['trace_sha256']==attempt['trace_sha256'],'trial trace identity'
+        assert all(trial[key]==gate_best[key] for key in ['seed','family','dof','category','severity','initial_q_rad','goal_q_rad','physics','planned_ticks']),'teacher paired-condition mismatch'
+        passed,why=l.acceptance(trial,gate_best)
+        assert (passed,why)==(attempt['accepted'],attempt['reason']),'invalid teacher gate: stop for review'
+        if passed:
+            repeat_path=trial_path.with_name(f"repeat_{attempt['attempt']}")
+            repeat=json.loads((repeat_path/'metadata.json').read_text())
+            assert p.digest(repeat_path/'telemetry.csv.gz')==repeat['trace_sha256']==attempt['repeat_sha256']==trial['trace_sha256'],'invalid verification replay: stop for review'
+            gate_best=trial
+    best=Path(m['accepted'][-1]);meta=p.validate_episode(best)
+    assert meta['partition']=='train' and all(meta[key]==m[key] for key in ['family','dof','category','severity','episode'])
+    assert any(a['accepted'] and a['path']==str(best) and a['trace_sha256']==a['repeat_sha256']==meta['trace_sha256'] for a in m['attempts'])
+    targets,_=l.table_from_trace(best)
+    rows=[]
+    for folder in [best.parent/'baseline']+[Path(path) for path in m['accepted']]:
+        rows.extend(l.examples_from_trace(folder,stride=stride,targets=targets))
+    x=np.asarray([row[0] for row in rows],dtype=np.float32)
+    y=np.asarray([row[1] for row in rows],dtype=np.float32)
+    j=np.asarray([row[2] for row in rows],dtype=np.int8)
+    path=directory/f'{m["episode"]}.npz'
+    if path.exists():
+        previous=np.load(path)
+        assert np.array_equal(previous['x'],x) and np.array_equal(previous['y'],y) and np.array_equal(previous['j'],j),'prepared resume mismatch'
+    else:
+        temporary=path.with_suffix('.tmp')
+        with open(temporary,'wb') as stream:np.savez(stream,x=x,y=y,j=j)
+        temporary.replace(path)
+    return dict(path=str(path),family=m['family'],dof=m['dof'],episode=m['episode'],rows=len(x),sha256=p.digest(path))
+
+
+def prepare(out):
     value=json.loads((out/'protocol.json').read_text())
     manifest=json.loads((out/'teacher-campaign/teacher_manifest.json').read_text())
     assert len(manifest)==1024 and len({m['family'] for m in manifest})==64
     directory=out/'prepared';directory.mkdir(exist_ok=True)
-    paths=[]
-    for i,m in enumerate(manifest):
-        if not m['accepted']:
-            continue
-        baseline=out/'teacher-campaign/teachers'/m['episode']/'baseline'
-        gate_best=json.loads((baseline/'metadata.json').read_text())
-        for attempt in m['attempts']:
-            trial_path=Path(attempt['path']);trial=json.loads((trial_path/'metadata.json').read_text())
-            assert p.digest(trial_path/'telemetry.csv.gz')==trial['trace_sha256']==attempt['trace_sha256'],'trial trace identity'
-            assert all(trial[key]==gate_best[key] for key in ['seed','family','dof','category','severity','initial_q_rad','goal_q_rad','physics','planned_ticks']),'teacher paired-condition mismatch'
-            passed,why=l.acceptance(trial,gate_best)
-            assert (passed,why)==(attempt['accepted'],attempt['reason']),'invalid teacher gate: stop for review'
-            if passed:
-                repeat_path=trial_path.with_name(f"repeat_{attempt['attempt']}")
-                repeat=json.loads((repeat_path/'metadata.json').read_text())
-                assert p.digest(repeat_path/'telemetry.csv.gz')==repeat['trace_sha256']==attempt['repeat_sha256']==trial['trace_sha256'],'invalid verification replay: stop for review'
-                gate_best=trial
-        best=Path(m['accepted'][-1]);meta=p.validate_episode(best)
-        assert meta['partition']=='train' and all(meta[key]==m[key] for key in ['family','dof','category','severity','episode'])
-        assert any(a['accepted'] and a['path']==str(best) and a['trace_sha256']==a['repeat_sha256']==meta['trace_sha256'] for a in m['attempts'])
-        targets,_=l.table_from_trace(best)
-        rows=[]
-        for folder in [best.parent/'baseline']+[Path(path) for path in m['accepted']]:
-            rows.extend(l.examples_from_trace(folder,stride=value['stride'],targets=targets))
-        x=np.asarray([row[0] for row in rows],dtype=np.float32)
-        y=np.asarray([row[1] for row in rows],dtype=np.float32)
-        j=np.asarray([row[2] for row in rows],dtype=np.int8)
-        path=directory/f'{m["episode"]}.npz'
-        if path.exists():
-            previous=np.load(path)
-            assert np.array_equal(previous['x'],x) and np.array_equal(previous['y'],y) and np.array_equal(previous['j'],j),'prepared resume mismatch'
-        else:
-            temporary=path.with_suffix('.tmp')
-            with open(temporary,'wb') as stream:np.savez(stream,x=x,y=y,j=j)
-            temporary.replace(path)
-        paths.append(dict(path=str(path),family=m['family'],dof=m['dof'],episode=m['episode'],rows=len(x),sha256=p.digest(path)))
-        if i%64==0:print(f'prepared {i}/1024 episodes',flush=True)
+    paths=[];began=time.perf_counter()
+    with futures.ProcessPoolExecutor(max_workers=4) as pool:
+        for i,result in enumerate(pool.map(prepare_one,[(out,directory,value['stride'],m) for m in manifest])):
+            if result is not None:paths.append(result)
+            if (i+1)%64==0:print(f'prepared {i+1}/1024 episodes',flush=True)
     p.atomic_json(directory/'manifest.json',paths)
+    p.atomic_json(directory/'timing.json',dict(episodes=len(paths),wall_s=time.perf_counter()-began,workers=4,stride=value['stride']))
 
 
 def train(out):
@@ -216,7 +223,7 @@ def report(out):
         entry=dict(episodes=len(rows),primary_episodes=len(primary),families=len({m['family'] for m in rows}),
                    outcomes=dict(Counter(m['outcome'] for m in rows)),fallback_episodes=sum(m['fallbacks']>0 for m in rows),
                    incomplete=sum(m['completed_ticks']!=m['planned_ticks'] for m in rows),inference_s=sum(m['inference_s'] for m in rows),
-                   mean_inference_us_per_tick=1e6*sum(m['inference_s'] for m in rows)/sum(m['completed_ticks'] for m in rows),
+                   mean_inference_us_per_tick=1e6*sum(m['inference_s'] for m in rows)/max(1,sum(m['completed_ticks'] for m in rows)),
                    groups={})
         for group,selection in [('primary',primary)]+[(f'{key}:{val}',[m for m in rows if m[key]==val]) for key in ['dof','category','partition'] for val in sorted({m[key] for m in rows})]:
             byfamily=defaultdict(list);deltas=defaultdict(list);complete=[]
@@ -265,4 +272,4 @@ def report(out):
         summary[method]=entry
     p.atomic_json(out/'comparison.json',dict(protocol_sha256=p.digest(out/'protocol.json'),methods=summary,unique_evaluation_fingerprints=len(fingerprints),train_test_fingerprint_overlap=0,nominal_restored_identical_pairs=restored_pairs,zero_copy_identical_to_conventional=True))
     for method,record in summary.items():
-        row=record['groups']['primary'];print(method, row['joint_rmse_rad'],row['successes'],'/',row['episodes'],flush=True)
+        row=record['groups']['primary'];print(method, row.get('joint_rmse_rad',{'undefined':'no complete pairs'}),row['successes'],'/',row['episodes'],flush=True)

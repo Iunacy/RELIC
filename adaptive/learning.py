@@ -43,9 +43,8 @@ def examples_from_trace(folder, stride=4, targets=None):
     for row in read_rows(folder):
         j, tick = int(row['joint']), int(row['tick'])
         if tick:
-            x = local_features(m, row, older[j], previous[j])
-
             if tick % stride == 0:
+                x = local_features(m, row, older[j], previous[j])
                 yield x, (targets[tick][j] if targets is not None else float(row['correction_rad'])), j
             older[j] = float(row['previous_error_rad'])
             previous[j] = float(row['correction_rad'])

@@ -11,6 +11,8 @@ python adaptive/revision.py teacher-qualify
 python adaptive/revision.py collect
 python adaptive/revision.py tune
 python adaptive/revision.py convergence
+python adaptive/revision/convergence_replication.py
+"$relic_ml_python" adaptive/revision/convergence_report.py
 if [[ ! -f adaptive/runs/revision-20261022/prepared/manifest.json ]]; then
   "$relic_ml_python" adaptive/revision.py prepare
 fi
