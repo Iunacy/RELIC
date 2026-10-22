@@ -1,0 +1,10 @@
+{
+  "accepted": 360,
+  "attempts": 360,
+  "checksummed_native_rollouts": 840,
+  "families": 15,
+  "replay_gate_recomputed": true,
+  "training_episodes": 120,
+  "training_evaluation_families_and_seeds_disjoint": true,
+  "wall_s": 1.8159939649995067
+}

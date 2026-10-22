@@ -1,0 +1,9 @@
+{
+  "schema_version": "relic.episode.v1",
+  "seed": 20261022,
+  "episodes": 10000,
+  "workers": 3,
+  "max_storage_gb": 12,
+  "categories": ["nominal", "gain", "force", "friction", "mass", "payload", "combined", "recovery"],
+  "embodiments": [3, 4]
+}

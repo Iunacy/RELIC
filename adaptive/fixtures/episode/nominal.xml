@@ -1,0 +1,24 @@
+<mujoco model="synthetic_3dof_v1">
+<!-- SYNTHETIC: all geometry, inertia, limits and actuator parameters. -->
+<compiler angle="radian"/>
+<option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast"/>
+<default><joint type="hinge" limited="true" damping="1" armature="0.01"/><geom density="600" contype="1" conaffinity="1"/></default>
+<worldbody><geom name="ground" type="plane" size="2 2 0.1"/>
+<geom name="pedestal" type="cylinder" contype="0" conaffinity="0" size="0.04 0.10000000000000001" pos="0 0 0.10000000000000001"/>
+<body name="yaw_body" pos="0 0 0.20000000000000001">
+<joint name="yaw" axis="0 0 1" range="-2.7999999999999998 2.7999999999999998"/>
+<geom name="yaw_hub" type="sphere" size="0.025" contype="0" conaffinity="0"/>
+<body name="upper_arm">
+<joint name="shoulder" axis="0 1 0" range="-1.2 1.2"/>
+<geom name="link_1" type="capsule" fromto="0 0 0 0.29999999999999999 0 0" size="0.017999999999999999"/>
+<body name="forearm" pos="0.29999999999999999 0 0">
+<joint name="elbow" axis="0 1 0" range="-1.8 1.8"/>
+<geom name="link_2" type="capsule" fromto="0 0 0 0.25 0 0" size="0.017999999999999999"/>
+<body name="distal_mount" pos="0.25 0 0">
+<site name="tool" size="0.005" pos="0.059999999999999998 0 0 " quat="1 0 0 0 "/>
+</body></body></body></body></worldbody>
+<actuator>
+<position name="drive_yaw" joint="yaw" gear="1" kp="200" kv="20" ctrllimited="true" ctrlrange="-2.7999999999999998 2.7999999999999998" forcelimited="true" forcerange="-20 20"/>
+<position name="drive_shoulder" joint="shoulder" gear="1" kp="200" kv="20" ctrllimited="true" ctrlrange="-1.2 1.2" forcelimited="true" forcerange="-20 20"/>
+<position name="drive_elbow" joint="elbow" gear="1" kp="200" kv="20" ctrllimited="true" ctrlrange="-1.8 1.8" forcelimited="true" forcerange="-20 20"/>
+</actuator></mujoco>

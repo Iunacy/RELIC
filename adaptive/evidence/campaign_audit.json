@@ -1,0 +1,102 @@
+{
+  "complete_checksum_audit": true,
+  "deterministic_replays": [
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000000",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000001",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000006",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000008",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000014",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000338",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000339",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000340",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000341",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0000342",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0005006",
+      "identical_metrics": true
+    },
+    {
+      "byte_identical_trace": true,
+      "episode": "e0009999",
+      "identical_metrics": true
+    }
+  ],
+  "dofs": {
+    "3": 5000,
+    "4": 5000
+  },
+  "episodes": 10000,
+  "full_row_validation": "performed for every episode before generation commit",
+  "outcomes": {
+    "NonConvergence": 750,
+    "Success": 9250
+  },
+  "physical_ranges": {
+    "damping_scale": [
+      1,
+      2.9047659571272986
+    ],
+    "force_scale": [
+      0.1,
+      1
+    ],
+    "friction_Nm": [
+      0,
+      0.3309677221514036
+    ],
+    "gain_scale": [
+      0.37516670784604533,
+      1
+    ],
+    "mass_scale": [
+      1,
+      1.6681103423123393
+    ],
+    "payload_kg": [
+      0,
+      0.13414596653889782
+    ]
+  },
+  "wall_s": 26.779287297998962
+}

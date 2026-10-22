@@ -117,3 +117,10 @@ if(BUILD_TESTING)
       -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/cli_repro.cmake")
   endforeach()
 endif()
+
+option(RELIC_ADAPTIVE "Build opt-in offline adaptive research pipeline" OFF)
+if(RELIC_ADAPTIVE)
+  execute_process(COMMAND git rev-parse HEAD WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    OUTPUT_VARIABLE RELIC_ADAPTIVE_COMMIT OUTPUT_STRIP_TRAILING_WHITESPACE)
+  add_subdirectory(adaptive)
+endif()

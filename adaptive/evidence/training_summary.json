@@ -1,0 +1,89 @@
+{
+  "bounds_sha256": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+  "categories": "all",
+  "feature_version": "relic.local.v1",
+  "label_mode": "best-sequence",
+  "models": [
+    {
+      "cpu_threads": 2,
+      "embodiment": 0,
+      "epochs": 40,
+      "fit_families": [
+        2026162983072,
+        2026162983073,
+        2026162983074,
+        2026162983075,
+        2026162983077,
+        2026162983078,
+        2026162983079,
+        2026162983080,
+        2026162983082,
+        2026162983083,
+        2026162983084,
+        2026162983085
+      ],
+      "fit_rows": 510336,
+      "model": "shared",
+      "model_sha256": "7526b7c534a6803d7259422aa29f639e904b9e759d208250d163ff3a2bc18bf5",
+      "normalized_validation_mse": 0.00012134079588577151,
+      "seed": 20261022,
+      "train_s": 39.433995582000534,
+      "validation_families": [
+        2026162983071,
+        2026162983076,
+        2026162983081
+      ],
+      "validation_rows": 102176
+    },
+    {
+      "cpu_threads": 2,
+      "embodiment": 3,
+      "epochs": 40,
+      "fit_families": [
+        2026162983074,
+        2026162983076,
+        2026162983078,
+        2026162983080,
+        2026162983084
+      ],
+      "fit_rows": 139680,
+      "model": "per_3dof",
+      "model_sha256": "3e4143219666c75939443bf25efc24ca0f55f003ee8b295c667375a347b8af3d",
+      "normalized_validation_mse": 0.0002093944640364498,
+      "seed": 20261022,
+      "train_s": 15.322189192999758,
+      "validation_families": [
+        2026162983072,
+        2026162983082
+      ],
+      "validation_rows": 58752
+    },
+    {
+      "cpu_threads": 2,
+      "embodiment": 4,
+      "epochs": 40,
+      "fit_families": [
+        2026162983073,
+        2026162983075,
+        2026162983077,
+        2026162983079,
+        2026162983083,
+        2026162983085
+      ],
+      "fit_rows": 338304,
+      "model": "per_4dof",
+      "model_sha256": "8f3462da89f5717edca5d18270c97c14a494d71404baee31ff726c1c4b8f54a2",
+      "normalized_validation_mse": 0.00012022210285067558,
+      "seed": 20261022,
+      "train_s": 30.929943476000517,
+      "validation_families": [
+        2026162983071,
+        2026162983081
+      ],
+      "validation_rows": 75776
+    }
+  ],
+  "prepared_sha256": "0997762176960015e55070426cbb8a97c68b40aa181d74411d62015095562967",
+  "teacher_manifest_sha256": "3d23c718153493d79c9ad212f88d7dab9319b89e572c6cefb98ec4c662f49b26",
+  "training_episodes": 120
+}

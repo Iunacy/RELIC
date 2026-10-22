@@ -1,0 +1,8 @@
+{
+  "all_metrics_outcomes_and_models_identical": true,
+  "all_traces_byte_identical": true,
+  "controller_runs": 352,
+  "final_executable_sha256": "4bf1d1c79b3ddd47d6264f8f4e3e1f12d140781958806bf702b28f9061b49d58",
+  "independent_episode_conditions": 64,
+  "repeated_evaluation_wall_s": 67.57140517699918
+}

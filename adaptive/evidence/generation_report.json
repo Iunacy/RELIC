@@ -1,0 +1,27 @@
+{
+  "categories": {
+    "combined": 1250,
+    "force": 1250,
+    "friction": 1250,
+    "gain": 1250,
+    "mass": 1250,
+    "nominal": 1250,
+    "payload": 1250,
+    "recovery": 1250
+  },
+  "completed": 10000,
+  "full_validation_per_episode": true,
+  "new_episodes_per_s": 6.527835046213252,
+  "newly_generated": 10000,
+  "partitions": {
+    "combination_test": 504,
+    "severity_test": 504,
+    "train": 7480,
+    "trajectory_test": 504,
+    "transfer_test": 504,
+    "validation": 504
+  },
+  "requested": 10000,
+  "storage_bytes": 5555556498,
+  "wall_s": 1531.901454189
+}

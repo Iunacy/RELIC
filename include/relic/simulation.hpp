@@ -44,9 +44,17 @@ struct Snapshot {
 struct ModelDeleter { void operator()(mjModel* p) const noexcept; };
 struct DataDeleter { void operator()(mjData* p) const noexcept; };
 
+
+
+struct PhysicsParameters {
+  double gain_scale = 1, force_scale = 1, damping_scale = 1;
+  double friction_Nm = 0, mass_scale = 1, payload_kg = 0;
+};
+
 class Simulation {
  public:
   explicit Simulation(RobotConfig config);
+  Simulation(RobotConfig config, const PhysicsParameters& physics);
   Simulation(const Simulation&) = delete;
   Simulation& operator=(const Simulation&) = delete;
   Simulation(Simulation&&) = delete;
@@ -56,6 +64,8 @@ class Simulation {
   std::vector<JointLimit> joint_limits() const;
   void reset(std::span<const double> q_rad);
   void set_position_commands(std::span<const double> q_rad);
+
+  void set_external_torques(std::span<const double> torque_Nm);
   void step(std::size_t count = 1);
   Snapshot snapshot() const;
   Pose evaluate_fk(std::span<const double> q_rad);

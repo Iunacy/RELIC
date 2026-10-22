@@ -1,0 +1,5 @@
+{
+  "source": "adaptive/data/qualification-v3/e0000128",
+  "rows": 2841,
+  "purpose": "Small canonical v1 import/validation fixture; excluded from automatic training discovery"
+}

@@ -1,0 +1,118 @@
+{
+  "acceleration_limit_rad_s2": 2.28363823136391,
+  "category": "nominal",
+  "command_ticks": 446,
+  "completed_ticks": 946,
+  "controller": "conventional",
+  "disturbance": {
+    "duration_ticks": 50,
+    "joint": 0,
+    "start_tick": 223,
+    "torque_Nm": 0
+  },
+  "dof": 3,
+  "embodiment": "synthetic_3dof_v1",
+  "episode": "e0000128",
+  "executable_sha256": "17f97f9186002f27ad1ecd67c4441959d6a46b633e2ce888acd69236dbe7ac49",
+  "failure_class": "none",
+  "family": 2026162983082,
+  "goal_q_rad": [
+    0.3293152171291579,
+    -0.7112507811244733,
+    0.3481726631114873
+  ],
+  "goal_world_m": [
+    0.4892698714221492,
+    0.16721283357635247,
+    0.5059320835108848
+  ],
+  "index": 128,
+  "initial_q_rad": [
+    0.4243030460479257,
+    -0.4241217449267258,
+    0.2773480726274051
+  ],
+  "learned_model": null,
+  "metrics": {
+    "command_end_cartesian_m": 0.009350606773968073,
+    "contact_observations": 0,
+    "final_cartesian_m": 0.002660833289136465,
+    "final_joint_peak_rad": 0.003939883044777881,
+    "final_velocity_peak_rad_s": 6.798267143142772e-06,
+    "joint_rmse_rad": 0.02512484983610137,
+    "peak_error_rad": 0.061442728291317694
+  },
+  "model_sha256": "a44bb3b6d342fc7729b0d79a5190627b3b4f9e67dd28e17ea5743262e1d8d254",
+  "mujoco_version": "3.16.0",
+  "outcome": "Success",
+  "partition": "train",
+  "physics": {
+    "actuator_force_upper_Nm": [
+      20,
+      20,
+      20
+    ],
+    "actuator_kp": [
+      200,
+      200,
+      200
+    ],
+    "actuator_kv": 20,
+    "body_inertia_kg_m2": [
+      0,
+      0,
+      0,
+      9.817477042468107e-06,
+      9.817477042468107e-06,
+      9.817477042468107e-06,
+      0.0017503459551309782,
+      0.0017503459551309782,
+      3.1580865679414463e-05,
+      0.0010632389267500996,
+      0.0010632389267500996,
+      2.6633988223365827e-05,
+      0,
+      0,
+      0
+    ],
+    "body_mass_kg": [
+      0,
+      0.03926990816987242,
+      0.19787509824194527,
+      0.16733881764905248,
+      0
+    ],
+    "damping_scale": 1,
+    "force_scale": 1,
+    "friction_Nm": 0,
+    "gain_scale": 1,
+    "joint_damping_Nm_s_rad": [
+      1,
+      1,
+      1
+    ],
+    "joint_friction_Nm": [
+      0,
+      0,
+      0
+    ],
+    "mass_scale": 1,
+    "payload_kg": 0,
+    "payload_location": "forearm_COM_sphere_radius_0.025m"
+  },
+  "planned_ticks": 946,
+  "rows": 2841,
+  "schema_version": "relic.episode.v1",
+  "seed": 20261082783194,
+  "severity": 0.6699999999999999,
+  "source_commit": "c461320c59602a787d4f2a9c6d82187fba953a69",
+  "source_dirty": true,
+  "source_tree_sha256": "973bef59f4549f6d2e71e211a633b63c69da2c66f6a5ee7046e870dc67049922",
+  "task_success": true,
+  "termination_reason": "completed fixed settlement window",
+  "timestep_s": 0.002,
+  "trace_sha256": "322622bdbca236af57c3de9360127521a040611be0ed0eec53b556af7d4e5c7a",
+  "trajectory": "quintic_analytic_v1",
+  "velocity_limit_rad_s": 0.7915691633425239,
+  "wall_s": 0.107699093
+}

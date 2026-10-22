@@ -76,7 +76,14 @@ std::string make_mjcf(const RobotConfig& c) {
   return xml.str();
 }
 
-Simulation::Simulation(RobotConfig config) : config_(std::move(config)) {
+Simulation::Simulation(RobotConfig config) : Simulation(std::move(config), PhysicsParameters{}) {}
+
+Simulation::Simulation(RobotConfig config, const PhysicsParameters& p) : config_(std::move(config)) {
+  for (double x : {p.gain_scale,p.force_scale,p.damping_scale,p.mass_scale})
+    if (!std::isfinite(x) || x < 0.1 || x > 4) throw std::invalid_argument("physical scale outside [0.1,4]");
+  if (!std::isfinite(p.friction_Nm) || p.friction_Nm < 0 || p.friction_Nm > 2 ||
+      !std::isfinite(p.payload_kg) || p.payload_kg < 0 || p.payload_kg > 0.5)
+    throw std::invalid_argument("invalid physical friction/payload");
   if (mj_version() != mjVERSION_HEADER)
     throw std::runtime_error("MuJoCo header/runtime version mismatch");
   const auto xml = make_mjcf(config_);
@@ -85,10 +92,29 @@ Simulation::Simulation(RobotConfig config) : config_(std::move(config)) {
   if (!spec) throw std::runtime_error(std::string("MJCF parse failed: ") + error);
   model_.reset(mj_compile(spec.get(), nullptr));
   if (!model_) throw std::runtime_error(std::string("MJCF compile failed: ") + mjs_getError(spec.get()));
+  for (int i=0;i<model_->nu;++i) {
+    model_->actuator_gainprm[mjNGAIN*i] *= p.gain_scale;
+    model_->actuator_biasprm[mjNBIAS*i+1] *= p.gain_scale;
+    model_->actuator_forcerange[2*i] *= p.force_scale;
+    model_->actuator_forcerange[2*i+1] *= p.force_scale;
+  }
+  for (int i=0;i<model_->nv;++i) {
+    model_->dof_damping[i] *= p.damping_scale;
+    model_->dof_frictionloss[i] = p.friction_Nm;
+  }
+  for (int i=1;i<model_->nbody;++i) {
+    model_->body_mass[i] *= p.mass_scale;
+    for (int k=0;k<3;++k) model_->body_inertia[3*i+k] *= p.mass_scale;
+  }
+
+  const int payload_body = named_id(model_.get(),mjOBJ_BODY,"forearm");
+  model_->body_mass[payload_body] += p.payload_kg;
+  for (int k=0;k<3;++k) model_->body_inertia[3*payload_body+k] += 0.4*p.payload_kg*0.025*0.025;
   execution_.reset(mj_makeData(model_.get()));
   if (!execution_) throw std::runtime_error("MuJoCo execution data allocation failed");
   planning_.reset(mj_makeData(model_.get()));
   if (!planning_) throw std::runtime_error("MuJoCo planning data allocation failed");
+  if (p.mass_scale != 1 || p.payload_kg != 0) mj_setConst(model_.get(),planning_.get());
   if (model_->njnt != config_.dof || model_->nq != config_.dof ||
       model_->nv != config_.dof || model_->nu != config_.dof)
     throw std::runtime_error("generated model joint/actuator dimensions do not match configuration");
@@ -156,6 +182,14 @@ void Simulation::step(std::size_t count) {
         throw std::runtime_error("MuJoCo numerical warning during stepping; reset required");
   }
   mj_forward(model_.get(), execution_.get());
+}
+
+void Simulation::set_external_torques(std::span<const double> torque) {
+  if (torque.size() != dof_addresses_.size()) throw std::invalid_argument("disturbance dimension");
+  for (double x : torque) if (!std::isfinite(x) || std::abs(x) > 2)
+    throw std::invalid_argument("synthetic disturbance must be finite within +/-2 Nm");
+  for (std::size_t j=0;j<torque.size();++j) execution_->qfrc_applied[dof_addresses_[j]]=torque[j];
+  mj_forward(model_.get(),execution_.get());
 }
 
 Pose Simulation::tool_pose(const mjData& data) const {

@@ -1,0 +1,60 @@
+{
+  "accepted": 360,
+  "attempts": 360,
+  "rejected_by_category": {
+    "combined": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "force": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "friction": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "gain": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "mass": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "nominal": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "payload": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "recovery": {
+      "attempts": 45,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    }
+  },
+  "rejected_by_severity": {
+    "high_[.45,.68)": {
+      "attempts": 180,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    },
+    "low_[.25,.45)": {
+      "attempts": 180,
+      "rejected": 0,
+      "rejection_rate": 0.0
+    }
+  },
+  "training_episodes": 120,
+  "wall_s": 457.99095291399954
+}

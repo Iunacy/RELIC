@@ -1,0 +1,16 @@
+relic_executable(relic_episode episode.cpp)
+target_compile_definitions(relic_episode PRIVATE RELIC_SOURCE_COMMIT="${RELIC_ADAPTIVE_COMMIT}")
+target_compile_options(relic_episode PRIVATE -Wall -Wextra -Wpedantic)
+if(BUILD_TESTING)
+  relic_executable(relic_adaptive_tests tests.cpp)
+  add_test(NAME adaptive_native COMMAND relic_adaptive_tests "${PROJECT_SOURCE_DIR}/examples")
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+  add_test(NAME adaptive_pipeline COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/test_pipeline.py"
+    "$<TARGET_FILE:relic_episode>" "${PROJECT_SOURCE_DIR}/examples")
+endif()
+relic_executable(relic_residual_probe residual_probe.cpp)
+if(BUILD_TESTING)
+  add_test(NAME adaptive_learning COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/test_learning.py"
+    "$<TARGET_FILE:relic_episode>" "${PROJECT_SOURCE_DIR}/examples" "$<TARGET_FILE:relic_residual_probe>")
+  set_tests_properties(adaptive_pipeline adaptive_learning PROPERTIES TIMEOUT 120)
+endif()

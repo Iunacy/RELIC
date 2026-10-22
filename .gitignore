@@ -13,3 +13,8 @@
 *.o
 *.a
 *.lib
+
+/adaptive/data/
+/adaptive/runs/
+/adaptive/__pycache__/
+!/README.md

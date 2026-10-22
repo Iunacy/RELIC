@@ -1,0 +1,54 @@
+[
+  {
+    "case": "nominal",
+    "command_end_cartesian_m": 0.003107238275975082,
+    "contact_observations": 0,
+    "final_cartesian_m": 0.0028988647827958773,
+    "final_joint_peak_rad": 0.004516545911826486,
+    "final_velocity_peak_rad_s": 1.5685355664382597e-06,
+    "joint_rmse_rad": 0.035895704563263575,
+    "measured_motion_rad": 1.6237977902556509,
+    "outcome": "Success",
+    "peak_error_rad": 0.10070679214339821,
+    "success": true
+  },
+  {
+    "case": "degraded",
+    "command_end_cartesian_m": 0.015010209651026353,
+    "contact_observations": 0,
+    "final_cartesian_m": 0.009793669769567132,
+    "final_joint_peak_rad": 0.014957809686957535,
+    "final_velocity_peak_rad_s": 0.0016252362539880404,
+    "joint_rmse_rad": 0.07492821435364107,
+    "measured_motion_rad": 1.6223463536229432,
+    "outcome": "NonConvergence",
+    "peak_error_rad": 0.2083520141236187,
+    "success": false
+  },
+  {
+    "case": "analytical",
+    "command_end_cartesian_m": 0.011344311670038248,
+    "contact_observations": 0,
+    "final_cartesian_m": 0.009852416343384912,
+    "final_joint_peak_rad": 0.015109426601077114,
+    "final_velocity_peak_rad_s": 0.0013983262770227334,
+    "joint_rmse_rad": 0.040819096081507945,
+    "measured_motion_rad": 1.6225490199690005,
+    "outcome": "NonConvergence",
+    "peak_error_rad": 0.1132764269589702,
+    "success": false
+  },
+  {
+    "case": "adapted",
+    "command_end_cartesian_m": 0.007022358016690744,
+    "contact_observations": 0,
+    "final_cartesian_m": 0.0003327846239514894,
+    "final_joint_peak_rad": 0.0006120414935383844,
+    "final_velocity_peak_rad_s": 0.0003488693412316729,
+    "joint_rmse_rad": 0.027433782760389925,
+    "measured_motion_rad": 1.6444159485038718,
+    "outcome": "Success",
+    "peak_error_rad": 0.10159479077993783,
+    "success": true
+  }
+]
