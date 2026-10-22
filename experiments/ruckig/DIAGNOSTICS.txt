@@ -1,0 +1,20 @@
+Ruckig execution diagnostics
+
+The optional read-only Observer captures initial, pre-step and post-step states
+without changing commands or simulation ownership. The diagnostic executable
+records 24 runs (two repeats per case) across 3/4-DOF arms, zero/nominal/fast
+motions and matched linear/Ruckig methods. See the compact reports under
+results/diagnostics; raw generated per-timestep traces and model dumps are not
+published. They remain preserved locally and can be regenerated.
+
+cmake -S . -B build-ruckig -DMUJOCO_ROOT=/path/to/mujoco-3.16.0 -DRELIC_RUCKIG_EXPERIMENT=ON -DPython3_EXECUTABLE=/path/to/python
+cmake --build build-ruckig -j4
+ctest --test-dir build-ruckig --output-on-failure
+
+The registered diagnostics test writes traces into the build directory. Its
+analysis verifies mappings, sampling, physical limits and repeated trace hashes.
+This is experimental execution and sampled collision validation; it does not
+replace production execute_cartesian_motion or prove continuous collision safety.
+Original upstream Ruckig provenance and MIT license remain in UPSTREAM.txt and
+vendor/LICENSE. Existing historical benchmark CSVs are unchanged. Markdown
+analysis is retained in the original worktree/private consolidation backup.

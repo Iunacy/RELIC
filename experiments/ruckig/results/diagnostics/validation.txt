@@ -1,0 +1,194 @@
+Verified 33 official upstream files at a8db97a4e9c55e5160a3855f739fa3b270df8e4c
+-- Configuring done (0.0s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/iris/RELIC-ruckig/build-baseline
+[ 36%] Built target relic_sim
+[ 44%] Built target relic_cartesian_demo
+[ 52%] Built target relic_motion_benchmark
+[ 60%] Built target relic_cli
+[ 68%] Built target relic_motion_tests
+[ 76%] Built target relic_ik_benchmark
+[ 84%] Built target relic_ik_tests
+[ 92%] Built target relic_path_campaign
+[100%] Built target relic_tests
+Test project /home/iris/RELIC-ruckig/build-baseline
+      Start  1: batch003_cartesian_repro_3
+ 1/31 Test  #1: batch003_cartesian_repro_3 .......   Passed    0.15 sec
+      Start  2: batch003_cartesian_repro_4
+ 2/31 Test  #2: batch003_cartesian_repro_4 .......   Passed    1.20 sec
+      Start  3: batch003_motion_trajectory
+ 3/31 Test  #3: batch003_motion_trajectory .......   Passed    0.01 sec
+      Start  4: batch003_motion_adaptive
+ 4/31 Test  #4: batch003_motion_adaptive .........   Passed    0.75 sec
+      Start  5: batch003_motion_selection
+ 5/31 Test  #5: batch003_motion_selection ........   Passed    0.22 sec
+      Start  6: batch003_motion_contacts
+ 6/31 Test  #6: batch003_motion_contacts .........   Passed    3.72 sec
+      Start  7: batch003_motion_execution
+ 7/31 Test  #7: batch003_motion_execution ........   Passed    2.13 sec
+      Start  8: batch003_motion_failures
+ 8/31 Test  #8: batch003_motion_failures .........   Passed    0.84 sec
+      Start  9: batch003_motion_diagnostics
+ 9/31 Test  #9: batch003_motion_diagnostics ......   Passed    0.02 sec
+      Start 10: batch003_ik_branches
+10/31 Test #10: batch003_ik_branches .............   Passed    0.02 sec
+      Start 11: batch003_ik_boundaries
+11/31 Test #11: batch003_ik_boundaries ...........   Passed    0.04 sec
+      Start 12: batch003_ik_wrist
+12/31 Test #12: batch003_ik_wrist ................   Passed    0.02 sec
+      Start 13: batch003_ik_inputs
+13/31 Test #13: batch003_ik_inputs ...............   Passed    0.01 sec
+      Start 14: batch003_ik_geometry
+14/31 Test #14: batch003_ik_geometry .............   Passed    0.01 sec
+      Start 15: batch003_ik_isolation
+15/31 Test #15: batch003_ik_isolation ............   Passed    0.02 sec
+      Start 16: batch003_ik_generated
+16/31 Test #16: batch003_ik_generated ............   Passed    0.74 sec
+      Start 17: batch002_targeted
+17/31 Test #17: batch002_targeted ................   Passed    0.02 sec
+      Start 18: batch002_fuzz
+18/31 Test #18: batch002_fuzz ....................   Passed    0.22 sec
+      Start 19: batch002_integration
+19/31 Test #19: batch002_integration .............   Passed    0.17 sec
+      Start 20: models
+20/31 Test #20: models ...........................   Passed    0.01 sec
+      Start 21: fk
+21/31 Test #21: fk ...............................   Passed    0.02 sec
+      Start 22: validation
+22/31 Test #22: validation .......................   Passed    0.01 sec
+      Start 23: feasibility
+23/31 Test #23: feasibility ......................   Passed    0.01 sec
+      Start 24: config
+24/31 Test #24: config ...........................   Passed    0.01 sec
+      Start 25: isolation
+25/31 Test #25: isolation ........................   Passed    0.01 sec
+      Start 26: reset
+26/31 Test #26: reset ............................   Passed    0.03 sec
+      Start 27: actuators
+27/31 Test #27: actuators ........................   Passed    0.02 sec
+      Start 28: lifetime
+28/31 Test #28: lifetime .........................   Passed    0.15 sec
+      Start 29: trace
+29/31 Test #29: trace ............................   Passed    0.01 sec
+      Start 30: cli_repro_3
+30/31 Test #30: cli_repro_3 ......................   Passed    0.16 sec
+      Start 31: cli_repro_4
+31/31 Test #31: cli_repro_4 ......................   Passed    0.18 sec
+
+100% tests passed out of 31
+
+Total Test time (real) =  10.98 sec
+-- Found Python3: /usr/bin/python3.14 (found version "3.14.8") found components: Interpreter
+-- Configuring done (0.4s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/iris/RELIC-ruckig/build-ruckig
+[ 24%] Built target ruckig
+[ 42%] Built target relic_sim
+[ 46%] Built target relic_cli
+[ 51%] Built target relic_motion_tests
+[ 55%] Built target relic_cartesian_demo
+[ 59%] Built target relic_ruckig_qualification_core
+[ 63%] Built target relic_motion_benchmark
+[ 67%] Built target relic_path_campaign
+[ 71%] Built target relic_ik_benchmark
+[ 75%] Built target relic_ik_tests
+[ 83%] Built target relic_tests
+[ 83%] Built target relic_ruckig_adapter
+[ 87%] Built target relic_ruckig_qualification
+[ 91%] Built target relic_ruckig_adapter_tests
+[ 95%] Built target relic_ruckig_benchmark
+[ 97%] Building CXX object experiments/ruckig/CMakeFiles/relic_ruckig_diagnostics.dir/diagnostics.cpp.o
+[100%] Linking CXX executable relic_ruckig_diagnostics
+[100%] Built target relic_ruckig_diagnostics
+Test project /home/iris/RELIC-ruckig/build-ruckig
+      Start  1: batch003_cartesian_repro_3
+ 1/36 Test  #1: batch003_cartesian_repro_3 .......   Passed    0.16 sec
+      Start  2: batch003_cartesian_repro_4
+ 2/36 Test  #2: batch003_cartesian_repro_4 .......   Passed    1.03 sec
+      Start  3: batch003_motion_trajectory
+ 3/36 Test  #3: batch003_motion_trajectory .......   Passed    0.01 sec
+      Start  4: batch003_motion_adaptive
+ 4/36 Test  #4: batch003_motion_adaptive .........   Passed    0.64 sec
+      Start  5: batch003_motion_selection
+ 5/36 Test  #5: batch003_motion_selection ........   Passed    0.20 sec
+      Start  6: batch003_motion_contacts
+ 6/36 Test  #6: batch003_motion_contacts .........   Passed    3.87 sec
+      Start  7: batch003_motion_execution
+ 7/36 Test  #7: batch003_motion_execution ........   Passed    2.37 sec
+      Start  8: batch003_motion_failures
+ 8/36 Test  #8: batch003_motion_failures .........   Passed    0.95 sec
+      Start  9: batch003_motion_diagnostics
+ 9/36 Test  #9: batch003_motion_diagnostics ......   Passed    0.02 sec
+      Start 10: batch003_ik_branches
+10/36 Test #10: batch003_ik_branches .............   Passed    0.02 sec
+      Start 11: batch003_ik_boundaries
+11/36 Test #11: batch003_ik_boundaries ...........   Passed    0.04 sec
+      Start 12: batch003_ik_wrist
+12/36 Test #12: batch003_ik_wrist ................   Passed    0.02 sec
+      Start 13: batch003_ik_inputs
+13/36 Test #13: batch003_ik_inputs ...............   Passed    0.01 sec
+      Start 14: batch003_ik_geometry
+14/36 Test #14: batch003_ik_geometry .............   Passed    0.01 sec
+      Start 15: batch003_ik_isolation
+15/36 Test #15: batch003_ik_isolation ............   Passed    0.02 sec
+      Start 16: batch003_ik_generated
+16/36 Test #16: batch003_ik_generated ............   Passed    0.73 sec
+      Start 17: batch002_targeted
+17/36 Test #17: batch002_targeted ................   Passed    0.02 sec
+      Start 18: batch002_fuzz
+18/36 Test #18: batch002_fuzz ....................   Passed    0.19 sec
+      Start 19: batch002_integration
+19/36 Test #19: batch002_integration .............   Passed    0.18 sec
+      Start 20: models
+20/36 Test #20: models ...........................   Passed    0.01 sec
+      Start 21: fk
+21/36 Test #21: fk ...............................   Passed    0.01 sec
+      Start 22: validation
+22/36 Test #22: validation .......................   Passed    0.01 sec
+      Start 23: feasibility
+23/36 Test #23: feasibility ......................   Passed    0.01 sec
+      Start 24: config
+24/36 Test #24: config ...........................   Passed    0.01 sec
+      Start 25: isolation
+25/36 Test #25: isolation ........................   Passed    0.01 sec
+      Start 26: reset
+26/36 Test #26: reset ............................   Passed    0.02 sec
+      Start 27: actuators
+27/36 Test #27: actuators ........................   Passed    0.02 sec
+      Start 28: lifetime
+28/36 Test #28: lifetime .........................   Passed    0.13 sec
+      Start 29: trace
+29/36 Test #29: trace ............................   Passed    0.01 sec
+      Start 30: cli_repro_3
+30/36 Test #30: cli_repro_3 ......................   Passed    0.13 sec
+      Start 31: cli_repro_4
+31/36 Test #31: cli_repro_4 ......................   Passed    0.14 sec
+      Start 34: ruckig_qualification
+32/36 Test #34: ruckig_qualification .............   Passed    0.04 sec
+      Start 33: ruckig_diagnostics
+33/36 Test #33: ruckig_diagnostics ...............   Passed    1.99 sec
+      Start 32: ruckig_diagnostics_analysis
+34/36 Test #32: ruckig_diagnostics_analysis ......   Passed    2.12 sec
+      Start 35: ruckig_adapter_execution
+35/36 Test #35: ruckig_adapter_execution .........   Passed    1.14 sec
+      Start 36: ruckig_benchmark
+36/36 Test #36: ruckig_benchmark .................   Passed    6.21 sec
+
+100% tests passed out of 36
+
+Total Test time (real) =  22.53 sec
+Qualification: 0 unexpected failures
+104 comparisons; 96 actuator executions; 78 settled; 0 unexpected failures
+Qualification: 0 unexpected failures
+24 diagnostic runs; 0 failures
+Validated 24 runs; wrote comparison, per-joint peaks and SHA256 CSVs
+
+Final checks:
+python3 experiments/ruckig/analyze_diagnostics.py experiments/ruckig/results/diagnostics --baseline experiments/ruckig/results/comparison.csv
+PASS: compressed traces validated
+ctest --test-dir build-ruckig -R ruckig_diagnostics --output-on-failure
+PASS: 3/3 including qualification fixture
+cmp experiments/ruckig/results/comparison.csv build-ruckig/diagnostic-campaign/comparison.csv
+PASS: original 104-row comparison report byte-identical
+git diff --check
+PASS

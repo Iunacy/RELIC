@@ -21,3 +21,9 @@
 !/experiments/ruckig/**/*.md
 !/experiments/ruckig/*.md
 !/experiments/ruckig/results/*.csv
+
+!/experiments/ruckig/results/diagnostics/*.csv
+
+/experiments/ruckig/results/diagnostics/*.csv.gz
+/experiments/ruckig/results/diagnostics/model_*.xml
+/experiments/ruckig/results/diagnostics/nominal.png

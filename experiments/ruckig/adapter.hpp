@@ -1,6 +1,7 @@
 #pragma once
 #include "profile.hpp"
 #include "relic/motion.hpp"
+#include <functional>
 
 namespace relic_experiment {
 struct Generated { relic::JointTrajectory trajectory; Samples audit; };
@@ -26,9 +27,11 @@ struct Run {
   std::size_t saturated_joint_ticks=0,contact_observations=0;
   double preflight_wall_ms=0,execution_wall_ms=0;
 };
+using Observer = std::function<void(const relic::Simulation&,std::size_t tick,
+  const char* stage,bool settling)>;
 // Always preflights; no API accepting an unverified admission token.
 Run execute(relic::Simulation&,const relic::JointTrajectory&,const Vec&,const Vec&,
   const relic::MotionOptions&,const relic::ContactPolicy& policy = {},relic::TraceWriter* trace=nullptr,
-  std::size_t collision_budget=500000);
+  std::size_t collision_budget=500000,const Observer& observer = {});
 Samples linear_diagnostics(const relic::JointTrajectory&);
 }

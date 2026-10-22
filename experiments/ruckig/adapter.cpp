@@ -79,7 +79,7 @@ Preflight preflight(Simulation& sim,const JointTrajectory& t,const Vec& start,co
   return fail(MotionStatus::Success,"sampled preflight admitted; no continuous collision guarantee");
 }
 Run execute(Simulation& sim,const JointTrajectory& t,const Vec& start,const Vec& goal,const MotionOptions& o,
-  const ContactPolicy& policy,TraceWriter* trace,std::size_t budget) {
+  const ContactPolicy& policy,TraceWriter* trace,std::size_t budget,const Observer& observer) {
   Run out;
   const auto preflight_start=Clock::now(); out.admission=preflight(sim,t,start,goal,o,policy,budget);
   out.preflight_wall_ms=elapsed(preflight_start);out.status=out.admission.status;
@@ -130,13 +130,16 @@ Run execute(Simulation& sim,const JointTrajectory& t,const Vec& start,const Vec&
     sim.reset(start);out.started=true;previous_velocity=sim.snapshot().velocity_rad_s;
     auto health=capture(false);if(health!=MotionStatus::Success)return finish(health);
     if(trace)trace->append(sim.snapshot());
+    if(observer)observer(sim,0,"initial",t.commands.size()==1);
     for(std::size_t k=1;k<t.commands.size();++k) {
       if(ticks>=max_ticks)return finish(MotionStatus::Timeout);
       sim.set_position_commands(t.commands[k]);health=capture(false);
       if(k==1)out.first_command_did_not_teleport=sim.snapshot().observed_rad==start;
       if(health!=MotionStatus::Success)return finish(health);
+      if(observer)observer(sim,ticks+1,"pre",false);
       sim.step();++ticks;out.executed_command_s=static_cast<double>(ticks)*dt;
       health=capture(true);if(trace)trace->append(sim.snapshot());
+      if(observer)observer(sim,ticks,"post",false);
       if(health!=MotionStatus::Success)return finish(health);
     }
     out.command_completed=true;out.command_end_joint_error=out.final_joint_error;out.command_end_cartesian_error=out.final_cartesian_error;
@@ -144,7 +147,9 @@ Run execute(Simulation& sim,const JointTrajectory& t,const Vec& start,const Vec&
     while(ticks<max_ticks) {
       sim.set_position_commands(t.commands.back());health=capture(false);
       if(health!=MotionStatus::Success)return finish(health);
+      if(observer)observer(sim,ticks+1,"pre",true);
       sim.step();++ticks;health=capture(true);if(trace)trace->append(sim.snapshot());
+      if(observer)observer(sim,ticks,"post",true);
       if(health!=MotionStatus::Success)return finish(health);
       bool acceptable=out.final_joint_error<=o.joint_tolerance_rad && out.final_cartesian_error<=o.cartesian_tolerance_m;
       for(double v:sim.snapshot().velocity_rad_s)acceptable &= std::abs(v)<=o.settling_velocity_rad_s;

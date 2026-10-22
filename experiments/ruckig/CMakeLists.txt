@@ -15,13 +15,22 @@ target_link_libraries(relic_ruckig_qualification PRIVATE relic_ruckig_qualificat
 add_library(relic_ruckig_adapter STATIC adapter.cpp)
 target_link_libraries(relic_ruckig_adapter PUBLIC relic_sim ruckig::ruckig)
 target_compile_options(relic_ruckig_adapter PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
-foreach(target IN ITEMS benchmark adapter_tests)
+foreach(target IN ITEMS benchmark adapter_tests diagnostics)
   add_executable(relic_ruckig_${target} ${target}.cpp)
   target_link_libraries(relic_ruckig_${target} PRIVATE relic_ruckig_adapter)
   target_compile_options(relic_ruckig_${target} PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wshadow)
 endforeach()
 target_link_libraries(relic_ruckig_benchmark PRIVATE relic_ruckig_qualification_core)
+target_link_libraries(relic_ruckig_diagnostics PRIVATE relic_ruckig_qualification_core)
 if(BUILD_TESTING)
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+  add_test(NAME ruckig_diagnostics_analysis COMMAND "${Python3_EXECUTABLE}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/analyze_diagnostics.py" "${CMAKE_CURRENT_BINARY_DIR}/diagnostics"
+    --baseline "${CMAKE_CURRENT_SOURCE_DIR}/results/comparison.csv")
+  set_tests_properties(ruckig_diagnostics_analysis PROPERTIES TIMEOUT 60 FIXTURES_REQUIRED ruckig_diagnostics_recorded)
+  add_test(NAME ruckig_diagnostics COMMAND relic_ruckig_diagnostics "${PROJECT_SOURCE_DIR}/examples"
+    "${CMAKE_CURRENT_BINARY_DIR}/diagnostics")
+  set_tests_properties(ruckig_diagnostics PROPERTIES TIMEOUT 120 FIXTURES_REQUIRED ruckig_qualified FIXTURES_SETUP ruckig_diagnostics_recorded)
   add_test(NAME ruckig_qualification COMMAND relic_ruckig_qualification
     "${CMAKE_CURRENT_BINARY_DIR}/qualification.csv")
   set_tests_properties(ruckig_qualification PROPERTIES TIMEOUT 60 FIXTURES_SETUP ruckig_qualified)

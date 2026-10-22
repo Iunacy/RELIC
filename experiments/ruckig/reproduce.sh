@@ -13,3 +13,6 @@ cmake --build "$root/build-ruckig" -j 4
 ctest --test-dir "$root/build-ruckig" --output-on-failure
 # This executable re-runs qualification before creating any actuator execution.
 "$root/build-ruckig/experiments/ruckig/relic_ruckig_benchmark" "$root/examples" "$out"
+
+"$root/build-ruckig/experiments/ruckig/relic_ruckig_diagnostics" "$root/examples" "$out/diagnostics"
+python3 "$here/analyze_diagnostics.py" "$out/diagnostics" --baseline "$here/results/comparison.csv"
