@@ -1,0 +1,542 @@
+[
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_left",
+    "target_m": [
+      -0.2006274488061473,
+      -0.14688433770029863,
+      0.1970571089639616
+    ],
+    "controller": "conventional",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -0.6500449306318902,
+      -0.4156043310553016,
+      -0.4752657686251137,
+      0.3093369087360603,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 100.0,
+      "friction": 0.2
+    },
+    "metrics": {
+      "rmse_rad": 0.01210377612746958,
+      "peak_rad": 0.04192056306170211,
+      "command_end_m": 0.0007348408727922396,
+      "final_m": 0.0007173664423675597,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 5.658207948999916,
+      "measured_motion_rad": 0.6488421762329603,
+      "fallbacks": 0
+    },
+    "degraded": false
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_left",
+    "target_m": [
+      -0.2006274488061473,
+      -0.14688433770029863,
+      0.1970571089639616
+    ],
+    "controller": "integral",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -0.6500449306318902,
+      -0.4156043310553016,
+      -0.4752657686251137,
+      0.3093369087360603,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 100.0,
+      "friction": 0.2
+    },
+    "metrics": {
+      "rmse_rad": 0.0005110500128421055,
+      "peak_rad": 0.001633709103214952,
+      "command_end_m": 5.4726584314773e-05,
+      "final_m": 9.700290337720791e-05,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 5.875119058000564,
+      "measured_motion_rad": 0.6502392455471019,
+      "fallbacks": 0
+    },
+    "degraded": false
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_center",
+    "target_m": [
+      -0.2507214807849631,
+      0.011746999999999992,
+      0.20602695837149357
+    ],
+    "controller": "conventional",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -7.359848010667865e-07,
+      -0.5332417369256742,
+      -0.6366716278479808,
+      0.3875331121175631,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 100.0,
+      "friction": 0.2
+    },
+    "metrics": {
+      "rmse_rad": 0.008037148954173548,
+      "peak_rad": 0.023928305919866055,
+      "command_end_m": 0.0009876363480666602,
+      "final_m": 0.000979980164315834,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 5.323077295997791,
+      "measured_motion_rad": 0.3341549227732074,
+      "fallbacks": 0
+    },
+    "degraded": false
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_center",
+    "target_m": [
+      -0.2507214807849631,
+      0.011746999999999992,
+      0.20602695837149357
+    ],
+    "controller": "integral",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -7.359848010667865e-07,
+      -0.5332417369256742,
+      -0.6366716278479808,
+      0.3875331121175631,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 100.0,
+      "friction": 0.2
+    },
+    "metrics": {
+      "rmse_rad": 0.0003690382480657432,
+      "peak_rad": 0.0013636503346228235,
+      "command_end_m": 2.415355244774395e-05,
+      "final_m": 1.070150925547547e-05,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 5.440725454998756,
+      "measured_motion_rad": 0.3369660564178188,
+      "fallbacks": 0
+    },
+    "degraded": false
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_right",
+    "target_m": [
+      -0.18640919938978476,
+      0.16558753046341015,
+      0.1970571089639616
+    ],
+    "controller": "conventional",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      0.6500373608320514,
+      -0.4155944917426591,
+      -0.4753420278672541,
+      0.3091666361259911,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 100.0,
+      "friction": 0.2
+    },
+    "metrics": {
+      "rmse_rad": 0.012104307436595223,
+      "peak_rad": 0.04192010170010374,
+      "command_end_m": 0.0007408724542010703,
+      "final_m": 0.0007243965695281702,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 5.624360223002441,
+      "measured_motion_rad": 0.6488346086394844,
+      "fallbacks": 0
+    },
+    "degraded": false
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_right",
+    "target_m": [
+      -0.18640919938978476,
+      0.16558753046341015,
+      0.1970571089639616
+    ],
+    "controller": "integral",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      0.6500373608320514,
+      -0.4155944917426591,
+      -0.4753420278672541,
+      0.3091666361259911,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 100.0,
+      "friction": 0.2
+    },
+    "metrics": {
+      "rmse_rad": 0.0005110619253931639,
+      "peak_rad": 0.0016337050231874273,
+      "command_end_m": 5.28388310387477e-05,
+      "final_m": 9.431676822522483e-05,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 5.700926919998892,
+      "measured_motion_rad": 0.6502316765490797,
+      "fallbacks": 0
+    },
+    "degraded": false
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_left",
+    "target_m": [
+      -0.2006274488061473,
+      -0.14688433770029863,
+      0.1970571089639616
+    ],
+    "controller": "conventional",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -0.6500449306318902,
+      -0.4156043310553016,
+      -0.4752657686251137,
+      0.3093369087360603,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 40.0,
+      "friction": 0.35
+    },
+    "metrics": {
+      "rmse_rad": 0.031881224934638484,
+      "peak_rad": 0.10663765541489023,
+      "command_end_m": 0.004643286206502392,
+      "final_m": 0.00224167758596764,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 7.015977696999471,
+      "measured_motion_rad": 0.642028486059228,
+      "fallbacks": 0
+    },
+    "degraded": true
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_left",
+    "target_m": [
+      -0.2006274488061473,
+      -0.14688433770029863,
+      0.1970571089639616
+    ],
+    "controller": "integral",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -0.6500449306318902,
+      -0.4156043310553016,
+      -0.4752657686251137,
+      0.3093369087360603,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 40.0,
+      "friction": 0.35
+    },
+    "metrics": {
+      "rmse_rad": 0.005925728824511807,
+      "peak_rad": 0.019491616784235888,
+      "command_end_m": 0.004015424295785321,
+      "final_m": 0.0009362295581017209,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 6.948548252003093,
+      "measured_motion_rad": 0.652885233765853,
+      "fallbacks": 0
+    },
+    "degraded": true
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_center",
+    "target_m": [
+      -0.2507214807849631,
+      0.011746999999999992,
+      0.20602695837149357
+    ],
+    "controller": "conventional",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -7.359848010667865e-07,
+      -0.5332417369256742,
+      -0.6366716278479808,
+      0.3875331121175631,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 40.0,
+      "friction": 0.35
+    },
+    "metrics": {
+      "rmse_rad": 0.021754636208921412,
+      "peak_rad": 0.06257465161131298,
+      "command_end_m": 0.0023807787417681474,
+      "final_m": 0.0024887343918444634,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 6.132198019000498,
+      "measured_motion_rad": 0.32561314960692905,
+      "fallbacks": 0
+    },
+    "degraded": true
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_center",
+    "target_m": [
+      -0.2507214807849631,
+      0.011746999999999992,
+      0.20602695837149357
+    ],
+    "controller": "integral",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      -7.359848010667865e-07,
+      -0.5332417369256742,
+      -0.6366716278479808,
+      0.3875331121175631,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 40.0,
+      "friction": 0.35
+    },
+    "metrics": {
+      "rmse_rad": 0.004078437597380935,
+      "peak_rad": 0.011687721916056326,
+      "command_end_m": 0.0005108735367375988,
+      "final_m": 0.00018198112134336063,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 6.08244957900024,
+      "measured_motion_rad": 0.33939791200879793,
+      "fallbacks": 0
+    },
+    "degraded": true
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_right",
+    "target_m": [
+      -0.18640919938978476,
+      0.16558753046341015,
+      0.1970571089639616
+    ],
+    "controller": "conventional",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      0.6500373608320514,
+      -0.4155944917426591,
+      -0.4753420278672541,
+      0.3091666361259911,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 40.0,
+      "friction": 0.35
+    },
+    "metrics": {
+      "rmse_rad": 0.031882888691073794,
+      "peak_rad": 0.10663653436417614,
+      "command_end_m": 0.004600335075172413,
+      "final_m": 0.002231439080785589,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 6.802752655999939,
+      "measured_motion_rad": 0.6420209197874864,
+      "fallbacks": 0
+    },
+    "degraded": true
+  },
+  {
+    "schema": "relic.interactive.v1",
+    "robot": "menagerie",
+    "target_id": "target_right",
+    "target_m": [
+      -0.18640919938978476,
+      0.16558753046341015,
+      0.1970571089639616
+    ],
+    "controller": "integral",
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "initial_q": [
+      0.0,
+      -0.25,
+      -0.3,
+      0.35,
+      0.0,
+      -0.65
+    ],
+    "goal_q": [
+      0.6500373608320514,
+      -0.4155944917426591,
+      -0.4753420278672541,
+      0.3091666361259911,
+      0.0,
+      -0.65
+    ],
+    "physics": {
+      "gain": 40.0,
+      "friction": 0.35
+    },
+    "metrics": {
+      "rmse_rad": 0.005926019517097022,
+      "peak_rad": 0.019491421716293117,
+      "command_end_m": 0.003980724970271056,
+      "final_m": 0.0009068604689262892,
+      "simulation_s": 5.001999999999671,
+      "wall_s": 7.37614757999836,
+      "measured_motion_rad": 0.6528776496910657,
+      "fallbacks": 0
+    },
+    "degraded": true
+  }
+]

@@ -1,0 +1,77 @@
+Test project /home/iris/RELIC/build-interactive
+      Start  1: interactive_integration
+      Start  7: batch003_motion_contacts
+      Start 34: adaptive_pipeline
+      Start 36: adaptive_revision
+ 1/36 Test  #7: batch003_motion_contacts .........   Passed    5.22 sec
+      Start 35: adaptive_learning
+ 2/36 Test #34: adaptive_pipeline ................   Passed    5.41 sec
+      Start  8: batch003_motion_execution
+ 3/36 Test #36: adaptive_revision ................   Passed    5.88 sec
+      Start  3: batch003_cartesian_repro_4
+ 4/36 Test  #3: batch003_cartesian_repro_4 .......   Passed    1.27 sec
+      Start  9: batch003_motion_failures
+ 5/36 Test  #8: batch003_motion_execution ........   Passed    2.44 sec
+      Start 17: batch003_ik_generated
+ 6/36 Test  #9: batch003_motion_failures .........   Passed    1.02 sec
+      Start  5: batch003_motion_adaptive
+ 7/36 Test #17: batch003_ik_generated ............   Passed    0.83 sec
+      Start 20: batch002_integration
+ 8/36 Test #20: batch002_integration .............   Passed    0.26 sec
+      Start 19: batch002_fuzz
+ 9/36 Test  #5: batch003_motion_adaptive .........   Passed    0.82 sec
+      Start 31: cli_repro_3
+10/36 Test #31: cli_repro_3 ......................   Passed    0.16 sec
+      Start 10: batch003_motion_diagnostics
+11/36 Test #10: batch003_motion_diagnostics ......   Passed    0.03 sec
+      Start 32: cli_repro_4
+12/36 Test #19: batch002_fuzz ....................   Passed    0.24 sec
+      Start  6: batch003_motion_selection
+13/36 Test #32: cli_repro_4 ......................   Passed    0.19 sec
+      Start 29: lifetime
+14/36 Test #29: lifetime .........................   Passed    0.16 sec
+      Start  2: batch003_cartesian_repro_3
+15/36 Test  #6: batch003_motion_selection ........   Passed    0.35 sec
+      Start 23: validation
+16/36 Test #23: validation .......................   Passed    0.01 sec
+      Start 22: fk
+17/36 Test #22: fk ...............................   Passed    0.02 sec
+      Start 12: batch003_ik_boundaries
+18/36 Test #12: batch003_ik_boundaries ...........   Passed    0.06 sec
+      Start 21: models
+19/36 Test #21: models ...........................   Passed    0.01 sec
+      Start 24: feasibility
+20/36 Test #24: feasibility ......................   Passed    0.01 sec
+      Start 11: batch003_ik_branches
+21/36 Test #11: batch003_ik_branches .............   Passed    0.03 sec
+      Start 18: batch002_targeted
+22/36 Test #18: batch002_targeted ................   Passed    0.03 sec
+      Start 27: reset
+23/36 Test  #2: batch003_cartesian_repro_3 .......   Passed    0.18 sec
+      Start 25: config
+24/36 Test #25: config ...........................   Passed    0.01 sec
+      Start 33: adaptive_native
+25/36 Test #27: reset ............................   Passed    0.04 sec
+      Start 28: actuators
+26/36 Test #33: adaptive_native ..................   Passed    0.02 sec
+      Start 16: batch003_ik_isolation
+27/36 Test #28: actuators ........................   Passed    0.03 sec
+      Start 26: isolation
+28/36 Test #26: isolation ........................   Passed    0.01 sec
+      Start  4: batch003_motion_trajectory
+29/36 Test #16: batch003_ik_isolation ............   Passed    0.04 sec
+      Start 13: batch003_ik_wrist
+30/36 Test  #4: batch003_motion_trajectory .......   Passed    0.01 sec
+      Start 30: trace
+31/36 Test #30: trace ............................   Passed    0.01 sec
+      Start 15: batch003_ik_geometry
+32/36 Test #13: batch003_ik_wrist ................   Passed    0.02 sec
+      Start 14: batch003_ik_inputs
+33/36 Test #15: batch003_ik_geometry .............   Passed    0.01 sec
+34/36 Test #14: batch003_ik_inputs ...............   Passed    0.01 sec
+35/36 Test #35: adaptive_learning ................   Passed    4.66 sec
+36/36 Test  #1: interactive_integration ..........   Passed   32.84 sec
+
+100% tests passed out of 36
+
+Total Test time (real) =  32.85 sec

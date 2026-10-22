@@ -1,0 +1,16 @@
+{
+  "starting_branch": "feature/adaptive-v0-validation",
+  "starting_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+  "integration_branch": "feature/interactive-physical-ai",
+  "preserved_root_diffs": {
+    ".gitignore": "diff --git a/.gitignore b/.gitignore\nindex 31c360a..b1f9871 100644\n--- a/.gitignore\n+++ b/.gitignore\n@@ -13,8 +13,10 @@\n *.o\n *.a\n *.lib\n-\n+!/experiments/double_s/README.md\n+!/experiments/double_s/results.csv\n /adaptive/data/\n /adaptive/runs/\n /adaptive/__pycache__/\n+!/adaptive/*.md\n !/README.md\n",
+    "CMakeLists.txt": "diff --git a/CMakeLists.txt b/CMakeLists.txt\nindex 35e80ff..caa83f7 100644\n--- a/CMakeLists.txt\n+++ b/CMakeLists.txt\n@@ -59,6 +59,10 @@ endfunction()\n relic_executable(relic_cli src/main.cpp)\n relic_executable(relic_cartesian_demo src/cartesian_demo.cpp)\n include(CTest)\n+option(RELIC_DOUBLE_S_EXPERIMENT \"Build isolated pinned InterpolateCpp numerical audit\" OFF)\n+if(RELIC_DOUBLE_S_EXPERIMENT)\n+  add_subdirectory(experiments/double_s)\n+endif()\n if(BUILD_TESTING)\n   relic_executable(relic_motion_tests tests/motion_tests.cpp)\n   relic_executable(relic_motion_benchmark tests/motion_benchmark.cpp)\n"
+  },
+  "unchanged_historical_tracked_paths": [],
+  "ruckig": {
+    "branch": "experiment/ruckig-benchmark",
+    "commit": "f0ff3e2ff7ec19d6e957499f2b0cb63aee1c42e3",
+    "status": " M .gitignore\n M experiments/ruckig/CMakeLists.txt\n M experiments/ruckig/README.md\n M experiments/ruckig/adapter.cpp\n M experiments/ruckig/adapter.hpp\n M experiments/ruckig/reproduce.sh\n?? experiments/ruckig/analyze_diagnostics.py\n?? experiments/ruckig/diagnostics.cpp\n?? experiments/ruckig/results/diagnostics/\n?? experiments/ruckig/results/tracking_diagnostics.md\n",
+    "diff_sha256": "7569507ed8880d244c83ab8d968108ca4faef91f7510d7034bb0c31493cbbdbe"
+  }
+}

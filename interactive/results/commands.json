@@ -1,0 +1,23 @@
+{
+  "commands": [
+    "git switch -c feature/interactive-physical-ai",
+    "ctest --test-dir build-adaptive-validation --output-on-failure -j4",
+    "bash interactive/setup.sh",
+    "ctest --test-dir build-interactive --output-on-failure -j4",
+    "/home/iris/.local/share/venvs/robotics-ml/bin/python -m interactive.tests",
+    "cmake -S interactive -B build-interactive-sanitize -DMUJOCO_ROOT=/home/iris/.local/opt/mujoco-3.16.0 -DPython3_EXECUTABLE=/home/iris/.local/share/venvs/robotics-ml/bin/python -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=\"-fsanitize=address,undefined -fno-omit-frame-pointer\" -DCMAKE_EXE_LINKER_FLAGS=\"-fsanitize=address,undefined\"",
+    "cmake --build build-interactive-sanitize --target relic_interactive -j4",
+    "ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 RELIC_INTERACTIVE_EXE=/home/iris/RELIC/build-interactive-sanitize/relic_interactive /home/iris/.local/share/venvs/robotics-ml/bin/python -m unittest interactive.tests.NativeBridge",
+    "/home/iris/.local/share/venvs/robotics-ml/bin/python -m interactive.qualify --robot synthetic --output interactive/runs/native-final-pinned",
+    "/home/iris/.local/share/venvs/robotics-ml/bin/python -m interactive.demo --robot synthetic --target target_left --degraded --no-capture --output interactive/runs/synthetic-qual",
+    "/home/iris/.local/share/venvs/robotics-ml/bin/python -m interactive.arm --target target_right --output interactive/runs/native-viewer-check",
+    "bash interactive/run.sh --port 8765",
+    "/home/iris/.local/share/venvs/robotics-ml/bin/python adaptive/revision/check_history.py",
+    "ffprobe -v error -show_entries format=duration,size -of json interactive/runs/imported-demo.mp4"
+  ],
+  "notes": [
+    "Imported 12-run qualification was executed with the initial fixed-output qualification script before its refactor to unique output directories.",
+    "UI comparisons and capture used an actual per-run UUID directory; see interactive_comparison.json for that run ID.",
+    "Every API test used an explicitly local mock endpoint; no Nebius credentials were present."
+  ]
+}

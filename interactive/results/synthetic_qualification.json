@@ -1,0 +1,902 @@
+[
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      -0.55,
+      -0.649999999999999,
+      0.6499999999999982,
+      0
+    ],
+    "target_m": [
+      0.4510148976728164,
+      -0.26478971716345856,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.021276408940549277,
+      "peak_rad": 0.04116450923990489,
+      "command_end_m": 0.022252156693256774,
+      "final_m": 0.002537846874742318,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_left",
+    "controller": "conventional",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      -0.55,
+      -0.649999999999999,
+      0.6499999999999982,
+      0
+    ],
+    "target_m": [
+      0.4510148976728164,
+      -0.26478971716345856,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.0027044818120347596,
+      "peak_rad": 0.017175446124271188,
+      "command_end_m": 1.805835775122738e-05,
+      "final_m": 3.876179607531322e-06,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_left",
+    "controller": "integral",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      -0.55,
+      -0.649999999999999,
+      0.6499999999999982,
+      0
+    ],
+    "target_m": [
+      0.4510148976728164,
+      -0.26478971716345856,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.0027558431398852965,
+      "peak_rad": 0.017515110314034854,
+      "command_end_m": 0.00020700066728602005,
+      "final_m": 0.00010682883231013379,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_left",
+    "controller": "mlp",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      3.4372596999579508e-18,
+      -0.7500000000000002,
+      0.8000000000000003,
+      0
+    ],
+    "target_m": [
+      0.5044979614031597,
+      0.010000000000000002,
+      0.3958651020253301
+    ],
+    "metrics": {
+      "rmse_rad": 0.024732150092719923,
+      "peak_rad": 0.03996339945188376,
+      "command_end_m": 0.010318065104521965,
+      "final_m": 0.002340948361439923,
+      "simulation_s": 2.7519999999999185,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_center",
+    "controller": "conventional",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      3.4372596999579508e-18,
+      -0.7500000000000002,
+      0.8000000000000003,
+      0
+    ],
+    "target_m": [
+      0.5044979614031597,
+      0.010000000000000002,
+      0.3958651020253301
+    ],
+    "metrics": {
+      "rmse_rad": 0.004891911765423792,
+      "peak_rad": 0.018355889220640464,
+      "command_end_m": 4.955556154363968e-05,
+      "final_m": 8.869211978467885e-07,
+      "simulation_s": 2.7519999999999185,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_center",
+    "controller": "integral",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      3.4372596999579508e-18,
+      -0.7500000000000002,
+      0.8000000000000003,
+      0
+    ],
+    "target_m": [
+      0.5044979614031597,
+      0.010000000000000002,
+      0.3958651020253301
+    ],
+    "metrics": {
+      "rmse_rad": 0.0049347228951699875,
+      "peak_rad": 0.019457950554945813,
+      "command_end_m": 0.00045019081964941583,
+      "final_m": 0.00016021256592730506,
+      "simulation_s": 2.7519999999999185,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_center",
+    "controller": "mlp",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      0.55,
+      -0.6499999999999991,
+      0.6499999999999984,
+      0
+    ],
+    "target_m": [
+      0.4405611530942032,
+      0.2818402076046487,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.021276408940549288,
+      "peak_rad": 0.04116450923990489,
+      "command_end_m": 0.022346909801551185,
+      "final_m": 0.0025378468754429398,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_right",
+    "controller": "conventional",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      0.55,
+      -0.6499999999999991,
+      0.6499999999999984,
+      0
+    ],
+    "target_m": [
+      0.4405611530942032,
+      0.2818402076046487,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.00270448181203476,
+      "peak_rad": 0.017175446124271188,
+      "command_end_m": 1.8121909581506117e-05,
+      "final_m": 3.879116598314947e-06,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_right",
+    "controller": "integral",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      0.55,
+      -0.6499999999999991,
+      0.6499999999999984,
+      0
+    ],
+    "target_m": [
+      0.4405611530942032,
+      0.2818402076046487,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.0027566170139051538,
+      "peak_rad": 0.017342803137736618,
+      "command_end_m": 0.00010382642398001626,
+      "final_m": 0.00016608467981675767,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_right",
+    "controller": "mlp",
+    "physics": {
+      "gain_scale": 1.0,
+      "damping_scale": 1.0,
+      "friction_Nm": 0.0
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": false,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "NonConvergence",
+    "reason": "final_pose_or_velocity_tolerance",
+    "success": false,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      -0.55,
+      -0.649999999999999,
+      0.6499999999999982,
+      0
+    ],
+    "target_m": [
+      0.4510148976728164,
+      -0.26478971716345856,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.05134525732363839,
+      "peak_rad": 0.11027520202794705,
+      "command_end_m": 0.05981962697975601,
+      "final_m": 0.006690987291033875,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_left",
+    "controller": "conventional",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      -0.55,
+      -0.649999999999999,
+      0.6499999999999982,
+      0
+    ],
+    "target_m": [
+      0.4510148976728164,
+      -0.26478971716345856,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.013656557901838009,
+      "peak_rad": 0.04631392484173089,
+      "command_end_m": 0.0025072051277428677,
+      "final_m": 0.00020550176354943353,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_left",
+    "controller": "integral",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      -0.55,
+      -0.649999999999999,
+      0.6499999999999982,
+      0
+    ],
+    "target_m": [
+      0.4510148976728164,
+      -0.26478971716345856,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.012780849811692271,
+      "peak_rad": 0.04631078492491478,
+      "command_end_m": 0.003649110764850453,
+      "final_m": 0.00011937822642515018,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_left",
+    "controller": "mlp",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "NonConvergence",
+    "reason": "final_pose_or_velocity_tolerance",
+    "success": false,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      3.4372596999579508e-18,
+      -0.7500000000000002,
+      0.8000000000000003,
+      0
+    ],
+    "target_m": [
+      0.5044979614031597,
+      0.010000000000000002,
+      0.3958651020253301
+    ],
+    "metrics": {
+      "rmse_rad": 0.05291250931793572,
+      "peak_rad": 0.10110801968170469,
+      "command_end_m": 0.026002272964074428,
+      "final_m": 0.0062766071580422945,
+      "simulation_s": 2.7519999999999185,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_center",
+    "controller": "conventional",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      3.4372596999579508e-18,
+      -0.7500000000000002,
+      0.8000000000000003,
+      0
+    ],
+    "target_m": [
+      0.5044979614031597,
+      0.010000000000000002,
+      0.3958651020253301
+    ],
+    "metrics": {
+      "rmse_rad": 0.02469876695684441,
+      "peak_rad": 0.048030346200054974,
+      "command_end_m": 0.004151026171978968,
+      "final_m": 0.00017697801806627325,
+      "simulation_s": 2.7519999999999185,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_center",
+    "controller": "integral",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      3.4372596999579508e-18,
+      -0.7500000000000002,
+      0.8000000000000003,
+      0
+    ],
+    "target_m": [
+      0.5044979614031597,
+      0.010000000000000002,
+      0.3958651020253301
+    ],
+    "metrics": {
+      "rmse_rad": 0.024753069562268717,
+      "peak_rad": 0.04803034620017632,
+      "command_end_m": 0.004274786280327842,
+      "final_m": 0.00015916452621442115,
+      "simulation_s": 2.7519999999999185,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_center",
+    "controller": "mlp",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "NonConvergence",
+    "reason": "final_pose_or_velocity_tolerance",
+    "success": false,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      0.55,
+      -0.6499999999999991,
+      0.6499999999999984,
+      0
+    ],
+    "target_m": [
+      0.4405611530942032,
+      0.2818402076046487,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.05134525732363839,
+      "peak_rad": 0.11027520202794705,
+      "command_end_m": 0.06007169853814838,
+      "final_m": 0.006697174078258154,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_right",
+    "controller": "conventional",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      0.55,
+      -0.6499999999999991,
+      0.6499999999999984,
+      0
+    ],
+    "target_m": [
+      0.4405611530942032,
+      0.2818402076046487,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.013656557901838014,
+      "peak_rad": 0.04631392484173089,
+      "command_end_m": 0.002510171076521602,
+      "final_m": 0.00020651704598109995,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_right",
+    "controller": "integral",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  },
+  {
+    "status": "Success",
+    "reason": "completed",
+    "success": true,
+    "source_commit": "cf0e905fd41c3b32860cd19471cf95d32e376a8d",
+    "initial_q": [
+      0,
+      -0.5,
+      0.5,
+      0
+    ],
+    "goal_q": [
+      0.55,
+      -0.6499999999999991,
+      0.6499999999999984,
+      0
+    ],
+    "target_m": [
+      0.4405611530942032,
+      0.2818402076046487,
+      0.3894521936060911
+    ],
+    "metrics": {
+      "rmse_rad": 0.012817737367633216,
+      "peak_rad": 0.046310784924217405,
+      "command_end_m": 0.0038128128443235135,
+      "final_m": 0.00017437979395219352,
+      "simulation_s": 3.37599999999985,
+      "fallbacks": 0
+    },
+    "schema": "relic.interactive.v1",
+    "robot": "synthetic",
+    "target_id": "target_right",
+    "controller": "mlp",
+    "physics": {
+      "gain_scale": 0.4,
+      "damping_scale": 2.0,
+      "friction_Nm": 0.15
+    },
+    "assets": {
+      "examples/synthetic_4dof.cfg": "bddf08263b13128603a622e68f37d528c9ce021e92a12e1491e262408352573e",
+      "adaptive/revision/bounds.txt": "9deb9b9cf0269690e4971e97b29fda80835c52a5b90aeb362bfcdba18f0096c2",
+      "adaptive/revision/models/shared_full.txt": "bd3876187a3f1be21b5b5b11dc2ebceea1e91435ec55e7eab82cf3da30681761"
+    },
+    "failure_observation": null,
+    "trajectory": "production plan_cartesian_motion linear reference; zero acceleration feature except undefined endpoint discontinuities",
+    "learned_scope": "synthetic-only experimental residual on production-planned references; no imported-arm transfer",
+    "degraded": true,
+    "visualization": "sampled actual observed states replayed without interpolation"
+  }
+]

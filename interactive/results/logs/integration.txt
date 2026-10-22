@@ -1,0 +1,13 @@
+test_missing_key_and_endpoint (__main__.Actions.test_missing_key_and_endpoint) ... ok
+test_strict_actions (__main__.Actions.test_strict_actions) ... ok
+test_transport_and_logs (__main__.Actions.test_transport_and_logs) ... ok
+test_assets (__main__.ImportedArm.test_assets) ... ok
+test_contact_path_and_isolation (__main__.ImportedArm.test_contact_path_and_isolation) ... ok
+test_limits_mapping_targets (__main__.ImportedArm.test_limits_mapping_targets) ... ok
+test_repeatability_withdrawal (__main__.ImportedArm.test_repeatability_withdrawal) ... ok
+test_equivalent_and_repeatable (__main__.NativeBridge.test_equivalent_and_repeatable) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 26.998s
+
+OK

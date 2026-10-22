@@ -1,0 +1,70 @@
+{
+  "schema": "relic.interactive.validation.v1",
+  "date": "2026-10-22",
+  "batch_a": "qualified",
+  "batch_b": "offline_client_and_mock_tests_complete_live_pending_key",
+  "batch_c": "local_native_and_imported_execution_qualified",
+  "batch_d": "local_ui_replay_capture_and_tests_complete_live_acceptance_pending",
+  "baseline_suite": {
+    "passed": 35,
+    "total": 35,
+    "wall_s": 7.76
+  },
+  "final_suite": {
+    "passed": 36,
+    "total": 36,
+    "wall_s": 32.85
+  },
+  "integration_suite": {
+    "methods": 8,
+    "standalone_wall_s": 26.998
+  },
+  "sanitizers": {
+    "address": true,
+    "undefined": true,
+    "leak_detection": true,
+    "native_comparison_and_failure_tests": "passed",
+    "wall_s": 20.505
+  },
+  "measured_qualification": {
+    "imported_episodes": 12,
+    "synthetic_episodes": 18,
+    "scope": "three declared targets, nominal and one fixed degradation; demonstration qualification, not a generalization study"
+  },
+  "assets": {
+    "files": 28,
+    "bytes": 7270701,
+    "upstream_blob_ids_verified": true,
+    "unmodified": true,
+    "license": "Apache-2.0"
+  },
+  "video": {
+    "path": "interactive/runs/imported-demo.mp4",
+    "duration_s": 10.067316,
+    "bytes": 296356,
+    "kind": "sampled observed-state replay"
+  },
+  "live_nebius": {
+    "attempted": false,
+    "verified": false,
+    "reason": "user has not received API key"
+  },
+  "failure_history": [
+    {
+      "check": "initial NativeBridge injected-output test",
+      "result": "failed incorrect expectation of task Success",
+      "resolution": "preserved NonConvergence after safe withdrawal; test now checks baseline-equivalent failure plus bounded withdrawal, without changing success tolerance"
+    }
+  ],
+  "limitations": [
+    "No live NVIDIA inference until key arrives; mock tests explicitly labeled.",
+    "Imported-arm MLP transfer disabled; roll and gripper held by compliant servos.",
+    "No pick-and-place or object transport.",
+    "Finite sampled contacts are not continuous collision guarantees.",
+    "Learned synthetic model runs on production linear references rather than original quintic training references; small scene results do not supersede held-out study.",
+    "Native viewer emitted desktop libdecor/OpenGL warnings; browser EGL renderer qualified.",
+    "No top-level RELIC license file currently exists."
+  ],
+  "binary_sha256": "f191d16a41b3d220ad10ab760deb01068ecc0e6c4de9c8a5b54f4ff4356193d2",
+  "native_source_sha256": "95060d4ecd68cdff4e413e94ecb9c97814c529afc501350b5ae9ca03cd8cdab2"
+}
