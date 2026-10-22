@@ -21,3 +21,4 @@ fi
 "$relic_ml_python" adaptive/revision.py report
 "$relic_ml_python" adaptive/revision_plot.py adaptive/runs/revision-20261022
 python adaptive/revision_demo.py
+"$relic_ml_python" adaptive/revision/analytical_robustness.py

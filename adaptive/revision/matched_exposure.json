@@ -1,0 +1,19 @@
+{
+  "expert_bank_updates": 960,
+  "expert_union_sha256": "3eb91bc2685c75f78ee13cc6a0d95ecbb0c56edfe83d4b12995a1b55240c96a0",
+  "full_data_rows": 1409328,
+  "interpretation": "same union of training rows; equal total gradient updates and batch-size; expert bank has twice the parameter count",
+  "rows_per_embodiment": 60000,
+  "shared_union_sha256": "3eb91bc2685c75f78ee13cc6a0d95ecbb0c56edfe83d4b12995a1b55240c96a0",
+  "shared_updates": 960,
+  "validation_families": [
+    9202610220006,
+    9202610221924,
+    9202610224114,
+    9202610227170,
+    9202610227628,
+    9202610227788,
+    9202610229460,
+    9202610229592
+  ]
+}
