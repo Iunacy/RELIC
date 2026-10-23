@@ -1,7 +1,7 @@
 # Selected compatibility pins; runtime not yet executed on this workstation.
 isaacsim==5.1.0
 isaaclab==0.54.2
-numpy==1.26.4
+numpy==1.26.0
 torch==2.7.0
 torchvision==0.22.0
 pillow==11.3.0
