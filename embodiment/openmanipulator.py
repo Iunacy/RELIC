@@ -49,4 +49,6 @@ def bounded_reference(current, goal, dt):
         raise ValueError('invalid dt')
     if any(not lo <= value <= hi for value,(lo,hi) in zip(goal,LIMITS)):
         raise ValueError('joint limit')
-    return tuple(a+max(-.5*dt,min(.5*dt,b-a)) for a,b in zip(current,goal))
+    difference = tuple(b-a for a,b in zip(current,goal))
+    scale = min(1.,.5*dt/max(max(map(abs,difference)),1e-12))
+    return tuple(a+scale*delta for a,delta in zip(current,difference))

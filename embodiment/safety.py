@@ -96,7 +96,9 @@ class Guard:
 
     def tracking(self, obs: Observation, reference: tuple) -> str | None:
         finite(reference, len(self.config.joint_limits))
+        contact = any(value is True for value in obs.contacts.values())
         exceeds = any(abs(value - goal) > (self.config.tracking_error if i < self.config.arm_dof else self.config.finger_tracking_error)
+                      and not (i >= self.config.arm_dof and contact and goal <= value)
                       for i, (value, goal) in enumerate(zip(obs.joints, reference, strict=True)))
         if not exceeds:
             self.tracking_since = None
@@ -107,7 +109,7 @@ class Guard:
         return None
 
     def progress(self, obs: Observation, action: Action) -> str | None:
-        if math.dist(action.delta, (0., 0., 0.)) < .0001:
+        if math.dist(action.delta, (0., 0., 0.)) < .001:
             self.progress_since = None
             self.progress_origin = None
             return None

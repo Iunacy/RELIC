@@ -48,6 +48,12 @@ def validate_urdf(path=URDF):
     return joints
 
 
+def link_masses(path=URDF):
+    robot = ET.parse(path).getroot()
+    return {link.attrib['name']:float(link.find('inertial/mass').attrib['value'])
+            for link in robot.findall('link') if link.find('inertial/mass') is not None}
+
+
 def fetch(cache=ROOT / 'cache'):
     cache = Path(cache)
     for name, expected in MANIFEST['files'].items():

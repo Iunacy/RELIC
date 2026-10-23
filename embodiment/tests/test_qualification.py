@@ -4,6 +4,7 @@ from dataclasses import replace
 from embodiment.benchmark import BIN, COLORS, Observation, layout
 from embodiment.evaluation import metrics, wilson
 from embodiment.expert import Expert
+from embodiment.openmanipulator import bounded_reference,ik
 
 
 def observed(time, **changes):
@@ -47,6 +48,14 @@ class PhysicalEvidence(unittest.TestCase):
         action = expert.update(obs)
         self.assertEqual(expert.phase, 'release')
         self.assertEqual(action.gripper, 0.)
+
+    def test_bounded_ik_reference_preserves_downward_pitch(self):
+        current = ik((.17,0.,.085))
+        for goal in ((.19,-.05,.0285),(*BIN[:2],.065),(.15,.04,.085)):
+            desired = ik(goal)
+            projected = bounded_reference(current,desired,1/30)
+            self.assertAlmostEqual(sum(projected[1:]),math.pi/2)
+            self.assertTrue(all(abs(a-b) <= .5/30+1e-12 for a,b in zip(projected,current)))
 
     def test_wilson_reference_counts(self):
         low, high = wilson(18, 20)

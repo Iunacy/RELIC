@@ -3,6 +3,7 @@ import argparse
 from collections import Counter
 from datetime import datetime, timezone
 import json
+import hashlib
 from pathlib import Path
 import subprocess
 import sys
@@ -155,12 +156,17 @@ def main():
         completed = True
     except (Exception,SystemExit) as exc:
         error = f'{type(exc).__name__}: {exc}'
+        if 'backend' in locals():
+            try:
+                (known.output/'diagnostics.json').write_text(json.dumps(backend.diagnostics(),indent=2,allow_nan=False)+'\n')
+            except Exception:
+                pass
         (known.output/'error.txt').write_text(traceback.format_exc())
     finally:
         report = campaign_report(trials,executed,completed,error,known.mode,cases,known.robot)
         _save(known.output,report)
         if app is not None:
-            app.close()
+            app.close(wait_for_replicator=False)
     print(json.dumps(report,indent=2))
     return 0 if report['status'] in ('PASS','COMPLETE') else 1 if report['status'] in ('FAIL','COMPLETE_WITH_FAILURES') else 2
 
@@ -169,6 +175,10 @@ def _save(output,report):
     report['runtime_pin'] = {'isaacsim':SIM,'isaaclab_commit':LAB_COMMIT,'robot_commit':MANIFEST['commit']}
     report['utc'] = datetime.now(timezone.utc).isoformat()
     report['relic_commit'] = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+    report['relic_worktree_dirty'] = bool(subprocess.check_output(['git','status','--porcelain'],text=True).strip())
+    report['source_sha256'] = {str(path.relative_to(Path(__file__).resolve().parent)):hashlib.sha256(path.read_bytes()).hexdigest()
+                               for path in sorted(Path(__file__).resolve().parent.rglob('*.py'))
+                               if 'cache' not in path.relative_to(Path(__file__).resolve().parent).parts}
     dest = output/'report.json'
     tmp = output/'report.json.tmp'
     tmp.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')

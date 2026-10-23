@@ -7,7 +7,7 @@ from isaaclab.sim.converters import UrdfConverter
 from isaaclab.assets import Articulation, ArticulationCfg, RigidObject, RigidObjectCfg
 from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.sensors import Camera, CameraCfg, ContactSensor, ContactSensorCfg
-from .assets import ARM, FINGERS, ROOT, fetch
+from .assets import ARM, FINGERS, ROOT, fetch, link_masses
 from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLORS,
                         CONTROL_DT, CUBE, DT, Observation, layout, workspace)
 from .openmanipulator import LIMITS, bounded_reference, fk, ik
@@ -45,24 +45,25 @@ class IsaacBackend:
             drive = sim.UrdfConverterCfg.JointDriveCfg(
                 gains=sim.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(stiffness=0,damping=0))
             converter = FaithfulUrdfConverter(sim.UrdfConverterCfg(asset_path=str(fetch()),fix_base=True,
-                usd_dir=str(ROOT/'cache/usd'),force_usd_conversion=True,
-                merge_fixed_joints=False,convert_mimic_joints_to_normal_joints=False,
+                usd_dir=str(ROOT/'cache/usd'),force_usd_conversion=False,
+                merge_fixed_joints=True,convert_mimic_joints_to_normal_joints=False,
                 self_collision=True,collider_type='convex_decomposition',joint_drive=drive))
             spawn = sim.UsdFileCfg(usd_path=converter.usd_path,activate_contact_sensors=True,
                 rigid_props=sim.RigidBodyPropertiesCfg(max_depenetration_velocity=.5),
                 articulation_props=sim.ArticulationRootPropertiesCfg(
-                    enabled_self_collisions=True,solver_position_iteration_count=16,solver_velocity_iteration_count=4))
+                    enabled_self_collisions=True,solver_position_iteration_count=128,solver_velocity_iteration_count=16))
             self.robot = Articulation(ArticulationCfg(prim_path='/World/Robot',spawn=spawn,
                 init_state=ArticulationCfg.InitialStateCfg(joint_pos={**dict(zip(ARM,ik(HOME))),FINGERS[0]:.020}),
                 actuators={
-                    'arm':ImplicitActuatorCfg(joint_names_expr=list(ARM),stiffness=40.,damping=4.,
-                                             effort_limit_sim=1.,velocity_limit_sim=.65),
+                    'arm':ImplicitActuatorCfg(joint_names_expr=list(ARM),stiffness=100.,damping=8.,
+                                             effort_limit_sim=2.,velocity_limit_sim=.65),
                     'gripper':ImplicitActuatorCfg(joint_names_expr=[FINGERS[0]],stiffness=200.,damping=5.,
                                                  effort_limit_sim=5.,velocity_limit_sim=.04)}))
             self.arm_names, self.finger_names = ARM, FINGERS
             self.finger_bodies = ('gripper_left_link','gripper_right_link')
-            self.tool_name, self.base_name = 'link5', 'link1'
+            self.tool_name, self.base_name = 'link5', 'world'
             self.gripper_closed, self.gripper_open = -.011, .02
+            self._configure_mimic()
         else:
             from isaaclab_assets import FRANKA_PANDA_CFG
             from .panda import ARM as PANDA_ARM, FINGERS as PANDA_FINGERS, BASE
@@ -113,6 +114,12 @@ class IsaacBackend:
         self.base_ids,_ = self.robot.find_bodies([self.base_name])
         if len(self.arm_ids)!=len(self.arm_names) or len(self.left_ids)!=1 or len(self.right_ids)!=1 or len(self.tool_ids)!=1 or len(self.base_ids)!=1:
             raise RuntimeError('imported joint/body mappings do not match official URDF')
+        if robot == 'openmanipulator_x':
+            body_masses = dict(zip(self.robot.body_names,self.robot.root_physx_view.get_masses()[0].cpu().tolist(),strict=True))
+            imported_mass = sum(mass for name,mass in body_masses.items() if name != 'world')
+            expected_mass = sum(link_masses().values())
+            if abs(imported_mass-expected_mass) > .0001:
+                raise RuntimeError(f'imported mass differs from URDF: {imported_mass} != {expected_mass}')
         if not self.robot.is_fixed_base:
             raise RuntimeError('imported robot is not fixed-base')
         self.all_ids = self.arm_ids+self.left_ids+self.right_ids
@@ -131,6 +138,37 @@ class IsaacBackend:
         limits = LIMITS if robot == 'openmanipulator_x' else self.panda_control.limits
         self.safety_config = SafetyConfig(tuple(limits)+((self.gripper_closed,self.gripper_open),)*2,len(self.arm_names))
         self.guard = Guard(self.safety_config)
+
+    def _configure_mimic(self):
+        from pxr import PhysxSchema,Usd,UsdPhysics
+        matches = [prim for prim in Usd.PrimRange(self.sim.stage.GetPrimAtPath('/World/Robot'))
+                   if prim.GetName() == FINGERS[1] and prim.GetTypeName() == 'PhysicsPrismaticJoint']
+        if len(matches) != 1:
+            raise RuntimeError('passive gripper joint mapping is ambiguous')
+        prim = matches[0]
+        schemas = [name.split(':',1)[1] for name in prim.GetAppliedSchemas() if name.startswith('PhysxMimicJointAPI:')]
+        if len(schemas) != 1:
+            raise RuntimeError('physical gripper mimic API is missing')
+        mimic = PhysxSchema.PhysxMimicJointAPI(prim,schemas[0])
+        reference = mimic.GetReferenceJointRel().GetTargets()
+        if len(reference) != 1 or not str(reference[0]).endswith('/'+FINGERS[0]):
+            raise RuntimeError('physical gripper mimic reference changed')
+        if mimic.GetGearingAttr().Get() != -1. or mimic.GetOffsetAttr().Get() != 0.:
+            raise RuntimeError('physical gripper mimic relation changed')
+        if schemas[0] != 'rotX':
+            prim.RemoveAPI(PhysxSchema.PhysxMimicJointAPI,schemas[0])
+            for prop in list(prim.GetProperties()):
+                if prop.GetName().startswith(f'physxMimicJoint:{schemas[0]}:'):
+                    prim.RemoveProperty(prop.GetName())
+            mimic = PhysxSchema.PhysxMimicJointAPI.Apply(prim,'rotX')
+            mimic.CreateReferenceJointRel().SetTargets(reference)
+            mimic.CreateReferenceJointAxisAttr().Set('rotX')
+            mimic.CreateGearingAttr().Set(-1.)
+            mimic.CreateOffsetAttr().Set(0.)
+        joint = UsdPhysics.PrismaticJoint(prim)
+        joint.GetLowerLimitAttr().Set(self.gripper_closed)
+        joint.GetUpperLimitAttr().Set(self.gripper_open)
+        PhysxSchema.PhysxJointAPI(prim).GetMaxJointVelocityAttr().Set(.04)
 
     def _bin(self):
         x,y,z = BIN
@@ -166,10 +204,10 @@ class IsaacBackend:
         self.guard = Guard(self.safety_config)
         self.time = 0.
         self.reference = ik(HOME) if self.embodiment == 'openmanipulator_x' else tuple(self.robot.data.default_joint_pos[0,self.arm_ids].cpu().tolist())
-        self.grip_ref = self.gripper_open
+        self.grip_ref = 0.
         q = self.robot.data.default_joint_pos.clone()
         q[:,self.arm_ids] = torch.tensor([self.reference],device=self.device)
-        q[:,self.left_ids+self.right_ids] = self.gripper_open
+        q[:,self.left_ids+self.right_ids] = 0.
         self.robot.write_joint_state_to_sim(q,torch.zeros_like(q))
         self.robot.reset()
         self.sim.stage.GetPrimAtPath('/World/Light').GetAttribute('inputs:intensity').Set(random.Random(seed).uniform(1800.,2800.))
@@ -185,7 +223,9 @@ class IsaacBackend:
             self.cubes[color].write_root_velocity_to_sim(state[:,7:])
             self.cubes[color].reset()
         self._targets()
-        for _ in range(120):
+        for _ in range(240):
+            self.grip_ref += min(.025*DT,self.gripper_open-self.grip_ref)
+            self._targets()
             self._tick()
         if self.embodiment == 'franka_panda':
             self.initializing = True
@@ -226,7 +266,9 @@ class IsaacBackend:
                 raise RuntimeError('physical gripper opening/closing or mimic check failed')
             endpoints.append(list(q[-2:]))
         return {'fixed_base':True,'fk_error_m':math.dist(fk(self.observe().joints[:4]),self.observe().ee) if self.embodiment == 'openmanipulator_x' else None,
-                'empty_gripper_endpoints':endpoints,'physical_checks_executed':True}
+                'empty_gripper_endpoints':endpoints,'physical_checks_executed':True,
+                'body_masses_kg':dict(zip(self.robot.body_names,self.robot.root_physx_view.get_masses()[0].cpu().tolist(),strict=True)),
+                'mass_validation':'URDF links; fixed world body excluded'}
 
     def _targets(self):
         self.robot.set_joint_position_target(torch.tensor([self.reference],device=self.device),joint_ids=self.arm_ids)
@@ -290,6 +332,21 @@ class IsaacBackend:
             self.safety_events.append(str(error) if isinstance(error,SafetyViolation) else 'ik_infeasible')
             self.safe_stop()
         return self.observe()
+
+    def diagnostics(self):
+        obs = self.observe()
+        return {'embodiment':self.embodiment,'joint_names':[*self.arm_names,*self.finger_names],
+                'joint_position':obs.joints,'joint_velocity':obs.velocities,'ee_position':obs.ee,
+                'tool_quaternion':self.robot.data.body_quat_w[0,self.tool_ids[0]].cpu().tolist(),
+                'reference':self.reference,'gripper_reference':self.grip_ref,
+                'joint_position_error':[a-b for a,b in zip(obs.joints[:len(self.reference)],self.reference)],
+                'contacts':obs.contacts,'cube_poses':obs.cubes,'unsafe':obs.unsafe,
+                'safety_events':obs.safety_events,
+                'body_names':self.robot.body_names,'mass_kg':self.robot.root_physx_view.get_masses().cpu().tolist(),
+                'finger_net_contact_forces':[sensor.data.net_forces_w.cpu().tolist() for sensor in self.contact_sensors],
+                'drive_state':{name:getattr(self.robot.data,name).cpu().tolist() for name in
+                               ('joint_pos_target','joint_stiffness','joint_damping','applied_torque','computed_torque')
+                               if hasattr(self.robot.data,name)}}
 
     def safe_stop(self):
         self.abort = True

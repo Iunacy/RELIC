@@ -55,6 +55,18 @@ class SafetyGuards(unittest.TestCase):
         self.assertIsNone(guard.tracking(observation(.6), (0.,)*6))
         self.assertIsNone(guard.tracking(observation(.7), reference))
 
+    def test_contact_blocked_closure_is_not_a_tracking_fault(self):
+        guard = Guard(CONFIG)
+        closed = (0.,0.,0.,0.,-.011,-.011)
+        obs = observation(contacts={'red':True})
+        self.assertIsNone(guard.tracking(obs,closed))
+        self.assertIsNone(guard.tracking(replace(obs,time=2.),closed))
+        opened = (0.,0.,0.,0.,.02,.02)
+        self.assertIsNone(guard.tracking(replace(obs,time=3.),opened))
+        self.assertEqual(guard.tracking(replace(obs,time=3.5),opened),'tracking_error')
+        arm_error = (.3,0.,0.,0.,-.011,-.011)
+        self.assertEqual(guard.tracking(replace(obs,time=4.),arm_error),'tracking_error')
+
     def test_stall_does_not_include_grasp_dwell(self):
         guard = Guard(CONFIG)
         action = Action((.001, 0., 0.), 1.)
