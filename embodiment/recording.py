@@ -38,6 +38,7 @@ class Recorder:
         self.last_time = -1
         self.count = 0
         self.file = (self.path/'samples.jsonl').open('x')
+        self.telemetry = (self.path/'telemetry.jsonl').open('x')
         (self.path/'metadata.json').write_text(json.dumps({
             'schema_version':1,'time_unit':'second','position_unit':'meter',
             'action_fields':['delta_x','delta_y','delta_z','gripper'],
@@ -60,11 +61,20 @@ class Recorder:
         self.last_time = validate_sample(row,self.last_time)
         self.file.write(json.dumps(row,allow_nan=False)+'\n')
         self.file.flush()
+        self.telemetry.write(json.dumps({'timestamp':obs.time,'cube_poses':obs.cubes,'contacts':obs.contacts,
+                                         'unsafe':obs.unsafe,'safety_events':list(obs.safety_events)},allow_nan=False)+'\n')
+        self.telemetry.flush()
         self.count += 1
 
     def close(self,result):
         self.file.close()
+        self.telemetry.close()
         (self.path/'outcome.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+
+
+    def abort(self):
+        self.file.close()
+        self.telemetry.close()
 
 
 def lerobot_rows(path):

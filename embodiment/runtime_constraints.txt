@@ -8,4 +8,5 @@ pillow==11.3.0
 starlette==0.45.3
 fastapi==0.115.7
 transformers==4.57.6
-warp-lang==1.8.2
+warp-lang==1.18.0
+h5py==3.14.0

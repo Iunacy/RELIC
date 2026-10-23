@@ -59,6 +59,21 @@ class EpisodeValidation(unittest.TestCase):
                 with self.assertRaises((ValueError, OSError)):
                     load_episode(path, require_physics=False)
 
+    def test_success_labels_do_not_replace_contact_evidence(self):
+        from embodiment.assets import ARM,FINGERS
+        with tempfile.TemporaryDirectory() as temp:
+            path = fixture(Path(temp)/'episode')
+            metadata = read_json(path/'metadata.json')
+            metadata.update(simulation_executed=True,physics_engine='physx',controller='classical_only',
+                            evidence_source='isaac_lab_physx',joint_names=list(ARM+FINGERS))
+            (path/'metadata.json').write_text(json.dumps(metadata))
+            outcome = {'success':True,'robot':metadata['embodiment'],'seed':metadata['seed'],
+                       'target':metadata['target'],'simulation_executed':True,'controller':'classical_only',
+                       'pick_result':True,'placement_result':True}
+            (path/'outcome.json').write_text(json.dumps(outcome))
+            with self.assertRaisesRegex(ValueError,'contact/lift'):
+                load_episode(path)
+
     def test_duplicate_and_qualification_leakage(self):
         with tempfile.TemporaryDirectory() as temp:
             path = fixture(Path(temp)/'episode')

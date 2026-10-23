@@ -41,7 +41,7 @@ def load_episode(path: Path, require_physics: bool = True) -> Episode:
     robot = metadata.get('embodiment')
     if robot not in DOF:
         raise ValueError('unknown embodiment')
-    if require_physics and (metadata.get('simulation_executed') is not True or metadata.get('physics_engine') != 'physx' or metadata.get('controller') != 'classical_only'):
+    if require_physics and (metadata.get('simulation_executed') is not True or metadata.get('physics_engine') != 'physx' or metadata.get('controller') != 'classical_only' or metadata.get('evidence_source') != 'isaac_lab_physx'):
         raise ValueError('physical scripted demonstration evidence required')
     if type(outcome.get('success')) is not bool:
         raise ValueError('missing episode outcome')
@@ -94,6 +94,20 @@ def load_episode(path: Path, require_physics: bool = True) -> Episode:
         rows.append(row)
     if len(rows) < 2 or any(row['success'] for row in rows[:-1]) or rows[-1]['success'] != outcome['success']:
         raise ValueError('invalid episode boundary or outcome alignment')
+    if require_physics:
+        from .benchmark import inside_bin
+        telemetry = [json.loads(line) for line in (path/'telemetry.jsonl').read_text().splitlines()]
+        if len(telemetry) != len(rows) or any(abs(a['timestamp']-b['timestamp']) > 1e-8 for a,b in zip(rows,telemetry,strict=True)):
+            raise ValueError('physical telemetry is not aligned with demonstrations')
+        lifted_with_contact = any(item['contacts'].get(target) is True and item['cube_poses'][target][2] > .055 for item in telemetry)
+        if outcome['success']:
+            if not lifted_with_contact or any(item['unsafe'] for item in telemetry):
+                raise ValueError('physical contact/lift or safety evidence does not support success')
+            if any(pose[2] > .045 for item in telemetry for color,pose in item['cube_poses'].items() if color != target):
+                raise ValueError('wrong-color lift cannot be labeled successful')
+            final_pose = telemetry[-1]['cube_poses'][target]
+            if not inside_bin(final_pose) or final_pose != outcome.get('final_object_pose'):
+                raise ValueError('placement evidence does not support success')
     fingerprint = identity(seed, target)
     if metadata.get('scenario_id', fingerprint) != fingerprint:
         raise ValueError('scenario fingerprint mismatch')

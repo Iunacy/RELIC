@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import traceback
-from .assets import ARM, FINGERS, MANIFEST
+from .assets import MANIFEST
 from .benchmark import CAMERA_EYE, CAMERA_LOOK, COLORS, CONTROL_DT, inside_bin
 from .expert import Expert, FAILURES
 from .evaluation import metrics
@@ -110,7 +110,7 @@ def main():
                           'camera_eye':CAMERA_EYE,'camera_look':CAMERA_LOOK,
                           'camera_enabled':args.enable_cameras,'seed':seed,'target':target,
                           'initial_object_poses':initial_positions,'physics_engine':'physx',
-                          'simulation_executed':True,'controller':'classical_only',
+                          'simulation_executed':True,'controller':'classical_only','evidence_source':'isaac_lab_physx',
                           'purpose':'collection' if args.mode == 'collection' else args.mode,
                           'split':args.split if args.mode == 'collection' else 'qualification',
                           **({'scenario_id':case['scenario_id'],'region':case['region']} if args.mode == 'collection' else {}),
@@ -150,10 +150,10 @@ def main():
                 if not app.is_running():
                     raise RuntimeError('simulation application stopped before campaign completed')
             except BaseException:
-                recorder.file.close()
+                recorder.abort()
                 raise
         completed = True
-    except Exception as exc:
+    except (Exception,SystemExit) as exc:
         error = f'{type(exc).__name__}: {exc}'
         (known.output/'error.txt').write_text(traceback.format_exc())
     finally:
