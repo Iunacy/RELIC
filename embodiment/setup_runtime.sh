@@ -21,7 +21,7 @@ if [[ ! -d "$root/IsaacLab" ]]; then
     git clone --branch v2.3.2 --depth 1 https://github.com/isaac-sim/IsaacLab.git "$root/IsaacLab"
 fi
 [[ "$(git -C "$root/IsaacLab" rev-parse HEAD)" == 37ddf626871758333d6ed89cf64ad702aef127d0 ]]
-"$py" -m pip install -e "$root/IsaacLab/source/isaaclab" -c embodiment/runtime_constraints.txt
+"$py" -m pip install -e "$root/IsaacLab/source/isaaclab" -e "$root/IsaacLab/source/isaaclab_assets" -c embodiment/runtime_constraints.txt
 "$py" -m pip check
 "$py" -m pip freeze > "$root/resolved-requirements.txt"
 printf 'Activate with: source %q\n' "$root/venv/bin/activate"

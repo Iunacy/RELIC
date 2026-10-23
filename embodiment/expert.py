@@ -8,10 +8,11 @@ FAILURES = ('wrong_color','failed_grasp','dropped_object','timeout','unsafe_move
 
 
 class Expert:
-    def __init__(self, target):
+    def __init__(self, target, grasp_z=GRASP_Z):
         if target not in COLORS:
             raise ValueError('unknown target color')
         self.target = target
+        self.grasp_z = grasp_z
         self.phase = 'approach'
         self.entered = 0.0
         self.failure = None
@@ -54,9 +55,9 @@ class Expert:
         if self.phase in ('approach','align'):
             goal = (x,y,.085)
         elif self.phase == 'descend':
-            goal = (x,y,GRASP_Z)
+            goal = (x,y,self.grasp_z)
         elif self.phase in ('grasp','verify'):
-            goal,grip = (x,y,GRASP_Z),0.0
+            goal,grip = (x,y,self.grasp_z),0.0
         elif self.phase == 'lift':
             goal,grip = (x,y,.085),0.0
         elif self.phase == 'transport':

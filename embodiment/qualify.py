@@ -30,6 +30,7 @@ def aggregate(trials, executed, completed, error=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--robot',choices=['openmanipulator_x','franka_panda'],default='openmanipulator_x')
     parser.add_argument('--preflight-only',action='store_true')
     known,_ = parser.parse_known_args()
     # Refuse to overwrite historical evidence, including failed or partial attempts.
@@ -57,7 +58,7 @@ def main():
         launcher = AppLauncher(args)
         app = launcher.app
         from .isaac_backend import IsaacBackend
-        backend = IsaacBackend(args.device,args.enable_cameras)
+        backend = IsaacBackend(args.device,args.enable_cameras,args.robot)
         executed = True
         checks = backend.qualify_articulation()
         (args.output/'articulation.json').write_text(json.dumps(checks,indent=2)+'\n')
@@ -67,10 +68,12 @@ def main():
             executed = True
             initial_positions = {color:list(pose) for color,pose in obs.cubes.items()}
             safety_events = []
-            expert = Expert(target)
+            from .panda import GRASP_Z as PANDA_GRASP_Z
+            from .benchmark import GRASP_Z
+            expert = Expert(target,PANDA_GRASP_Z if args.robot == 'franka_panda' else GRASP_Z)
             recorder = Recorder(args.output/f'trial_{seed:02d}',f'Pick up the {target} cube and place it in the bin.',
-                metadata={'embodiment':'openmanipulator_x','joint_names':[*ARM,*FINGERS],
-                          'joint_units':['radian']*4+['meter']*2,'control_dt':CONTROL_DT,
+                metadata={'embodiment':args.robot,'joint_names':[*backend.arm_names,*backend.finger_names],
+                          'joint_units':['radian']*len(backend.arm_names)+['meter']*2,'control_dt':CONTROL_DT,
                           'camera_eye':CAMERA_EYE,'camera_look':CAMERA_LOOK,
                           'camera_enabled':args.enable_cameras,'seed':seed,'target':target,
                           'initial_object_poses':initial_positions,'physics_engine':'physx',
@@ -100,7 +103,7 @@ def main():
                     raise RuntimeError('unknown physical failure reason')
                 result = dict(seed=seed,target=target,success=success,duration=obs.time,
                               failure_reason=reason,final_object_pose=list(obs.cubes[target]),phase=expert.phase,
-                              robot='openmanipulator_x',initial_object_poses=initial_positions,
+                              robot=args.robot,initial_object_poses=initial_positions,
                               pick_result=expert.lifted,placement_result=success,
                               safety_events=sorted(set(safety_events)),controller='classical_only',
                               simulation_executed=True)
