@@ -24,6 +24,8 @@ class BenchmarkReport(unittest.TestCase):
         self.assertEqual(result['successes'],20)
         self.assertEqual(result['successes_by_controller']['classical_only'],20)
         self.assertLess(result['wilson_95'][0],1)
+        self.assertEqual(result['wrong_color_rate'], 0.)
+        self.assertEqual(result['mean_success_placement_error_xy_m'], 0.)
 
     def test_rejects_incomplete_duplicate_unsafe_and_false_success(self):
         for change in ('partial','duplicate','unsafe','outside','no_pick','not_physical'):
@@ -44,5 +46,8 @@ class BenchmarkReport(unittest.TestCase):
         result = validate_run(run)
         self.assertEqual(result['successes_by_controller']['vla_only'],19)
         self.assertEqual(result['successes_by_controller']['fallback_assisted'],1)
+        self.assertEqual(result['success_rates_by_controller']['vla_only'], .95)
+        self.assertEqual(result['fallback_trigger_counts'], {'progress_stall': 1})
+        self.assertLess(result['wilson_95_by_controller']['vla_only'][0], .95)
         run['trials'][0]['controller'] = 'vla_only'
         with self.assertRaises(ValueError): validate_run(run)

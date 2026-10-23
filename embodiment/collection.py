@@ -146,6 +146,20 @@ def storage_budget(root, count, jobs, reserve_bytes):
             'sufficient': free >= reserve_bytes + count * per_episode}
 
 
+def balanced_selection(paths, split, target):
+    quotas = Counter((case.target, case.region) for case in plan(split, target))
+    selected, surplus = [], []
+    for path in paths:
+        metadata = read_json(path/'metadata.json')
+        pair = metadata['target'], metadata['region']
+        if quotas[pair] > 0:
+            selected.append(path)
+            quotas[pair] -= 1
+        else:
+            surplus.append(path)
+    return selected, surplus
+
+
 def progress(root, robot, split, verified_jobs=None):
     successes, failures, jobs = [], [], []
     verified_jobs = {} if verified_jobs is None else verified_jobs
@@ -246,9 +260,10 @@ def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600
         paths, failures, offset, jobs = progress(root, robot, split, verified_jobs)
         stalled = 0
         for _ in range(max_jobs):
-            if len(paths) >= target or stalled >= 3:
+            selected, _ = balanced_selection(paths, split, target)
+            if len(selected) >= target or stalled >= 3:
                 break
-            count = min(batch_size if jobs else 1, target - len(paths))
+            count = min(batch_size if jobs else 1, target - len(selected))
             storage = storage_budget(root, count, jobs, reserve_bytes)
             atomic_json(root/'storage.json', storage)
             if not storage['sufficient']:
@@ -281,18 +296,24 @@ def summarize(root, target, paths, failures, jobs):
     seconds = sum(item['wall_seconds'] for item in measurements)
     complete_timing = len(measurements) == len(jobs) and bool(jobs)
     metadata = [read_json(path/'metadata.json') for path in paths]
+    split = read_json(root/'collection.json')['split']
+    selected, surplus = balanced_selection(paths, split, target)
     summary = {'schema': 'relic.collection_progress.v1', 'target_successes': target,
                'successful_episodes': len(paths), 'failed_or_incomplete_attempts': len(failures),
-               'status': 'COMPLETE' if len(paths) >= target else 'INCOMPLETE',
+               'balanced_successful_episodes': len(selected),
+               'status': 'COMPLETE' if len(selected) >= target else 'INCOMPLETE',
                'jobs': len(jobs), 'measured_process_seconds': seconds,
                'successful_colors': dict(Counter(item['target'] for item in metadata)),
                'successful_regions': dict(Counter(str(item['region']) for item in metadata)),
                'successful_episodes_per_hour': len(paths)*3600/seconds if complete_timing and seconds > 0 else None,
                'throughput_scope': 'simulator startup, physics, camera rendering and episode writing; export excluded',
                'timing_complete': complete_timing, 'failures': failures,
-               'episodes': [str(path.relative_to(root)) for path in paths]}
+               'episodes': [str(path.relative_to(root)) for path in paths],
+               'balanced_episodes': [str(path.relative_to(root)) for path in selected],
+               'surplus_episodes': [str(path.relative_to(root)) for path in surplus]}
     atomic_json(root/'progress.json', summary)
-    print(json.dumps({key: value for key, value in summary.items() if key not in ('failures', 'episodes')}, allow_nan=False), flush=True)
+    print(json.dumps({key: value for key, value in summary.items()
+                      if key not in ('failures', 'episodes', 'balanced_episodes', 'surplus_episodes')}, allow_nan=False), flush=True)
     return summary
 
 
@@ -316,6 +337,7 @@ def main():
     if args.export:
         with locked(args.root):
             paths, _, _, _ = progress(args.root.resolve(), args.robot, args.split)
+            paths, _ = balanced_selection(paths, args.split, target)
             if not paths:
                 raise ValueError('no successful physical camera episodes to export')
             started = time.monotonic()

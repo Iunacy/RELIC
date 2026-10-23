@@ -4,8 +4,8 @@ import hashlib
 import json
 import math
 from pathlib import Path
-from .benchmark import SCENE_REVISION, TIMEOUT, inside_bin
-from .evaluation import metrics
+from .benchmark import BIN, SCENE_REVISION, TIMEOUT, inside_bin
+from .evaluation import metrics, wilson
 from .scenarios import plan
 from .training import validate_matched
 
@@ -69,8 +69,17 @@ def validate_run(run):
                    rejected_policy_actions=sum(len(row.get('rejected_policy_actions', [])) for row in trials),
                    policy_error_counts=dict(Counter(error for row in trials for error in row.get('policy_errors', []))),
                    missed_grasps=sum(row.get('failure_reason') == 'failed_grasp' for row in trials),
+                   wrong_color_rate=summary['wrong_color_picks'] / len(trials),
+                   fallback_trigger_counts=dict(Counter(trigger for row in trials for trigger in row['fallback_triggers'])),
                    safety_violation_trials=sum(bool(row['safety_events']) for row in trials),
                    mean_success_duration=sum(row['duration'] for row in trials if row['success']) / summary['successes'] if summary['successes'] else None)
+    summary['success_rates_by_controller'] = {name: value / len(trials)
+        for name, value in summary['successes_by_controller'].items()}
+    summary['wilson_95_by_controller'] = {name: wilson(value, len(trials))
+        for name, value in summary['successes_by_controller'].items()}
+    summary['controller_rate_denominator'] = 'all held-out trials in this condition'
+    distances = [math.dist(row['final_object_pose'][:2], BIN[:2]) for row in trials if row['success']]
+    summary['mean_success_placement_error_xy_m'] = sum(distances) / len(distances) if distances else None
     return summary
 
 

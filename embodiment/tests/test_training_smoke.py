@@ -1,4 +1,5 @@
 import json
+import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
@@ -11,6 +12,8 @@ from embodiment.training_smoke import smoke
 
 class TrainingSmoke(unittest.TestCase):
     def checkpoint(self, root):
+        if importlib.util.find_spec('safetensors') is None:
+            self.skipTest('safetensors required for checkpoint validation')
         import numpy as np
         from safetensors.numpy import save_file
         (root/'config.json').write_text(json.dumps({'model_type': 'gr00t_n1d7'}))

@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from embodiment.collection import atomic_json, collect, execute, locked
+from embodiment.collection import atomic_json, balanced_selection, collect, execute, locked
 from embodiment.scenarios import plan
 
 
@@ -44,7 +44,8 @@ class CollectionRecovery(unittest.TestCase):
                 resumed = collect(root, 'openmanipulator_x', 'train', 3, runner=lambda *args: self.fail('reran complete collection'))
             self.assertEqual(first, resumed)
             expanded = collect(root, 'openmanipulator_x', 'train', 5, batch_size=2, runner=self.fake_runner)
-            self.assertEqual(expanded['successful_episodes'], 5)
+            self.assertEqual(expanded['balanced_successful_episodes'], 5)
+            self.assertGreaterEqual(expanded['successful_episodes'], 5)
             self.assertTrue(all(path.exists() for path in before))
             seeds = [case['seed'] for job in (root/'jobs').glob('job-*')
                      for case in json.loads((job/'request.json').read_text())['cases']]
@@ -171,3 +172,26 @@ class CollectionRecovery(unittest.TestCase):
             self.assertEqual(result['successful_episodes'], 0)
             self.assertEqual(result['jobs'], 0)
             self.assertFalse(json.loads((root/'storage.json').read_text())['sufficient'])
+
+    def test_failed_attempts_do_not_unbalance_the_exported_campaign(self):
+        from collections import Counter
+        with tempfile.TemporaryDirectory() as temp, self.mocks():
+            root = Path(temp)
+            failed_seed = plan('train', 3)[2].seed
+            def episode(path):
+                item = self.fake_episode(path)
+                item.outcome['success'] = item.metadata['seed'] != failed_seed
+                return item
+            with patch('embodiment.collection.load_episode', side_effect=episode):
+                result = collect(root, 'openmanipulator_x', 'train', 6,
+                                 batch_size=6, runner=self.fake_runner)
+            self.assertEqual(result['status'], 'COMPLETE')
+            self.assertEqual(result['balanced_successful_episodes'], 6)
+            selected = [root/path for path in result['balanced_episodes']]
+            counts = Counter((json.loads((path/'metadata.json').read_text())['target'],
+                              json.loads((path/'metadata.json').read_text())['region']) for path in selected)
+            self.assertEqual(set(counts.values()), {1})
+            self.assertEqual(len(counts), 6)
+            self.assertEqual(result['failed_or_incomplete_attempts'], 1)
+            self.assertTrue(result['surplus_episodes'])
+            self.assertEqual(len(balanced_selection(selected, 'train', 6)[0]), 6)
