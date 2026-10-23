@@ -75,10 +75,10 @@ class IsaacBackend:
             cfg.spawn.articulation_props.solver_position_iteration_count = 16
             cfg.spawn.articulation_props.solver_velocity_iteration_count = 4
             cfg.init_state.pos = BASE
-            cfg.actuators['panda_shoulder'].stiffness = 400.
-            cfg.actuators['panda_shoulder'].damping = 40.
-            cfg.actuators['panda_forearm'].stiffness = 400.
-            cfg.actuators['panda_forearm'].damping = 40.
+            cfg.actuators['panda_shoulder'].stiffness = 1200.
+            cfg.actuators['panda_shoulder'].damping = 60.
+            cfg.actuators['panda_forearm'].stiffness = 1200.
+            cfg.actuators['panda_forearm'].damping = 60.
             self.robot = Articulation(cfg)
             self.arm_names, self.finger_names = PANDA_ARM, PANDA_FINGERS
             self.finger_bodies = ('panda_leftfinger','panda_rightfinger')
@@ -188,6 +188,9 @@ class IsaacBackend:
             cfg.func(f'/World/Bin_{name}',cfg,translation=pos)
 
     def _tick(self):
+        if self.embodiment == 'franka_panda':
+            gravity = self.robot.root_physx_view.get_gravity_compensation_forces()[:,self.arm_ids]
+            self.robot.set_joint_effort_target(gravity,joint_ids=self.arm_ids)
         self.robot.write_data_to_sim()
         for obj in self.cubes.values():
             obj.write_data_to_sim()
