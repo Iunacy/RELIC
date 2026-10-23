@@ -9,7 +9,7 @@ from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.sensors import Camera, CameraCfg, ContactSensor, ContactSensorCfg
 from .assets import ARM, FINGERS, ROOT, fetch, link_masses
 from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLORS,
-                        CONTROL_DT, CUBE, DT, Observation, layout, workspace)
+                        CONTROL_DT, CUBE, DT, Observation, TASK_GRIPPER_LIMITS, layout, workspace)
 from .openmanipulator import LIMITS, bounded_reference, fk, ik
 from .safety import Guard, SafetyConfig, SafetyViolation
 from .runtime_config import simulation_config
@@ -63,7 +63,8 @@ class IsaacBackend:
             self.arm_names, self.finger_names = ARM, FINGERS
             self.finger_bodies = ('gripper_left_link','gripper_right_link')
             self.tool_name, self.base_name = 'link5', 'world'
-            self.gripper_closed, self.gripper_open = -.011, .02
+            self.finger_limits = (-.011,.020)
+            self.gripper_closed,self.gripper_open = TASK_GRIPPER_LIMITS[robot]
             self._configure_mimic()
         else:
             from isaaclab_assets import FRANKA_PANDA_CFG
@@ -82,7 +83,8 @@ class IsaacBackend:
             self.arm_names, self.finger_names = PANDA_ARM, PANDA_FINGERS
             self.finger_bodies = ('panda_leftfinger','panda_rightfinger')
             self.tool_name, self.base_name = 'panda_hand', 'panda_link0'
-            self.gripper_closed, self.gripper_open = 0., .04
+            self.finger_limits = (0.,.04)
+            self.gripper_closed,self.gripper_open = TASK_GRIPPER_LIMITS[robot]
         self.cubes = {}
         for color,rgb in zip(COLORS,((.8,.03,.03),(.03,.7,.03),(.03,.1,.8))):
             self.cubes[color] = RigidObject(RigidObjectCfg(prim_path=f'/World/{color}',
@@ -137,7 +139,7 @@ class IsaacBackend:
         self.grip_ref = self.gripper_open
         self.base_position = self.robot.data.body_pos_w[0,self.base_ids[0]].clone()
         limits = LIMITS if robot == 'openmanipulator_x' else self.panda_control.limits
-        self.safety_config = SafetyConfig(tuple(limits)+((self.gripper_closed,self.gripper_open),)*2,len(self.arm_names))
+        self.safety_config = SafetyConfig(tuple(limits)+(self.finger_limits,)*2,len(self.arm_names))
         self.guard = Guard(self.safety_config)
 
     def _configure_mimic(self):
@@ -167,8 +169,8 @@ class IsaacBackend:
             mimic.CreateGearingAttr().Set(-1.)
             mimic.CreateOffsetAttr().Set(0.)
         joint = UsdPhysics.PrismaticJoint(prim)
-        joint.GetLowerLimitAttr().Set(self.gripper_closed)
-        joint.GetUpperLimitAttr().Set(self.gripper_open)
+        joint.GetLowerLimitAttr().Set(self.finger_limits[0])
+        joint.GetUpperLimitAttr().Set(self.finger_limits[1])
         PhysxSchema.PhysxJointAPI(prim).GetMaxJointVelocityAttr().Set(.04)
 
     def _bin(self):
@@ -255,7 +257,7 @@ class IsaacBackend:
     def qualify_articulation(self):
         self.reset(0)
         endpoints = []
-        for target in (self.gripper_closed,self.gripper_open):
+        for target in self.finger_limits:
             for _ in range(240):
                 self.grip_ref += max(-.025*DT,min(.025*DT,target-self.grip_ref))
                 self._targets()
@@ -294,14 +296,17 @@ class IsaacBackend:
                   any(not lo-.015 <= v <= hi+.015 for v,(lo,hi) in zip(q,limits)) or
                   max(map(abs,dq[:dof])) > 1.2 or max(map(abs,dq[dof:])) > .15 or
                   abs(q[-2]-q[-1])>.004 or
-                  any(not self.gripper_closed-.002 <= v <= self.gripper_open+.002 for v in q[dof:]) or
+                  any(not self.finger_limits[0]-.002 <= v <= self.finger_limits[1]+.002 for v in q[dof:]) or
                   float(torch.linalg.vector_norm(self.robot.data.body_pos_w[0,self.base_ids[0]]-self.base_position)) > .001 or
                   any(not all(math.isfinite(v) for v in p) for p in cubes.values()))
         forces = [torch.linalg.vector_norm(sensor.data.force_matrix_w[0,0],dim=-1).cpu().tolist()
                   for sensor in self.contact_sensors]
         contacts = {color:all(values[i] > .005 for values in forces) for i,color in enumerate(COLORS)}
+        if any(not math.isfinite(value) for values in forces for value in values):
+            unsafe = True
         return Observation(self.time,ee,q,dq,cubes,speeds,unsafe,contacts,
-                           max(0.,min(1.,(q[-2]-self.gripper_closed)/(self.gripper_open-self.gripper_closed))),dof,tuple(self.safety_events) or (('unsafe_state',) if unsafe else ()))
+                           max(0.,min(1.,(q[-2]-self.gripper_closed)/(self.gripper_open-self.gripper_closed))),dof,tuple(self.safety_events) or (('unsafe_state',) if unsafe else ()),
+                           contact_forces={color:tuple(values[i] for values in forces) for i,color in enumerate(COLORS)})
 
     def step(self,action):
         obs = self.observe()

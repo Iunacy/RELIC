@@ -4,7 +4,7 @@ import json
 import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from .benchmark import COLORS, layout
+from .benchmark import COLORS, SCENE_REVISION, layout
 
 SPLITS = ('train', 'validation', 'evaluation')
 HELD_OUT = frozenset((('red', 2), ('green', 0), ('blue', 1)))
@@ -76,7 +76,7 @@ def main():
     args = parser.parse_args()
     plans = {split: plan(split, getattr(args, split)) for split in SPLITS}
     validate_plans(plans)
-    payload = {'schema': 'relic.scenarios.v1', 'scene_revision': 2,
+    payload = {'schema': 'relic.scenarios.v1', 'scene_revision': SCENE_REVISION,
                'held_out_pairs': sorted(HELD_OUT), 'qualification_seeds_excluded': list(range(20)),
                'scenarios': {split: [asdict(case) for case in cases] for split, cases in plans.items()}}
     with args.output.open('x') as stream:

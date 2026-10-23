@@ -55,6 +55,14 @@ class SafetyGuards(unittest.TestCase):
         self.assertIsNone(guard.tracking(observation(.6), (0.,)*6))
         self.assertIsNone(guard.tracking(observation(.7), reference))
 
+    def test_one_sided_contact_allows_compliant_closure(self):
+        guard = Guard(CONFIG)
+        closed = (0.,0.,0.,0.,-.011,-.011)
+        obs = observation(contacts={'red':False},contact_forces={'red':(.4,0.)})
+        self.assertIsNone(guard.tracking(obs,closed))
+        self.assertIsNone(guard.tracking(replace(obs,time=2.),closed))
+        self.assertFalse(obs.contacts['red'])
+
     def test_contact_blocked_closure_is_not_a_tracking_fault(self):
         guard = Guard(CONFIG)
         closed = (0.,0.,0.,0.,-.011,-.011)

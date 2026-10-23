@@ -61,7 +61,7 @@ class Recorder:
         self.last_time = validate_sample(row,self.last_time)
         self.file.write(json.dumps(row,allow_nan=False)+'\n')
         self.file.flush()
-        self.telemetry.write(json.dumps({'timestamp':obs.time,'cube_poses':obs.cubes,'contacts':obs.contacts,
+        self.telemetry.write(json.dumps({'timestamp':obs.time,'cube_poses':obs.cubes,'contacts':obs.contacts,'contact_forces':obs.contact_forces,
                                          'unsafe':obs.unsafe,'safety_events':list(obs.safety_events)},allow_nan=False)+'\n')
         self.telemetry.flush()
         self.count += 1

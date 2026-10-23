@@ -51,6 +51,10 @@ class Guard:
             finite(obs.ee, 3)
             finite(obs.joints, len(self.config.joint_limits))
             finite(obs.velocities, len(self.config.joint_limits))
+            for forces in obs.contact_forces.values():
+                finite(forces,2)
+                if min(forces) < 0:
+                    raise ValueError('negative normal-force magnitude')
         except ValueError as error:
             raise SafetyViolation('nonfinite_or_malformed_state') from error
         if obs.time < 0 or obs.time <= self.previous_time:
@@ -96,7 +100,7 @@ class Guard:
 
     def tracking(self, obs: Observation, reference: tuple) -> str | None:
         finite(reference, len(self.config.joint_limits))
-        contact = any(value is True for value in obs.contacts.values())
+        contact = any(value is True for value in obs.contacts.values()) or any(value > .005 for forces in obs.contact_forces.values() for value in forces)
         exceeds = any(abs(value - goal) > (self.config.tracking_error if i < self.config.arm_dof else self.config.finger_tracking_error)
                       and not (i >= self.config.arm_dof and contact and goal <= value)
                       for i, (value, goal) in enumerate(zip(obs.joints, reference, strict=True)))

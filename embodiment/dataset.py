@@ -6,7 +6,7 @@ import json
 import math
 from pathlib import Path
 import subprocess
-from .benchmark import COLORS, CONTROL_DT, layout
+from .benchmark import COLORS, CONTROL_DT, SCENE_REVISION, TASK_GRIPPER_LIMITS, layout
 from .recording import validate_sample
 from .scenarios import HELD_OUT, identity, region
 
@@ -49,6 +49,8 @@ def load_episode(path: Path, require_physics: bool = True) -> Episode:
     if target not in COLORS or type(seed) is not int or seed < 0:
         raise ValueError('missing scenario identity')
     if require_physics:
+        if metadata.get('scene_revision') != SCENE_REVISION:
+            raise ValueError('scene/control calibration revision mismatch')
         from .assets import ARM, FINGERS
         from .panda import ARM as PANDA_ARM, FINGERS as PANDA_FINGERS
         expected_names = ARM+FINGERS if robot == 'openmanipulator_x' else PANDA_ARM+PANDA_FINGERS
@@ -158,7 +160,7 @@ def modality(joints: int) -> dict:
 
 
 def state(row: dict, robot: str) -> list[float]:
-    closed, opened = (-.011, .02) if robot == 'openmanipulator_x' else (0., .04)
+    closed,opened = TASK_GRIPPER_LIMITS[robot]
     aperture = max(0., min(1., (row['joint_position'][-2] - closed)/(opened - closed)))
     return row['joint_position'] + row['joint_velocity'] + row['ee_position'] + [aperture]
 
@@ -237,7 +239,7 @@ def export(paths: list[Path], output: Path, require_physics: bool = True) -> dic
             'data_path': 'data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet',
             'video_path': 'videos/chunk-{episode_chunk:03d}/{video_key}/episode_{episode_index:06d}.mp4',
             'relic': {'physical_evidence_validated': require_physics, 'groot_source_commit': GROOT_COMMIT,
-                      'action_semantics': 'world_meters_per_control_tick_and_absolute_gripper', 'scene_revision': 2}}
+                      'action_semantics': 'world_meters_per_control_tick_and_absolute_gripper', 'scene_revision': SCENE_REVISION}}
     write_json(meta/'info.json', info)
     write_json(meta/'modality.json', modality(DOF[robot]+2))
     for name, rows in (('episodes', episode_meta), ('tasks', [{'task_index': i,'task': task} for i,task in enumerate(tasks)]), ('relic_sources', source_meta)):

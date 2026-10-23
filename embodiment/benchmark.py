@@ -5,11 +5,13 @@ import random
 from typing import Protocol
 
 COLORS = ('red', 'green', 'blue')
+SCENE_REVISION = 4
+TASK_GRIPPER_LIMITS = {'openmanipulator_x':(-.011,.004),'franka_panda':(0.,.020)}
 CUBE = 0.025
 # Official fingertips extend 20.7 mm beyond the URDF tool origin.
 # Hold that origin above the cube center so fingertips clear the support plane.
 GRASP_Z = 0.0285
-BIN = (0.16, 0.115, 0.004)
+BIN = (0.14, 0.145, 0.004)
 BIN_INNER = 0.060
 BIN_WALL = 0.025
 TIMEOUT = 45.0
@@ -32,12 +34,6 @@ def workspace(p):
 
 @dataclass(frozen=True)
 class Action:
-    """World-frame Cartesian delta in meters; gripper 0=closed, 1=open.
-
-    OpenMANIPULATOR maps xyz through radial downward IK, aperture to left
-    prismatic target [-.011,.020], right finger remains a physical mimic.
-    A future Panda adapter must retain this world/unit contract with its own IK.
-    """
     delta: tuple
     gripper: float
 
@@ -61,6 +57,7 @@ class Observation:
     gripper_open: float | None = None
     arm_dof: int = 4
     safety_events: tuple = ()
+    contact_forces: dict = field(default_factory=dict)
 
 
 class Embodiment(Protocol):

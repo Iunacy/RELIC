@@ -57,6 +57,18 @@ class PhysicalEvidence(unittest.TestCase):
             self.assertAlmostEqual(sum(projected[1:]),math.pi/2)
             self.assertTrue(all(abs(a-b) <= .5/30+1e-12 for a,b in zip(projected,current)))
 
+    def test_transport_budget_remains_bounded(self):
+        expert = Expert('red')
+        expert.phase = 'transport'
+        expert.lifted = True
+        obs = observed(11.,contacts={'red':True})
+        obs.cubes['red'] = (.17,0.,.07,1.,0.,0.,0.)
+        expert.update(obs)
+        self.assertIsNone(expert.failure)
+        obs.time = 14.1
+        expert.update(obs)
+        self.assertEqual(expert.failure,'timeout')
+
     def test_wilson_reference_counts(self):
         low, high = wilson(18, 20)
         self.assertAlmostEqual(low, .6989663547715127)

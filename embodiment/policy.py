@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import sys
 from typing import Any, Protocol
-from .benchmark import Action, Observation, finite
+from .benchmark import Action, Observation, TASK_GRIPPER_LIMITS, finite
 from .dataset import DOF, read_json
 from .upstream_validation import verify_source
 
@@ -25,7 +25,7 @@ class PolicyInput:
         finite(observation.joints,count)
         finite(observation.velocities,count)
         finite(observation.ee,3)
-        closed,opened = (-.011,.02) if embodiment == 'openmanipulator_x' else (0.,.04)
+        closed,opened = TASK_GRIPPER_LIMITS[embodiment]
         aperture = max(0.,min(1.,(observation.joints[-2]-closed)/(opened-closed)))
         return cls(embodiment,instruction,tuple(observation.joints),tuple(observation.velocities),
                    tuple(observation.ee),aperture,image)

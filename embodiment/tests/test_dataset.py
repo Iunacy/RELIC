@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from dataclasses import asdict
-from embodiment.benchmark import Action, Observation, layout
+from embodiment.benchmark import Action, Observation, SCENE_REVISION, layout
 from embodiment.dataset import export, load_episode, read_json, validate_collection, validate_export
 from embodiment.recording import Recorder
 from embodiment.scenarios import plan
@@ -19,7 +19,7 @@ def fixture(root: Path, case=None) -> Path:
     instruction = f'Pick up the {case.target} cube and place it in the bin.'
     metadata = {**asdict(case), 'embodiment': 'openmanipulator_x', 'joint_names': [f'joint{i}' for i in range(6)],
                 'control_dt': 1/30, 'simulation_executed': False, 'evidence_source': 'unit_fixture',
-                'purpose': 'collection', 'physics_engine': 'none', 'controller': 'fixture'}
+                'purpose': 'collection','scene_revision':SCENE_REVISION, 'physics_engine': 'none', 'controller': 'fixture'}
     recorder = Recorder(root, instruction, metadata)
     for i in range(3):
         observation = Observation(i/30, (.17, 0., .085), (0.,)*6, (0.,)*6,

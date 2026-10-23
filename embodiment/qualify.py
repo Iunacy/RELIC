@@ -9,7 +9,7 @@ import subprocess
 import sys
 import traceback
 from .assets import MANIFEST
-from .benchmark import CAMERA_EYE, CAMERA_LOOK, COLORS, CONTROL_DT, inside_bin
+from .benchmark import CAMERA_EYE, CAMERA_LOOK, COLORS, CONTROL_DT, SCENE_REVISION, inside_bin
 from .expert import Expert, FAILURES
 from .evaluation import metrics
 from .preflight import LAB_COMMIT, SIM
@@ -116,7 +116,9 @@ def main():
                           'purpose':'collection' if args.mode == 'collection' else args.mode,
                           'split':args.split if args.mode == 'collection' else 'qualification',
                           **({'scenario_id':case['scenario_id'],'region':case['region']} if args.mode == 'collection' else {}),
-                          'scene_revision':2,
+                          'scene_revision':SCENE_REVISION,
+                          'gripper_command_joint_range':[backend.gripper_closed,backend.gripper_open],
+                          'gripper_mechanical_joint_limits':backend.finger_limits,
                           'cube_yaw':'radial_about_openmanipulator_base_joint',
                           'light_intensity_range':[1800,2800],
                           'grasp_evidence':'bilateral_finger_contact_and_lift'})
@@ -155,7 +157,7 @@ def main():
                 recorder.abort()
                 raise
         completed = True
-    except (Exception,SystemExit) as exc:
+    except (Exception,SystemExit,KeyboardInterrupt) as exc:
         error = f'{type(exc).__name__}: {exc}'
         if 'backend' in locals():
             try:
@@ -166,6 +168,8 @@ def main():
     finally:
         report = campaign_report(trials,executed,completed,error,known.mode,cases,known.robot)
         _save(known.output,report,provenance)
+        if 'backend' in locals():
+            backend.safe_stop()
         if app is not None:
             app.close(wait_for_replicator=False)
     print(json.dumps(report,indent=2))

@@ -4,6 +4,7 @@ from .benchmark import Action, BIN, COLORS, GRASP_Z, TIMEOUT, inside_bin
 
 PHASES = ('approach','align','descend','grasp','verify','lift','transport',
           'lower','release','verify_placement','retreat','done')
+PHASE_TIMEOUTS = {phase:14. if phase == 'transport' else 10. for phase in PHASES}
 FAILURES = ('wrong_color','failed_grasp','dropped_object','timeout','unsafe_movement')
 
 
@@ -39,7 +40,7 @@ class Expert:
             return Action((0,0,0), 1)
         if obs.unsafe:
             return self.fail('unsafe_movement')
-        if obs.time >= TIMEOUT or obs.time-self.entered > 10:
+        if obs.time >= TIMEOUT or obs.time-self.entered > PHASE_TIMEOUTS[self.phase]:
             return self.fail('timeout')
         cube = obs.cubes[self.target]
         if self.pick is None:

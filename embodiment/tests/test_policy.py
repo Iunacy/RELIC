@@ -24,7 +24,7 @@ class PolicyBoundary(unittest.TestCase):
         self.assertEqual(set(packed),{'video','state','language'})
         self.assertEqual(packed['state']['joint_position'].shape,(1,1,6))
         self.assertEqual(packed['video']['overhead'].shape,(1,1,8,8,3))
-        self.assertAlmostEqual(packed['state']['gripper'][0,0,0],.011/.031)
+        self.assertAlmostEqual(packed['state']['gripper'][0,0,0],.011/.015)
 
     def test_actual_public_interface_and_chunk_mapping(self):
         import numpy as np
