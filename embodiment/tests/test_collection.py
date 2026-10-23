@@ -29,6 +29,8 @@ class CollectionRecovery(unittest.TestCase):
         stack = ExitStack()
         stack.enter_context(patch('embodiment.collection.load_episode', side_effect=self.fake_episode))
         stack.enter_context(patch('embodiment.collection.validate_collection'))
+        stack.enter_context(patch('embodiment.collection.shutil.disk_usage',
+                                  return_value=SimpleNamespace(free=100 * 1024**3)))
         stack.enter_context(patch('builtins.print'))
         return stack
 
@@ -127,3 +129,45 @@ class CollectionRecovery(unittest.TestCase):
         for start in (-1, True, 100000):
             with self.assertRaises(ValueError):
                 plan('train', 1, start)
+
+    def test_corrupted_receipt_cannot_change_admission_or_omit_attempts(self):
+        import copy
+        for defect in ('duplicate', 'omission', 'folder', 'case', 'failed_outcome', 'source'):
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as temp, self.mocks():
+                root = Path(temp)
+                collect(root, 'openmanipulator_x', 'train', 1, runner=self.fake_runner)
+                receipt_path = root/'jobs/job-000000/receipt.json'
+                receipt = json.loads(receipt_path.read_text())
+                accepted = receipt['successes'][0]
+                if defect == 'duplicate':
+                    receipt['successes'].append(copy.deepcopy(accepted))
+                elif defect == 'omission':
+                    receipt['successes'] = []
+                elif defect == 'folder':
+                    accepted['folder'] = '../../other'
+                elif defect == 'case':
+                    accepted['case']['target'] = 'blue'
+                atomic_json(receipt_path, receipt)
+                with ExitStack() as stack:
+                    if defect in ('failed_outcome', 'source'):
+                        def altered(path):
+                            episode = self.fake_episode(path)
+                            if defect == 'failed_outcome':
+                                episode.outcome['success'] = False
+                            else:
+                                episode.metadata['source_sha256'] = {'changed': 'source'}
+                            return episode
+                        stack.enter_context(patch('embodiment.collection.load_episode', side_effect=altered))
+                    with self.assertRaises(ValueError):
+                        collect(root, 'openmanipulator_x', 'train', 1, runner=self.fake_runner)
+
+    def test_storage_reserve_stops_before_simulator_start(self):
+        with tempfile.TemporaryDirectory() as temp, self.mocks():
+            root = Path(temp)
+            with patch('embodiment.collection.shutil.disk_usage', return_value=SimpleNamespace(free=1024)):
+                result = collect(root, 'openmanipulator_x', 'train', 60,
+                                 runner=lambda *args: self.fail('simulator started without disk capacity'))
+            self.assertEqual(result['stop_reason'], 'insufficient_storage_reserve')
+            self.assertEqual(result['successful_episodes'], 0)
+            self.assertEqual(result['jobs'], 0)
+            self.assertFalse(json.loads((root/'storage.json').read_text())['sufficient'])

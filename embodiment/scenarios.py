@@ -56,6 +56,7 @@ def validate_plans(plans: dict[str, list[Scenario]]) -> None:
         if split not in SPLITS:
             raise ValueError('unknown split')
         for case in cases:
+            validate_scenario(asdict(case))
             if case.split != split or case.target not in COLORS or case.region != region(layout(case.seed)[case.target]):
                 raise ValueError('scenario annotation mismatch')
             if case.scenario_id != identity(case.seed, case.target):
@@ -66,6 +67,20 @@ def validate_plans(plans: dict[str, list[Scenario]]) -> None:
                 raise ValueError('held-out configuration leakage')
             seen.add(case.scenario_id)
             seeds.add(case.seed)
+
+
+def validate_scenario(metadata: dict) -> None:
+    split, seed = metadata.get('split'), metadata.get('seed')
+    if split not in SPLITS or type(seed) is not int or seed < 0:
+        raise ValueError('invalid scenario split or seed')
+    if seed >> 48 != SPLITS.index(split) + 1:
+        raise ValueError('scenario seed belongs to another split or diagnostic campaign')
+    index = (seed & ((1 << 48) - 1)) >> 16
+    if index >= 100000:
+        raise ValueError('scenario index exceeds the frozen schedule')
+    expected = asdict(plan(split, 1, index)[0])
+    if any(metadata.get(key) != value for key, value in expected.items()):
+        raise ValueError('scenario differs from the deterministic split schedule')
 
 
 def main():

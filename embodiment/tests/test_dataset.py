@@ -127,9 +127,61 @@ class EpisodeValidation(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'qualification'):
                 validate_collection([path], require_physics=False)
 
+    def test_split_and_action_conventions_cannot_be_relabelled(self):
+        for field, value in (('split', 'validation'), ('action_alignment', 'next_observation'),
+                             ('gripper_open', 0), ('position_unit', 'millimeter')):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as temp:
+                path = fixture(Path(temp)/'episode')
+                metadata = read_json(path/'metadata.json')
+                metadata[field] = value
+                (path/'metadata.json').write_text(json.dumps(metadata))
+                with self.assertRaises(ValueError):
+                    validate_collection([path], require_physics=False)
+
+    def test_missing_or_reused_camera_frame_is_rejected(self):
+        for defect in ('missing', 'reused'):
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as temp:
+                path = fixture(Path(temp)/'episode')
+                rows = [json.loads(line) for line in (path/'samples.jsonl').read_text().splitlines()]
+                if defect == 'missing':
+                    (path/'camera/000001.png').unlink()
+                else:
+                    rows[1]['frame'] = rows[0]['frame']
+                    (path/'samples.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+                with self.assertRaises((ValueError, OSError)):
+                    load_episode(path, require_physics=False)
+
 
 @unittest.skipUnless(HAS_EXPORT, 'Parquet and video dependencies unavailable')
 class LeRobotSerialization(unittest.TestCase):
+    def test_corrupt_export_metadata_video_and_normalization_are_rejected(self):
+        for defect in ('paths', 'dimension', 'split', 'instruction', 'quantile', 'count', 'video'):
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                output = root/'lerobot'
+                export([fixture(root/'episode')], output, require_physics=False)
+                info = read_json(output/'meta/info.json')
+                if defect == 'paths':
+                    info['data_path'] = '../outside.parquet'
+                elif defect == 'dimension':
+                    info['features']['observation.state']['shape'] = [22]
+                elif defect == 'split':
+                    info['splits'] = {'validation': '0:1'}
+                elif defect == 'instruction':
+                    episodes = read_json(output/'meta/episodes.jsonl')
+                    episodes['tasks'] = ['Pick up the blue cube and place it in the bin.']
+                    (output/'meta/episodes.jsonl').write_text(json.dumps(episodes)+'\n')
+                elif defect in ('quantile', 'count'):
+                    stats = read_json(output/'meta/stats.json')
+                    stats['action']['q01' if defect == 'quantile' else 'count'] = [42]
+                    (output/'meta/stats.json').write_text(json.dumps(stats))
+                else:
+                    with next((output/'videos').rglob('*.mp4')).open('ab') as stream:
+                        stream.write(b'corruption')
+                (output/'meta/info.json').write_text(json.dumps(info))
+                with self.assertRaises(ValueError):
+                    validate_export(output, require_physics=False)
+
     def test_actual_parquet_and_video_roundtrip(self):
         import av
         import pyarrow.parquet as pq

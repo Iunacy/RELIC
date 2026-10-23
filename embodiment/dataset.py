@@ -11,7 +11,7 @@ import shutil
 import tempfile
 from .benchmark import COLORS, CONTROL_DT, SCENE_REVISION, TASK_GRIPPER_LIMITS, layout
 from .recording import validate_sample, validate_telemetry
-from .scenarios import HELD_OUT, identity, region
+from .scenarios import HELD_OUT, identity, region, validate_scenario
 
 GROOT_COMMIT = '944fe70c4fd54e3fcb80a7d7258a328f9c061176'
 VIDEO_KEY = 'observation.images.overhead'
@@ -78,6 +78,10 @@ def load_episode(path: Path, require_physics: bool = True, expert_only: bool = T
         raise ValueError('joint mapping mismatch')
     if metadata.get('action_frame') != 'world' or metadata.get('action_fields') != ['delta_x','delta_y','delta_z','gripper']:
         raise ValueError('action semantics mismatch')
+    if (metadata.get('action_alignment') != 'observation_to_next_control_tick'
+            or metadata.get('gripper_range') != [0, 1] or metadata.get('gripper_open') != 1
+            or metadata.get('time_unit') != 'second' or metadata.get('position_unit') != 'meter'):
+        raise ValueError('action alignment or unit convention mismatch')
     if not math.isclose(metadata.get('control_dt', 0), CONTROL_DT, abs_tol=1e-9):
         raise ValueError('control frequency mismatch')
     rows, shape, previous = [], None, -1.
@@ -93,6 +97,8 @@ def load_episode(path: Path, require_physics: bool = True, expert_only: bool = T
             raise ValueError('language annotation mismatch')
         if row['frame'] is None:
             raise ValueError('camera frame missing')
+        if row['frame'] != f'camera/{len(rows):06d}.png':
+            raise ValueError('noncanonical or reused camera frame')
         frame = (path/row['frame']).resolve()
         if not frame.is_relative_to(path):
             raise ValueError('camera path escapes episode')
@@ -150,6 +156,7 @@ def validate_collection(paths: list[Path], require_physics: bool = True) -> tupl
             raise ValueError('qualification or unassigned episodes cannot enter a dataset')
         if meta['seed'] in range(20):
             raise ValueError('qualification seed leakage')
+        validate_scenario(meta)
         pair = (meta['target'], region(layout(meta['seed'])[meta['target']]))
         if (pair in HELD_OUT) != (split == 'evaluation'):
             raise ValueError('held-out configuration leakage')
@@ -255,6 +262,8 @@ def _export(paths: list[Path], output: Path, require_physics: bool = True) -> di
                             'target': episode.metadata['target'], 'split': split,
                             'recording_sha256': hashlib.sha256((episode.path/'samples.jsonl').read_bytes()).hexdigest(),
                             'metadata': episode.metadata, 'outcome': episode.outcome})
+        source_meta[-1]['export_sha256'] = {str(file.relative_to(output)): file_digest(file)
+                                           for file in (parquet, video)}
     features = {key: {'dtype': 'float32', 'shape': [len(values[0])], 'names': None}
                 for key, values in (('observation.state', states), ('action', actions))}
     for key in ('timestamp','next.reward'):
@@ -302,6 +311,18 @@ def validate_export(path: Path, require_physics: bool = True) -> dict:
         raise ValueError('fixture or unverified data cannot pass physical dataset validation')
     robot = info['robot_type']
     count = DOF[robot]+2
+    if (info.get('chunks_size') != 1000
+            or info.get('data_path') != 'data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet'
+            or info.get('video_path') != 'videos/chunk-{episode_chunk:03d}/{video_key}/episode_{episode_index:06d}.mp4'):
+        raise ValueError('noncanonical dataset paths or chunk size')
+    if (info.get('relic', {}).get('groot_source_commit') != GROOT_COMMIT
+            or info['relic'].get('scene_revision') != SCENE_REVISION
+            or info['relic'].get('action_semantics') != 'world_meters_per_control_tick_and_absolute_gripper'):
+        raise ValueError('export source or action semantics mismatch')
+    features = info.get('features', {})
+    if (features.get('observation.state', {}).get('shape') != [2*count+4]
+            or features.get('action', {}).get('shape') != [4]):
+        raise ValueError('feature dimensionality mismatch')
     if read_json(path/'meta/modality.json') != modality(count):
         raise ValueError('GR00T modality mapping mismatch')
     def lines(name):
@@ -309,6 +330,8 @@ def validate_export(path: Path, require_physics: bool = True) -> dict:
     episodes, tasks, sources = lines('episodes'), lines('tasks'), lines('relic_sources')
     if not episodes or len(episodes) != info['total_episodes'] or len(sources) != len(episodes):
         raise ValueError('episode metadata count mismatch')
+    if info.get('total_videos') != len(episodes) or info.get('total_chunks') != (len(episodes)+999)//1000:
+        raise ValueError('video or chunk metadata count mismatch')
     task_map = {row['task_index']: row['task'] for row in tasks}
     if len(task_map) != len(tasks) or len(tasks) != info['total_tasks']:
         raise ValueError('task metadata mismatch')
@@ -316,11 +339,21 @@ def validate_export(path: Path, require_physics: bool = True) -> dict:
     if len(split_names) != 1 or split_names[0] not in ('train','validation','evaluation'):
         raise ValueError('invalid dataset split')
     split = split_names[0]
+    if info['splits'][split] != f'0:{len(episodes)}':
+        raise ValueError('dataset split indices mismatch')
     seen, all_states, all_actions = set(), [], []
     offset = 0
     for index, (episode,source) in enumerate(zip(episodes,sources,strict=True)):
         if episode['episode_index'] != index or source['episode_index'] != index:
             raise ValueError('episode indices do not align')
+        metadata = source['metadata']
+        validate_scenario(metadata)
+        if (metadata.get('embodiment') != robot or metadata.get('purpose') != 'collection'
+                or any(metadata.get(key) != source.get(key) for key in ('seed', 'target', 'split', 'scenario_id'))):
+            raise ValueError('source metadata identity mismatch')
+        instruction = f"Pick up the {source['target']} cube and place it in the bin."
+        if episode['tasks'] != [instruction]:
+            raise ValueError('episode instruction differs from target color')
         fingerprint = identity(source['seed'],source['target'])
         if source['scenario_id'] != fingerprint or fingerprint in seen or source['split'] != split:
             raise ValueError('duplicate scenario or split mismatch')
@@ -332,7 +365,12 @@ def validate_export(path: Path, require_physics: bool = True) -> dict:
             raise ValueError('held-out configuration leakage')
         if require_physics and (source['metadata'].get('simulation_executed') is not True or source['outcome'].get('success') is not True):
             raise ValueError('unverified physical source')
-        table = pq.read_table(path/info['data_path'].format(episode_chunk=index//1000,episode_index=index))
+        parquet_path = path/info['data_path'].format(episode_chunk=index//1000,episode_index=index)
+        video_path = path/info['video_path'].format(episode_chunk=index//1000,episode_index=index,video_key=VIDEO_KEY)
+        expected_hashes = {str(file.relative_to(path)): file_digest(file) for file in (parquet_path, video_path)}
+        if source.get('export_sha256') != expected_hashes:
+            raise ValueError('exported data or video checksum mismatch')
+        table = pq.read_table(parquet_path)
         rows = table.to_pylist()
         length = episode['length']
         if len(rows) != length or length < 2:
@@ -356,7 +394,6 @@ def validate_export(path: Path, require_physics: bool = True) -> dict:
                 raise ValueError('language index mismatch')
             from .benchmark import Action
             Action(tuple(row['action'][:3]),row['action'][3])
-        video_path = path/info['video_path'].format(episode_chunk=index//1000,episode_index=index,video_key=VIDEO_KEY)
         with av.open(str(video_path)) as container:
             stream = container.streams.video[0]
             if float(stream.average_rate) != 30:
@@ -378,12 +415,24 @@ def validate_export(path: Path, require_physics: bool = True) -> dict:
     statistics = read_json(path/'meta/stats.json')
     for key,values in (('observation.state',all_states),('action',all_actions)):
         array = np.asarray(values,dtype=np.float32)
-        for field in ('min','max','mean','std'):
-            if not np.allclose(getattr(array,field)(axis=0),statistics[key][field],rtol=1e-5,atol=1e-7):
+        expected = {field: getattr(array, field)(axis=0) for field in ('min', 'max', 'mean', 'std')}
+        expected.update({f'q{int(q*100):02d}': np.quantile(array, q, axis=0) for q in (.01, .05, .95, .99)})
+        expected['count'] = np.asarray([len(array)])
+        for field, computed in expected.items():
+            actual = np.asarray(statistics[key][field])
+            if actual.shape != computed.shape or not np.isfinite(actual).all() or not np.allclose(computed,actual,rtol=1e-5,atol=1e-7):
                 raise ValueError('normalization statistics mismatch')
     return {'schema':'relic.lerobot_validation.v1','episodes':len(episodes),'frames':offset,
             'embodiment':robot,'split':split,'video_decode_verified':True,
             'physical_evidence_required':require_physics,'groot_source_commit':GROOT_COMMIT}
+
+
+def file_digest(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open('rb') as stream:
+        while chunk := stream.read(1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def main():

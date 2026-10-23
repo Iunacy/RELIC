@@ -1,7 +1,8 @@
 from collections import Counter
 from dataclasses import replace
 import unittest
-from embodiment.scenarios import HELD_OUT, plan, validate_plans
+from embodiment.scenarios import HELD_OUT, plan, validate_plans, validate_scenario
+from dataclasses import asdict
 from embodiment.qualify import campaign_cases, campaign_report
 
 
@@ -49,6 +50,14 @@ class CollectionScenarios(unittest.TestCase):
         for split, count in (('test', 10), ('train', 0), ('train', True), ('train', 100001)):
             with self.assertRaises(ValueError):
                 plan(split, count)
+
+    def test_split_relabeling_and_unassigned_seed_are_rejected(self):
+        case = asdict(plan('train', 1)[0])
+        validate_scenario(case)
+        with self.assertRaisesRegex(ValueError, 'another split'):
+            validate_scenario({**case, 'split': 'validation'})
+        with self.assertRaisesRegex(ValueError, 'deterministic'):
+            validate_scenario({**case, 'seed': case['seed'] + 1})
 
 
 if __name__ == '__main__':

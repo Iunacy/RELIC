@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import time
@@ -68,19 +69,40 @@ def inspect_job(job, robot, split, source_hashes):
         except BlockingIOError:
             raise RuntimeError(f'simulator still owns unfinished job: {job}') from None
     request = read_json(job/'request.json')
+    if not isinstance(request, dict) or set(request) != {'robot', 'split', 'start', 'count', 'cases'}:
+        raise ValueError('invalid collection job request')
     expected = [asdict(case) for case in plan(split, request['count'], request['start'])]
     if request['robot'] != robot or request['split'] != split or request['cases'] != expected:
         raise ValueError('collection job scenario identity changed')
     receipt_path = job/'receipt.json'
     if receipt_path.exists():
         receipt = read_json(receipt_path)
-        if receipt['request'] != request:
+        if not isinstance(receipt, dict) or set(receipt) != {'request', 'successes', 'failures'} or receipt['request'] != request:
             raise ValueError('collection receipt request changed')
+        if not isinstance(receipt['successes'], list) or not isinstance(receipt['failures'], list):
+            raise ValueError('invalid collection receipt entries')
+        assigned = {case['scenario_id']: case for case in expected}
+        seen = set()
+        for item in [*receipt['successes'], *receipt['failures']]:
+            case = item.get('case') if isinstance(item, dict) else None
+            if not isinstance(case, dict) or assigned.get(case.get('scenario_id')) != case or case['scenario_id'] in seen:
+                raise ValueError('collection receipt contains duplicate or unassigned scenarios')
+            seen.add(case['scenario_id'])
+        if seen != set(assigned):
+            raise ValueError('collection receipt omits assigned scenarios')
+        if any(not isinstance(item.get('reason'), str) or not item['reason'] for item in receipt['failures']):
+            raise ValueError('collection receipt failure reason missing')
         for accepted in receipt['successes']:
+            if accepted.get('folder') != f"trial_{accepted['case']['seed']:02d}":
+                raise ValueError('collection receipt folder differs from assigned case')
             path = job/'run'/accepted['folder']
             if hashes(path) != accepted['sha256']:
                 raise ValueError(f'accepted episode was corrupted: {path}')
-            load_episode(path)
+            episode = load_episode(path)
+            validate_assignment(episode, accepted['case'], robot, source_hashes)
+            if episode.outcome['success'] is not True:
+                raise ValueError('collection receipt accepts a failed episode')
+            validate_collection([path])
         return receipt
     successes, failures = [], []
     for case in expected:
@@ -88,12 +110,7 @@ def inspect_job(job, robot, split, source_hashes):
         path = job/'run'/folder
         try:
             episode = load_episode(path)
-            if any(episode.metadata.get(key) != value for key, value in case.items()):
-                raise ValueError('episode scenario differs from assigned case')
-            if episode.metadata.get('source_sha256') != source_hashes:
-                raise ValueError('episode source differs from frozen collection source')
-            if episode.metadata['embodiment'] != robot or episode.metadata.get('purpose') != 'collection':
-                raise ValueError('episode embodiment or purpose mismatch')
+            validate_assignment(episode, case, robot, source_hashes)
             if not episode.outcome['success']:
                 failures.append({'case': case, 'reason': episode.outcome.get('failure_reason', 'physical_failure')})
                 continue
@@ -104,6 +121,29 @@ def inspect_job(job, robot, split, source_hashes):
     receipt = {'request': request, 'successes': successes, 'failures': failures}
     atomic_json(receipt_path, receipt)
     return receipt
+
+
+def validate_assignment(episode, case, robot, source_hashes):
+    if any(episode.metadata.get(key) != value for key, value in case.items()):
+        raise ValueError('episode scenario differs from assigned case')
+    if episode.metadata.get('source_sha256') != source_hashes:
+        raise ValueError('episode source differs from frozen collection source')
+    if episode.metadata['embodiment'] != robot or episode.metadata.get('purpose') != 'collection':
+        raise ValueError('episode embodiment or purpose mismatch')
+
+
+def storage_budget(root, count, jobs, reserve_bytes):
+    measurements = []
+    for job in jobs:
+        request = read_json(job/'request.json')
+        size = sum(path.stat().st_size for path in job.rglob('*') if path.is_file())
+        measurements.append(size / request['count'])
+    per_episode = max([256 * 1024**2, *(int(size * 2) for size in measurements)])
+    free = shutil.disk_usage(root).free
+    return {'free_bytes': free, 'reserve_bytes': reserve_bytes,
+            'estimated_batch_bytes': count * per_episode,
+            'measured_jobs': len(measurements),
+            'sufficient': free >= reserve_bytes + count * per_episode}
 
 
 def progress(root, robot, split, verified_jobs=None):
@@ -182,11 +222,13 @@ def execute(command, job, timeout, environment=None, shutdown_timeout=30):
 
 
 def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600,
-            python=sys.executable, device='cuda:0', runner=execute):
+            python=sys.executable, device='cuda:0', runner=execute, reserve_bytes=8 * 1024**3):
     if robot not in DOF or split not in SPLITS:
         raise ValueError('invalid embodiment or split')
     if any(type(value) is not int or value <= 0 for value in (target, batch_size, max_jobs, timeout)):
         raise ValueError('collection counts and timeout must be positive integers')
+    if type(reserve_bytes) is not int or reserve_bytes < 0:
+        raise ValueError('storage reserve must be a nonnegative integer')
     root = Path(root).resolve()
     with locked(root):
         configuration = {'schema': 'relic.collection.v1', 'embodiment': robot, 'split': split,
@@ -206,7 +248,14 @@ def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600
         for _ in range(max_jobs):
             if len(paths) >= target or stalled >= 3:
                 break
-            count = min(batch_size, target - len(paths))
+            count = min(batch_size if jobs else 1, target - len(paths))
+            storage = storage_budget(root, count, jobs, reserve_bytes)
+            atomic_json(root/'storage.json', storage)
+            if not storage['sufficient']:
+                summary = summarize(root, target, paths, failures, jobs)
+                summary['stop_reason'] = 'insufficient_storage_reserve'
+                atomic_json(root/'progress.json', summary)
+                return summary
             cases = [asdict(case) for case in plan(split, count, offset)]
             sequence = max((int(path.name.split('-')[1]) for path in (root/'jobs').glob('job-*')), default=-1) + 1
             job = root/'jobs'/f'job-{sequence:06d}'
@@ -258,11 +307,12 @@ def main():
     parser.add_argument('--timeout', type=int, default=3600)
     parser.add_argument('--python', default=sys.executable)
     parser.add_argument('--device', default='cuda:0')
+    parser.add_argument('--reserve-gib', type=int, default=8)
     parser.add_argument('--export', type=Path)
     args = parser.parse_args()
-    target = args.target if args.target is not None else {'train': 200, 'validation': 25, 'evaluation': 50}[args.split]
+    target = args.target if args.target is not None else {'train': 60, 'validation': 12, 'evaluation': 20}[args.split]
     summary = collect(args.root, args.robot, args.split, target, args.batch_size, args.max_jobs,
-                      args.timeout, args.python, args.device)
+                      args.timeout, args.python, args.device, reserve_bytes=args.reserve_gib * 1024**3)
     if args.export:
         with locked(args.root):
             paths, _, _, _ = progress(args.root.resolve(), args.robot, args.split)
