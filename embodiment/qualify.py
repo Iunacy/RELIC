@@ -13,6 +13,8 @@ from .expert import Expert, FAILURES
 from .evaluation import metrics
 from .preflight import LAB_COMMIT, SIM
 from .recording import Recorder
+from .scenarios import plan
+from dataclasses import asdict
 
 
 def aggregate(trials, executed, completed, error=None):
@@ -27,9 +29,35 @@ def aggregate(trials, executed, completed, error=None):
                 error=error,trials=trials,statistics=metrics(trials))
 
 
+def campaign_cases(mode, split, episodes):
+    if mode == 'qualification':
+        return [dict(seed=seed,target=COLORS[seed%3]) for seed in range(20)]
+    if mode == 'smoke':
+        if type(episodes) is not int or not 1 <= episodes <= 3:
+            raise ValueError('smoke campaigns allow one to three trials')
+        return [dict(seed=seed,target=COLORS[seed%3]) for seed in range(episodes)]
+    return [asdict(case) for case in plan(split,episodes)]
+
+
+def campaign_report(trials,executed,completed,error,mode,cases,robot):
+    if mode == 'qualification':
+        report = aggregate(trials,executed,completed,error)
+    else:
+        valid = executed and completed and len(trials)==len(cases) and error is None
+        report = dict(status=('COMPLETE' if all(row['success'] for row in trials) else 'COMPLETE_WITH_FAILURES') if valid else 'BLOCKED',
+                      simulation_executed=executed,completed=completed,trials_executed=len(trials),
+                      successes=sum(row['success'] for row in trials),error=error,trials=trials,
+                      statistics=metrics(trials),threshold_achieved=False)
+    report.update(mode=mode,embodiment=robot,planned_trials=len(cases))
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--mode',choices=['qualification','smoke','collection'],default='qualification')
+    parser.add_argument('--split',choices=['train','validation','evaluation'],default='train')
+    parser.add_argument('--episodes',type=int,default=1)
     parser.add_argument('--robot',choices=['openmanipulator_x','franka_panda'],default='openmanipulator_x')
     parser.add_argument('--preflight-only',action='store_true')
     known,_ = parser.parse_known_args()
@@ -38,12 +66,17 @@ def main():
     trials,executed,completed = [],False,False
     error = None
     app = None
+    cases = []
     try:
+        cases = campaign_cases(known.mode,known.split,known.episodes)
         if known.preflight_only:
             raise RuntimeError('preflight only; real Isaac Lab simulation was not executed')
         from isaaclab.app import AppLauncher
         AppLauncher.add_app_launcher_args(parser)
         args = parser.parse_args()
+        if args.mode == 'collection' and not args.enable_cameras:
+            raise ValueError('collection requires --enable_cameras')
+        (args.output/'scenarios.json').write_text(json.dumps(cases,indent=2)+'\n')
         if sys.version_info[:2] != (3,11):
             raise RuntimeError('selected Isaac Sim 5.1.0 runtime requires Python 3.11')
         import importlib.metadata
@@ -62,8 +95,8 @@ def main():
         executed = True
         checks = backend.qualify_articulation()
         (args.output/'articulation.json').write_text(json.dumps(checks,indent=2)+'\n')
-        for seed in range(20):
-            target = COLORS[seed%3]
+        for case in cases:
+            seed,target = case['seed'],case['target']
             obs = backend.reset(seed)
             executed = True
             initial_positions = {color:list(pose) for color,pose in obs.cubes.items()}
@@ -78,7 +111,10 @@ def main():
                           'camera_enabled':args.enable_cameras,'seed':seed,'target':target,
                           'initial_object_poses':initial_positions,'physics_engine':'physx',
                           'simulation_executed':True,'controller':'classical_only',
-                          'purpose':'qualification','split':'evaluation','scene_revision':2,
+                          'purpose':'collection' if args.mode == 'collection' else args.mode,
+                          'split':args.split if args.mode == 'collection' else 'qualification',
+                          **({'scenario_id':case['scenario_id'],'region':case['region']} if args.mode == 'collection' else {}),
+                          'scene_revision':2,
                           'cube_yaw':'radial_about_openmanipulator_base_joint',
                           'light_intensity_range':[1800,2800],
                           'grasp_evidence':'bilateral_finger_contact_and_lift'})
@@ -110,7 +146,7 @@ def main():
                               simulation_executed=True)
                 recorder.close(result)
                 trials.append(result)
-                _save(known.output,aggregate(trials,True,False))
+                _save(known.output,campaign_report(trials,True,False,None,known.mode,cases,known.robot))
                 if not app.is_running():
                     raise RuntimeError('simulation application stopped before campaign completed')
             except BaseException:
@@ -121,12 +157,12 @@ def main():
         error = f'{type(exc).__name__}: {exc}'
         (known.output/'error.txt').write_text(traceback.format_exc())
     finally:
-        report = aggregate(trials,executed,completed,error)
+        report = campaign_report(trials,executed,completed,error,known.mode,cases,known.robot)
         _save(known.output,report)
         if app is not None:
             app.close()
     print(json.dumps(report,indent=2))
-    return 0 if report['status']=='PASS' else 1 if report['status']=='FAIL' else 2
+    return 0 if report['status'] in ('PASS','COMPLETE') else 1 if report['status'] in ('FAIL','COMPLETE_WITH_FAILURES') else 2
 
 
 def _save(output,report):
