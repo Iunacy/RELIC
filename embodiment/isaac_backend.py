@@ -12,6 +12,7 @@ from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLOR
                         CONTROL_DT, CUBE, DT, Observation, layout, workspace)
 from .openmanipulator import LIMITS, bounded_reference, fk, ik
 from .safety import Guard, SafetyConfig, SafetyViolation
+from .runtime_config import simulation_config
 
 HOME = (.17,0,.085)
 
@@ -30,7 +31,7 @@ class IsaacBackend:
             raise ValueError('unsupported embodiment')
         self.embodiment = robot
         self.initializing = False
-        self.sim = sim.SimulationContext(sim.SimulationCfg(dt=DT, device=device))
+        self.sim = sim.SimulationContext(simulation_config(device,DT))
         self.device = self.sim.device
         self.time = 0.0
         self.camera = None
@@ -55,7 +56,7 @@ class IsaacBackend:
             self.robot = Articulation(ArticulationCfg(prim_path='/World/Robot',spawn=spawn,
                 init_state=ArticulationCfg.InitialStateCfg(joint_pos={**dict(zip(ARM,ik(HOME))),FINGERS[0]:.020}),
                 actuators={
-                    'arm':ImplicitActuatorCfg(joint_names_expr=list(ARM),stiffness=100.,damping=8.,
+                    'arm':ImplicitActuatorCfg(joint_names_expr=list(ARM),stiffness=400.,damping=20.,
                                              effort_limit_sim=2.,velocity_limit_sim=.65),
                     'gripper':ImplicitActuatorCfg(joint_names_expr=[FINGERS[0]],stiffness=200.,damping=5.,
                                                  effort_limit_sim=5.,velocity_limit_sim=.04)}))

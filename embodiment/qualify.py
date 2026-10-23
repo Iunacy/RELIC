@@ -68,6 +68,7 @@ def main():
     error = None
     app = None
     cases = []
+    provenance = source_provenance()
     try:
         cases = campaign_cases(known.mode,known.split,known.episodes)
         if known.preflight_only:
@@ -147,7 +148,7 @@ def main():
                               simulation_executed=True)
                 recorder.close(result)
                 trials.append(result)
-                _save(known.output,campaign_report(trials,True,False,None,known.mode,cases,known.robot))
+                _save(known.output,campaign_report(trials,True,False,None,known.mode,cases,known.robot),provenance)
                 if not app.is_running():
                     raise RuntimeError('simulation application stopped before campaign completed')
             except BaseException:
@@ -164,21 +165,31 @@ def main():
         (known.output/'error.txt').write_text(traceback.format_exc())
     finally:
         report = campaign_report(trials,executed,completed,error,known.mode,cases,known.robot)
-        _save(known.output,report)
+        _save(known.output,report,provenance)
         if app is not None:
             app.close(wait_for_replicator=False)
     print(json.dumps(report,indent=2))
     return 0 if report['status'] in ('PASS','COMPLETE') else 1 if report['status'] in ('FAIL','COMPLETE_WITH_FAILURES') else 2
 
 
-def _save(output,report):
+def source_provenance():
+    root = Path(__file__).resolve().parent
+    return {'relic_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
+            'relic_worktree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],text=True).strip()),
+            'source_sha256':{path.name:hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(root.glob('*.py'))}}
+
+
+def _save(output,report,provenance=None):
     report['runtime_pin'] = {'isaacsim':SIM,'isaaclab_commit':LAB_COMMIT,'robot_commit':MANIFEST['commit']}
     report['utc'] = datetime.now(timezone.utc).isoformat()
-    report['relic_commit'] = subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
-    report['relic_worktree_dirty'] = bool(subprocess.check_output(['git','status','--porcelain'],text=True).strip())
-    report['source_sha256'] = {str(path.relative_to(Path(__file__).resolve().parent)):hashlib.sha256(path.read_bytes()).hexdigest()
-                               for path in sorted(Path(__file__).resolve().parent.rglob('*.py'))
-                               if 'cache' not in path.relative_to(Path(__file__).resolve().parent).parts}
+    provenance = provenance or source_provenance()
+    report.update(provenance)
+    root = Path(__file__).resolve().parent
+    changed = [name for name,digest in provenance['source_sha256'].items()
+               if not (root/name).is_file() or hashlib.sha256((root/name).read_bytes()).hexdigest() != digest]
+    report['source_changed_during_run'] = changed
+    if changed:
+        report.update(status='BLOCKED',threshold_achieved=False,error='runtime source changed during campaign')
     dest = output/'report.json'
     tmp = output/'report.json.tmp'
     tmp.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
