@@ -6,6 +6,9 @@ from typing import Protocol
 
 COLORS = ('red', 'green', 'blue')
 CUBE = 0.025
+# Official fingertips extend 20.7 mm beyond the URDF tool origin.
+# Hold that origin above the cube center so fingertips clear the support plane.
+GRASP_Z = 0.0285
 BIN = (0.16, 0.115, 0.004)
 BIN_INNER = 0.060
 BIN_WALL = 0.025
@@ -67,11 +70,13 @@ def layout(seed):
     rng = random.Random(seed)
     for _ in range(1000):
         result = {}
-        for color in COLORS:
-            radius, angle = rng.uniform(.145,.190), rng.uniform(-.55,.15)
+        sectors = [(-.62,-.54),(-.18,-.10),(.25,.34)]
+        rng.shuffle(sectors)
+        for color, (low,high) in zip(COLORS,sectors):
+            radius, angle = rng.uniform(.155,.185), rng.uniform(low,high)
             result[color] = (.012 + radius*math.cos(angle), radius*math.sin(angle), CUBE/2 + .001)
         poses = list(result.values())
-        if all(math.dist(poses[i],poses[j]) >= .041 for i in range(3) for j in range(i)):
+        if all(math.dist(poses[i],poses[j]) >= .055 for i in range(3) for j in range(i)):
             return result
     raise ValueError('could not sample separated cubes')
 

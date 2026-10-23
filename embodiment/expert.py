@@ -1,6 +1,6 @@
 """Privileged feedback expert; no images or ground-truth poses cross the VLA API."""
 import math
-from .benchmark import Action, BIN, COLORS, CUBE, TIMEOUT, inside_bin
+from .benchmark import Action, BIN, COLORS, GRASP_Z, TIMEOUT, inside_bin
 
 PHASES = ('approach','align','descend','grasp','verify','lift','transport',
           'release','verify_placement','retreat','done')
@@ -54,9 +54,9 @@ class Expert:
         if self.phase in ('approach','align'):
             goal = (x,y,.085)
         elif self.phase == 'descend':
-            goal = (x,y,CUBE/2)
+            goal = (x,y,GRASP_Z)
         elif self.phase in ('grasp','verify'):
-            goal,grip = (x,y,CUBE/2),0.0
+            goal,grip = (x,y,GRASP_Z),0.0
         elif self.phase == 'lift':
             goal,grip = (x,y,.085),0.0
         elif self.phase == 'transport':

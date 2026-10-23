@@ -9,7 +9,7 @@ import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 from embodiment.assets import MANIFEST, ROOT, URDF, fetch, validate_urdf
-from embodiment.benchmark import Action, BIN, COLORS, CUBE, Observation, inside_bin, layout
+from embodiment.benchmark import Action, BIN, COLORS, CUBE, GRASP_Z, Observation, inside_bin, layout
 from embodiment.expert import Expert
 from embodiment.openmanipulator import bounded_reference, fk, ik
 from embodiment.qualify import aggregate
@@ -54,9 +54,9 @@ class Geometry(unittest.TestCase):
             self.assertEqual(scene,layout(seed))
             self.assertEqual(set(scene),set(COLORS))
             poses = list(scene.values())
-            self.assertTrue(all(math.dist(poses[i],poses[j])>=.041 for i in range(3) for j in range(i)))
+            self.assertTrue(all(math.dist(poses[i],poses[j])>=.055 for i in range(3) for j in range(i)))
             for p in poses:
-                for z in (CUBE/2,.085):
+                for z in (GRASP_Z,.085):
                     q = ik((*p[:2],z))
                     self.assertLess(math.dist(fk(q),(*p[:2],z)),1e-9)
                     self.assertAlmostEqual(sum(q[1:]),math.pi/2)
@@ -67,6 +67,35 @@ class Geometry(unittest.TestCase):
                     self.assertLess(math.dist(fk(ik(point)),point),1e-9)
         for z in (.065,.085):
             self.assertLess(math.dist(fk(ik((*BIN[:2],z))),(*BIN[:2],z)),1e-9)
+
+    def test_fk_against_independent_urdf_chain(self):
+        joints = validate_urdf()
+        def multiply(a,b):
+            return [[sum(a[i][k]*b[k][j] for k in range(4)) for j in range(4)] for i in range(4)]
+        def identity():
+            return [[float(i==j) for j in range(4)] for i in range(4)]
+        for pose in ((.17,0,GRASP_Z),(.17,-.06,.085),(*BIN[:2],.065)):
+            values=dict(zip(('joint1','joint2','joint3','joint4'),ik(pose)))
+            result=identity()
+            for name in ('world_fixed','joint1','joint2','joint3','joint4','end_effector_joint'):
+                joint=joints[name]
+                origin=joint.find('origin')
+                self.assertEqual([float(v) for v in origin.attrib['rpy'].split()],[0,0,0])
+                translation=identity()
+                for i,v in enumerate(map(float,origin.attrib['xyz'].split())): translation[i][3]=v
+                result=multiply(result,translation)
+                if name in values:
+                    x,y,z=map(float,joint.find('axis').attrib['xyz'].split())
+                    angle=values[name]
+                    c,t,s=math.cos(angle),1-math.cos(angle),math.sin(angle)
+                    rotation=[[t*x*x+c,t*x*y-s*z,t*x*z+s*y,0],
+                              [t*x*y+s*z,t*y*y+c,t*y*z-s*x,0],
+                              [t*x*z-s*y,t*y*z+s*x,t*z*z+c,0],[0,0,0,1]]
+                    result=multiply(result,rotation)
+            self.assertLess(math.dist([result[i][3] for i in range(3)],pose),1e-9)
+            self.assertAlmostEqual(result[2][0],-1)
+        # From the official palm mesh: origin .0817 + tip .065 - tool .126.
+        self.assertGreaterEqual(GRASP_Z-(.0817+.065-.126),.003)
 
     def test_invalid_geometry_actions(self):
         for p in ((float('nan'),0,0),(.8,0,.1),(.25,0,.19),(.1,)):

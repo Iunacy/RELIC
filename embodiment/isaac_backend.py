@@ -75,7 +75,7 @@ class IsaacBackend:
         self.arm_ids,_ = self.robot.find_joints(list(ARM),preserve_order=True)
         self.left_ids,_ = self.robot.find_joints([FINGERS[0]])
         self.right_ids,_ = self.robot.find_joints([FINGERS[1]])
-        self.tool_ids,_ = self.robot.find_bodies(['end_effector_link'])
+        self.tool_ids,_ = self.robot.find_bodies(['link5'])
         self.base_ids,_ = self.robot.find_bodies(['link1'])
         if len(self.arm_ids)!=4 or len(self.left_ids)!=1 or len(self.right_ids)!=1 or len(self.tool_ids)!=1 or len(self.base_ids)!=1:
             raise RuntimeError('imported joint/body mappings do not match official URDF')
@@ -177,7 +177,12 @@ class IsaacBackend:
     def observe(self):
         q = tuple(self.robot.data.joint_pos[0,self.all_ids].cpu().tolist())
         dq = tuple(self.robot.data.joint_vel[0,self.all_ids].cpu().tolist())
-        ee = tuple(self.robot.data.body_pos_w[0,self.tool_ids[0]].cpu().tolist())
+        # Resolve the massless fixed tool frame from its physical parent link.
+        # Importers may omit massless fixed links from the rigid-body view.
+        origin = self.robot.data.body_pos_w[0,self.tool_ids[0]].cpu().tolist()
+        w,x,y,z = self.robot.data.body_quat_w[0,self.tool_ids[0]].cpu().tolist()
+        axis = (1-2*(y*y+z*z),2*(x*y+w*z),2*(x*z-w*y))
+        ee = tuple(a+.126*b for a,b in zip(origin,axis))
         cubes = {c:tuple(o.data.root_pose_w[0].cpu().tolist()) for c,o in self.cubes.items()}
         speeds = {c:float(torch.linalg.vector_norm(o.data.root_lin_vel_w[0]) +
                           CUBE/2*torch.linalg.vector_norm(o.data.root_ang_vel_w[0])) for c,o in self.cubes.items()}

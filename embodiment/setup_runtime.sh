@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 # Explicit isolated install; never invoked by preflight or qualification.
 # Prerequisite: existing Ubuntu 22.04 x86_64 GPU host, supported NVIDIA driver,
-# >=32 GB RAM and >=16 GB RTX VRAM. No provisioning/driver changes here.
+# >=32 GB RAM, >=16 GB RTX VRAM, and uv or Python 3.11. No provisioning/driver changes.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 root="${RELIC_ISAAC_ROOT:-$PWD/embodiment/cache/runtime}"
 mkdir -p "$root"
-if [[ ! -d "$root/venv" ]]; then python3.11 -m venv "$root/venv"; fi
+if [[ ! -d "$root/venv" ]]; then
+    if command -v uv >/dev/null 2>&1; then
+        uv venv --python 3.11.17 --seed "$root/venv"
+    else
+        python3.11 -m venv "$root/venv"
+    fi
+fi
 py="$root/venv/bin/python"
 "$py" -m pip install 'pip==25.3' 'setuptools==80.9.0' 'wheel==0.45.1'
 "$py" -m pip install 'torch==2.7.0' 'torchvision==0.22.0' --index-url https://download.pytorch.org/whl/cu128

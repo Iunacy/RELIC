@@ -31,13 +31,18 @@ def validate_sample(row, previous_time=-1):
 
 
 class Recorder:
-    def __init__(self,path,instruction):
+    def __init__(self,path,instruction,metadata=None):
         self.path = Path(path)
         self.path.mkdir(parents=True,exist_ok=False)
         self.instruction = instruction
         self.last_time = -1
         self.count = 0
         self.file = (self.path/'samples.jsonl').open('x')
+        (self.path/'metadata.json').write_text(json.dumps({
+            'schema_version':1,'time_unit':'second','position_unit':'meter',
+            'action_fields':['delta_x','delta_y','delta_z','gripper'],
+            'action_frame':'world','action_alignment':'observation_to_next_control_tick',
+            'gripper_range':[0,1],'gripper_open':1,**(metadata or {})},indent=2)+'\n')
 
     def append(self,obs,action,phase,success=False,frame=None):
         # action is the command applied from this observation to the next control tick.

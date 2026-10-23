@@ -7,8 +7,8 @@ from pathlib import Path
 import subprocess
 import sys
 import traceback
-from .assets import MANIFEST
-from .benchmark import COLORS, inside_bin
+from .assets import ARM, FINGERS, MANIFEST
+from .benchmark import CAMERA_EYE, CAMERA_LOOK, COLORS, CONTROL_DT, inside_bin
 from .expert import Expert, FAILURES
 from .preflight import LAB_COMMIT, SIM
 from .recording import Recorder
@@ -65,7 +65,11 @@ def main():
             obs = backend.reset(seed)
             executed = True
             expert = Expert(target)
-            recorder = Recorder(args.output/f'trial_{seed:02d}',f'Pick up the {target} cube and place it in the bin.')
+            recorder = Recorder(args.output/f'trial_{seed:02d}',f'Pick up the {target} cube and place it in the bin.',
+                metadata={'embodiment':'openmanipulator_x','joint_names':[*ARM,*FINGERS],
+                          'joint_units':['radian']*4+['meter']*2,'control_dt':CONTROL_DT,
+                          'camera_eye':CAMERA_EYE,'camera_look':CAMERA_LOOK,
+                          'camera_enabled':args.enable_cameras,'seed':seed,'target':target})
             try:
                 while app.is_running():
                     action = expert.update(obs)
