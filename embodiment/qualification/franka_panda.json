@@ -1,0 +1,382 @@
+{
+  "schema": "relic.qualification_evidence.v1",
+  "status": "PASS",
+  "embodiment": "franka_panda",
+  "statistics": {
+    "trials": 20,
+    "successes": 20,
+    "success_rate": 1.0,
+    "wilson_95": [
+      0.8388748419471806,
+      1.0
+    ],
+    "wrong_color_picks": 0,
+    "failures": {}
+  },
+  "runtime_pin": {
+    "isaacsim": "5.1.0",
+    "isaaclab_commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+    "robot_commit": "ee9a720bcc45acda9c0df8fe689b1182844307db"
+  },
+  "relic_commit": "c4b7da5d5d4b7964d0e8c1678e654324c7ed8bb7",
+  "source_sha256": {
+    "__init__.py": "7ad4e0a2933c402c44a1681393d2e72c42a5e6276b5657c0ed8eeb3c74739c7a",
+    "assets.py": "cbd1c0f887dfd02c957dbd61d3b59d9adaf487f4b9ab71ac08c150205146b46e",
+    "benchmark.py": "5a4f80b67961b7c1f41f1f32799106a502d151867304a3a3398e9eee84eb61e3",
+    "benchmark_report.py": "d69150a82852a88613074dd600f79aadeba42d9285a52bc8005e933589d84a3a",
+    "contact_probe.py": "33f0d2dcc83173b88916ae5c1e06374f9fe75c13ed74d2eb007bd4aa9d3b3347",
+    "dataset.py": "9a040458fa9b9f9f90534d76c271de2761e77d552e6d11f3d248bfc8886067d3",
+    "evaluation.py": "dd609d0e7187aeab25264d9e0f60cf7398de4d02b50db2530583ac7f20932527",
+    "execution.py": "3ae8c7b8c68f3a46ff398d2cc7a617ba08dc19c556d6e41472c3b3a312efa988",
+    "expert.py": "12171e028ff53c88df5b47ad0f25010cab0db725e4eee9e9ddf39d94be77ace5",
+    "groot_modalities.py": "4d646e158b8f5fff88fc1f06063afcc787c701a98b33a961929b817b1965cf12",
+    "isaac_backend.py": "2d174016526b79f8e025fb103066de65b438ef5247ac59fbce1f4d8291121742",
+    "openmanipulator.py": "3b29570ec62ba7743342bebb1132d30012c09ac8e4255b80ba3264768bb56dc6",
+    "panda.py": "a08a8707920e79bb78d5d0b79c33bf40ac824f184033ad0722f53a7a6de0c913",
+    "planner.py": "33a1b8be07df38bd74c224e6144bb069da64c33c95dab98f11f4141035348dfe",
+    "policy.py": "e5604723c74a4af16fdafcbaa531e8184af49f4cb3148c7c1dc83e9509167bfa",
+    "preflight.py": "a02a1d10d97c8935585333fab3ce50c6c5d8271a7495807f2015b849435462bb",
+    "qualification_evidence.py": "1e0b83397b884c5d1694d35d7ef35dda911d9c300626ea5b896c16f5ff29f862",
+    "qualify.py": "b110dcd7c6d741540c384deda6e67c02ea11f87c23895bcdff4c1dbaa36cae9c",
+    "recording.py": "b476dba6a2704722f6efa25348a37fbcf3767c7773b338f748acf8f0fd92da8e",
+    "runtime_config.py": "674a7e82035b8cf6e4024f13e8f9ce347a51b041fffa07245f4bda4ff093725a",
+    "safety.py": "c6e4f5f4fb92db377a717c91e804d9efa3d5daf8d311e402acf51f618608d832",
+    "scenarios.py": "46ba6e407e25b5cc648e45a0e4c50f1283da0764415576872e00462a48a27a77",
+    "training.py": "0b90f8edc8fbbab71c6a6a9aeefb0765455bac87f53774d15905656c87af21b2",
+    "upstream_validation.py": "786200f75ebe9a043bd4d27e089ab5c6a12d536d3a606df3534d755872be6860"
+  },
+  "articulation": {
+    "fixed_base": true,
+    "fk_error_m": null,
+    "empty_gripper_endpoints": [
+      [
+        0.00011327023094054312,
+        0.0001156999496743083
+      ],
+      [
+        0.039999593049287796,
+        0.039999593049287796
+      ]
+    ],
+    "physical_checks_executed": true,
+    "body_masses_kg": {
+      "panda_link0": 2.928105592727661,
+      "panda_link1": 2.821467876434326,
+      "panda_link2": 2.856461524963379,
+      "panda_link3": 2.1813831329345703,
+      "panda_link4": 2.2328639030456543,
+      "panda_link5": 3.2654852867126465,
+      "panda_link6": 1.342672348022461,
+      "panda_link7": 0.43015992641448975,
+      "panda_hand": 0.6804429888725281,
+      "panda_leftfinger": 0.021579844877123833,
+      "panda_rightfinger": 0.021579844877123833
+    },
+    "mass_validation": "URDF links; fixed world body excluded"
+  },
+  "trials": [
+    {
+      "seed": 0,
+      "target": "red",
+      "success": true,
+      "duration": 25.933333333332502,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "5c3ce05bd4f756277173e0cc80ad483c61a3f560d7d45bbf7cb1135069397568",
+        "outcome.json": "4907c3d1ae1a71536cb0f1b9608c093d96e9815d6ea5ae4d5d65a9e37dd9a117",
+        "samples.jsonl": "35790368ea6245eb358320fe2df9e88db22a1bde224885a92049a2efa3db3885",
+        "telemetry.jsonl": "f3775ceb0b07e408d4a51b7b21cf824bb28d6bcaa17c4a1b64cefecf8a48d0d2"
+      }
+    },
+    {
+      "seed": 1,
+      "target": "green",
+      "success": true,
+      "duration": 18.999999999999563,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "8883751b3a03187c0dc4507d2502621732abe4d9aa69d510b26a1840e45e77e6",
+        "outcome.json": "15089209185e228006c78dd75fc587838c1077f454a974b6eee393e1ad0543cb",
+        "samples.jsonl": "5b512bd6ab4efcdeb97fbbdef6e3230aebf8860f477065c32e89c0d7c96f1476",
+        "telemetry.jsonl": "93a790ad0e35153a1f7d6c3286a9fb76e1ca1962160896305ec9e8d66d2b2799"
+      }
+    },
+    {
+      "seed": 2,
+      "target": "blue",
+      "success": true,
+      "duration": 26.633333333332462,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "cc7a595a4ef2af26be9ffc1d8a132895c60b984a42fa0d4bd4d493e844f1fd5d",
+        "outcome.json": "373524d12229903f5a3accf82f4be43e25518d0b5a8c92308aa91024ad210356",
+        "samples.jsonl": "4128088285a398f781c892ea2128eecc7b8dec6e1aae69ad7caa3ff6127f0f22",
+        "telemetry.jsonl": "95ed0b2d61c114766334c0bdce5c7ab1bcf914f59e90e663b02307e2dc344881"
+      }
+    },
+    {
+      "seed": 3,
+      "target": "red",
+      "success": true,
+      "duration": 20.866666666666124,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "bd4bca7bb65e9b9960e22321c411542accd6e82c3311acef1a464e743f8e849e",
+        "outcome.json": "aa9234aca16c6635d0fbb0c0924983909c347b62d6a4c3e3605623aaaf506bba",
+        "samples.jsonl": "ec1339b8f5c88d7e8eba6bd4709ebb1322b7ec7c16adb7d461fd2dc1117d22b3",
+        "telemetry.jsonl": "8ff85b699879b35885e4c7c5a36d57a2c00c5ba4e6ae8bd539c7256a091749d3"
+      }
+    },
+    {
+      "seed": 4,
+      "target": "green",
+      "success": true,
+      "duration": 21.199999999999438,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "88e546743fb12c5fb342d8d79508638b54aeec58d5fae21e8c1d64f79c3e5020",
+        "outcome.json": "11ead0e6faa0281c41778e9fed6b785832a3b996ceaf787e64dc6b8b0c05e5fe",
+        "samples.jsonl": "f9409dd32e7f02d74129109de2106e5e2dfb0c1e280aa07aeade111f8c03ea8b",
+        "telemetry.jsonl": "38232a627fc0cfd39dd50887eb838c669cd7deaf3962e1760a4bc44a277a75a2"
+      }
+    },
+    {
+      "seed": 5,
+      "target": "blue",
+      "success": true,
+      "duration": 19.39999999999954,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "879d41f3e5442c5e53608e6121777b320f72603e3b6e16677462b12dbf531822",
+        "outcome.json": "6c27becca6b0c38600ee73b0bbb10854617b66d3db4f077ba2a4b032dc37ee41",
+        "samples.jsonl": "29355b286923aad54fae9af589595bc8eea4b8c8304bf6a8366a8a5274d1b561",
+        "telemetry.jsonl": "13d698f1e64c89d7531e7d68f8679766d80bcdeb10cffab14c38bb95ccbb4db4"
+      }
+    },
+    {
+      "seed": 6,
+      "target": "red",
+      "success": true,
+      "duration": 21.333333333332764,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "89f576b6529e01a3e9940b6c21b64e496d67ced1e7a3946ec9a74d64c670f955",
+        "outcome.json": "9f57676a76093a34077bda35db258bcdde1a22bf9973fc0e0a3d6ce55070fc0e",
+        "samples.jsonl": "e089425aaf8a5e8a5612eb02d20b20b05ad0aa4278f0348715c4c1852c2726da",
+        "telemetry.jsonl": "68c58a0fb3b91f32428aa64b32c5df5949b09e1f61550eec63230651b9b87847"
+      }
+    },
+    {
+      "seed": 7,
+      "target": "green",
+      "success": true,
+      "duration": 27.93333333333239,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "abf7b7ef9a1365bf94f21cd3da315a7d57226716e01bcfec0dffed2e48d7d692",
+        "outcome.json": "dc564309cc3d427ed356564cb5a7cdd6475edab3c6ebf4215f405de58217964a",
+        "samples.jsonl": "5314cb790e4c73723194910047357f41e87bd4362ff60d7f9e5eaafc187f5482",
+        "telemetry.jsonl": "42abf383c6d515a20d56c895a021753ac72d3672f8891596dca72de54ac16119"
+      }
+    },
+    {
+      "seed": 8,
+      "target": "blue",
+      "success": true,
+      "duration": 26.13333333333249,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "cf8a73b37ee0cab2fb751871642085c45a75c0e84e20638848c094f15b3b6228",
+        "outcome.json": "c9b5a67b58e35f849bee47a0170b4deca4ded461723f1b30aa20234e39b02fa2",
+        "samples.jsonl": "064c69fcc7f73c8b84c159a01492a16f60a747985ba2e3def19d2999df225ef9",
+        "telemetry.jsonl": "3b3bd339abcccb9b60a08c5fc5936259f4c48a228b99033f15924271613ce0ee"
+      }
+    },
+    {
+      "seed": 9,
+      "target": "red",
+      "success": true,
+      "duration": 27.03333333333244,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "135b680ed65a04f0701e09f85c0f5f812ae46faf8591ae5bd49bb888ac771d7d",
+        "outcome.json": "d9efda98bc7319c79f678e568bc8649de31bbd39bd550c4b47a995d84a69a1a7",
+        "samples.jsonl": "c6a3a556a809bd702cf28ba75af59049fefa960132e453f3ff694a7c1cbc2983",
+        "telemetry.jsonl": "fa35df6e809b1e6190bb31de836cb7eaae0dc5a1417545ba20af9c220f3dec40"
+      }
+    },
+    {
+      "seed": 10,
+      "target": "green",
+      "success": true,
+      "duration": 26.299999999999148,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "366ad6543ddc7afbe2911fcf69478dad48932f25bcdc11f1d21cba4000c9b595",
+        "outcome.json": "aa178d76d70c46a4cf6a3c3863851a5828d2b921e5b1928680d4a975eddec63a",
+        "samples.jsonl": "c09a199b1ed78b641a728c0bf53fec8aba7e369bbca49a388c31d3cf06bef56d",
+        "telemetry.jsonl": "e1a22dcaa74913fe74ef399c5a3bc425f6de74a7d27be8b33171ba2bf4bd6785"
+      }
+    },
+    {
+      "seed": 11,
+      "target": "blue",
+      "success": true,
+      "duration": 20.966666666666118,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "ef659214dad2022ebc838f787260edc26759aca15501bb7653e0ba5e9af1b0cd",
+        "outcome.json": "ddef85d43e608b8712b1886ac3174c5eff0dc65cf6e41573df5eb0888a343b7e",
+        "samples.jsonl": "18eb0fbac939eaa3ebec2db823c8b8f47ef698d534343ef04f19724101c7f096",
+        "telemetry.jsonl": "a128cc3cee3d72d229ef1866971a112bf25bd2471ec5802c43e913b7b14d9fe1"
+      }
+    },
+    {
+      "seed": 12,
+      "target": "red",
+      "success": true,
+      "duration": 27.06666666666577,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "1d94bf145971be2c554e82d150fe2b70a54afa0d911a83c4efb92f9c718ced9b",
+        "outcome.json": "30ae4b894b2cc859fbe8cbc23e62eba7159ba5a60d1b9a6847ffb7600c262d53",
+        "samples.jsonl": "4eecb182ea7b765ad52122cb17105a73effdae434597eb1f1cd8200b7f8bbb1a",
+        "telemetry.jsonl": "d6e17be4dff8d490812e386d7fdd628b8c40c4e90aeb605fafdf682acc908641"
+      }
+    },
+    {
+      "seed": 13,
+      "target": "green",
+      "success": true,
+      "duration": 19.299999999999546,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "a219e98d9212bdb765a6526ebf2ab6ec8e64a644f89515e12d72f0c86eb40323",
+        "outcome.json": "fdf86f2278c63b92638c5b70dc90a5329c79fbce9911f40f5a08dc431c3a9761",
+        "samples.jsonl": "4be56a93e39635ca166212017fed6016b143925d943daeeaffa4caf1f2b37e22",
+        "telemetry.jsonl": "186d05d6e9036a1e43f8c1331074ab1ec588353c5651e6d0ad316bd0d9ddc05a"
+      }
+    },
+    {
+      "seed": 14,
+      "target": "blue",
+      "success": true,
+      "duration": 26.5666666666658,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "65cd3a007dfabf3a498285921fa8ff7ab9e0824c31627439d7fa3613cabe9302",
+        "outcome.json": "002ce70ffa31038145bbfa8a20756835ea5dd7a4f398daaf38d210d2e87359ea",
+        "samples.jsonl": "00e7df46d8509b0fed93f0a22cb98e1f75a175d28562104e991f514b3b07b9df",
+        "telemetry.jsonl": "3132eb2e247f55a1a314f86e12c8b1e3ac8dc8d3f8d54992b9a16382a71c5716"
+      }
+    },
+    {
+      "seed": 15,
+      "target": "red",
+      "success": true,
+      "duration": 21.633333333332747,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "e31ba5dc20bb52b88c3bf3c81a15d1b382ea264f686f12616193722e5d26f22f",
+        "outcome.json": "b04060dbbccf255a3d31e49d3a664e6c3601a5a66a7048f61fada38097e5adff",
+        "samples.jsonl": "0c2b30f60e65d1e30bedce57e23caeb152e0328fb3ac5b7b728cc051d7ae75ca",
+        "telemetry.jsonl": "80b9e1ce30e17b9298df58f10d629997aa9ce66e3967ad9cdbac72651264badb"
+      }
+    },
+    {
+      "seed": 16,
+      "target": "green",
+      "success": true,
+      "duration": 19.033333333332894,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "fcc3d88f2ed6481d404f247e67a80074ce5b1a0ecdb4cd082c9ae636634b3453",
+        "outcome.json": "7b9d437d293d6e3b84e2ea350f57b986eb6096786014e50ffd60279583c68d18",
+        "samples.jsonl": "0ac35540fa730726613da81af3eb3e39c6721a532e2095c5c41e8fb99cde214f",
+        "telemetry.jsonl": "3c7263b71051bfd32596cc204f33d1e13e484ecb30c90a292c04740134c395a6"
+      }
+    },
+    {
+      "seed": 17,
+      "target": "blue",
+      "success": true,
+      "duration": 19.16666666666622,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "d0e0721fc80d148baa1a301841db24a6b9b320ba533fb29cfbb37afe434fe831",
+        "outcome.json": "e382829565f28c6278e6e8eef1362a75d7eeedb58f27c94faab5081241886f12",
+        "samples.jsonl": "8a6f430533bdb3e5bc8330a030d4819fe7eec94e53d97b564205a690e9bce26a",
+        "telemetry.jsonl": "f52c1d14777328e62d9cc6113d626b8a9c2ac5cfecd9534ba12af3759b207c99"
+      }
+    },
+    {
+      "seed": 18,
+      "target": "red",
+      "success": true,
+      "duration": 21.49999999999942,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "7a5de19592e9ba4178dcb6c9e778961a254e2f67457529cc119b7578bc143b35",
+        "outcome.json": "8f956fedfbfe7d2d89bb1f7bd5dc7d702d4be2f5cfc99bc3a014ebbcd7ea8a5a",
+        "samples.jsonl": "41ea6da3fe3fa310d29acdeae0535f444c2e51eb8654ced010904761bd9e7203",
+        "telemetry.jsonl": "53cc2bc120b8eea8054ec5932d9597a033b0e595b7f177f51a76e9f279bf3255"
+      }
+    },
+    {
+      "seed": 19,
+      "target": "green",
+      "success": true,
+      "duration": 27.133333333332434,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "5da621ebb88a195b3d693b4e9e3fda54af1c330bf1a6ad1da51f9f8030004217",
+        "outcome.json": "4eb7c911cab972bfbb4c998c86910007744a345d1e0fdba59d859507b10a96bd",
+        "samples.jsonl": "d0ffa5ff55941a409debf856805a72e88a1c55cc338ce149d955852184fd01eb",
+        "telemetry.jsonl": "8900bde9691b3ab9b3feb8cdf99cf19820347f944290fd480e22d61abe5cdeae"
+      }
+    }
+  ],
+  "report_sha256": "8091f6b1b0ee4859ad7fbcdf07f7d457a17b1a3a4b78805073db4f6bf641ff8e",
+  "raw_artifact_root": "/home/iris/relic-consolidation-backups/20261023/panda-qualification-1",
+  "claim": "classical physical embodiment qualification; no learned-policy inference"
+}
