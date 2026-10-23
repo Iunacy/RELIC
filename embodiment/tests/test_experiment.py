@@ -1,4 +1,4 @@
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import copy
 import json
 import math
@@ -90,6 +90,47 @@ class Robustness(unittest.TestCase):
             self.assertEqual(result['physical_trials'], 0)
             self.assertEqual(len(result['errors']), 2)
             self.assertTrue((root/'summary.json').is_file())
+
+    def test_safety_rejections_and_partial_ticks_are_recorded_as_physical_failures(self):
+        record = episode()
+        class Backend:
+            embodiment = 'openmanipulator_x'
+            arm_names, finger_names = record.metadata['joint_names'][:4], record.metadata['joint_names'][4:]
+            camera = None
+            def __init__(self, elapsed, unsafe): self.elapsed, self.unsafe = elapsed, unsafe
+            def reset(self, seed, cube_positions):
+                row, physical = record.rows[0], record.telemetry[0]
+                self.initial = Observation(0., tuple(row['ee_position']), tuple(row['joint_position']),
+                    tuple(row['joint_velocity']), physical['cube_poses'], {c: 0. for c in COLORS},
+                    contacts=physical['contacts'], gripper_open=1., contact_forces=physical['contact_forces'])
+                return self.initial
+            def frame(self): return None
+            def step(self, action):
+                return replace(self.initial, time=self.elapsed, unsafe=self.unsafe,
+                    safety_events=('unit_guard_rejection',) if self.unsafe else ())
+            def safe_stop(self): pass
+        case = plan_robustness(1, ['baseline'])[0]
+        from embodiment.replay import load_episode
+        for elapsed in (0., CONTROL_DT/2):
+            with self.subTest(elapsed=elapsed), tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary)/'episode'
+                result = run_trial(Backend(elapsed, True), case, path, {'source_sha256': {'fixture': 'not physical evidence'}})
+                self.assertFalse(result['success'])
+                self.assertEqual(result['failure_reason'], 'unsafe_movement')
+                self.assertEqual(result['safety_events'], ['unit_guard_rejection'])
+                self.assertEqual(result['recovery_behavior'], 'safe_stop_no_retry')
+                self.assertEqual(aggregate([result], [case])['physical_trials'], 1)
+                replay = load_episode(path)
+                self.assertEqual(replay.duration, elapsed)
+                self.assertEqual(replay.state(elapsed)['status'], 'failure')
+                self.assertEqual(replay.state(elapsed)['frame_index'], len(replay.rows)-1)
+                if elapsed == 0.:
+                    self.assertIsNone(result['mean_tracking_error_m'])
+                    rejected = json.loads((path/'execution.jsonl').read_text())
+                    self.assertIsNone(rejected['applied_action'])
+                    self.assertEqual(replay.rows[-1]['action'][:3], [0., 0., 0.])
+        with tempfile.TemporaryDirectory() as temporary, self.assertRaisesRegex(RuntimeError, 'stalled'):
+            run_trial(Backend(0., False), case, Path(temporary)/'episode', {'source_sha256': {'fixture': 'not physical evidence'}})
 
     def test_delay_records_applied_actions_and_true_observations(self):
         record = episode()

@@ -1,3 +1,4 @@
+from bisect import bisect_right
 from dataclasses import dataclass
 import json
 import math
@@ -29,13 +30,13 @@ class Episode:
     def index(self, elapsed):
         if type(elapsed) not in (int, float) or not math.isfinite(elapsed) or elapsed < 0:
             raise ValueError('invalid replay time')
-        return min(len(self.rows)-1, max(0, int((elapsed+1e-8)/CONTROL_DT)))
+        return max(0, bisect_right(self.rows, elapsed+1e-8, key=lambda row: row['timestamp'])-1)
 
     def state(self, elapsed):
         index = self.index(elapsed)
         row, physical = self.rows[index], self.telemetry[index]
         requested = [value+delta for value, delta in zip(row['ee_position'], row['action'][:3], strict=True)]
-        ended = elapsed >= self.duration
+        ended = index == len(self.rows)-1
         return {'embodiment': self.metadata['embodiment'], 'arm_dof': DOF[self.metadata['embodiment']],
                 'controller': self.metadata['controller'], 'instruction': row['instruction'],
                 'recorded_time': row['timestamp'], 'duration': self.duration, 'frame_index': index,
@@ -48,7 +49,7 @@ class Episode:
                 'status': ('success' if self.outcome['success'] else 'failure') if ended else 'running',
                 'failure_reason': self.outcome.get('failure_reason') if ended else None,
                 'placement_error_xy_m': math.dist(physical['cube_poses'][self.metadata['target']][:2], BIN[:2]),
-                'holding_final_state': elapsed > self.duration}
+                'holding_final_state': elapsed > self.duration+1e-8}
 
 
 def load_episode(path, expected_hashes=None, runtime_pin=None, source_sha256=None):
@@ -85,13 +86,16 @@ def load_episode(path, expected_hashes=None, runtime_pin=None, source_sha256=Non
         raise ValueError('invalid recorded task provenance')
     rows = [json.loads(line) for line in (path/'samples.jsonl').read_text().splitlines()]
     telemetry = [json.loads(line) for line in (path/'telemetry.jsonl').read_text().splitlines()]
-    if len(rows) < 2 or len(rows) != len(telemetry):
+    if not rows or len(rows) != len(telemetry) or (len(rows) == 1 and (outcome['success'] or not telemetry[0]['unsafe'] or outcome.get('failure_reason') != 'unsafe_movement')):
         raise ValueError('missing aligned replay telemetry')
     previous, lifted, wrong = -1., False, False
     for index, (row, physical) in enumerate(zip(rows, telemetry, strict=True)):
         previous = validate_sample(row, previous)
         validate_telemetry(physical)
-        if abs(previous-index*CONTROL_DT) > 1e-5 or abs(previous-physical['timestamp']) > 1e-8:
+        terminal_safety_stop = (index == len(rows)-1 and not outcome['success'] and physical['unsafe']
+                                and outcome.get('failure_reason') == 'unsafe_movement'
+                                and (index-1)*CONTROL_DT < previous <= index*CONTROL_DT+1e-5)
+        if (abs(previous-index*CONTROL_DT) > 1e-5 and not terminal_safety_stop) or abs(previous-physical['timestamp']) > 1e-8:
             raise ValueError('replay timing or observation alignment mismatch')
         finite(row['joint_position'], DOF[robot]+2)
         finite(row['joint_velocity'], DOF[robot]+2)
@@ -165,7 +169,7 @@ def validate_pair(episodes):
 
 class Playback:
     def __init__(self, duration, clock=time.monotonic):
-        if not math.isfinite(duration) or duration <= 0:
+        if not math.isfinite(duration) or duration < 0:
             raise ValueError('invalid playback duration')
         self.duration, self.clock = duration, clock
         self.elapsed, self.anchor, self.running = 0., clock(), False

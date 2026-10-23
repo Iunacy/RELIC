@@ -97,18 +97,19 @@ class CollectionRecovery(unittest.TestCase):
             self.assertTrue(result['timed_out'])
             self.assertNotEqual(result['returncode'], 0)
 
-    def test_completed_campaign_shutdown_is_bounded_without_losing_artifacts(self):
+    def test_terminal_campaign_shutdown_is_bounded_without_losing_artifacts(self):
         import sys
-        with tempfile.TemporaryDirectory() as temp:
-            job = Path(temp)
-            script = ("import json,pathlib,time; p=pathlib.Path('" + str(job/'run') + "'); "
-                      "p.mkdir(); (p/'report.json').write_text(json.dumps({'completed':True, "
-                      "'source_changed_during_run':[]})); time.sleep(30)")
-            result = execute([sys.executable, '-c', script], job, 10, shutdown_timeout=.1)
-            self.assertTrue(result['timed_out'])
-            self.assertTrue(result['shutdown_timeout'])
-            self.assertLess(result['wall_seconds'], 5)
-            self.assertTrue((job/'run/report.json').exists())
+        for terminal in ({'completed': True}, {'completed': False, 'error': 'unit fixture failure'}):
+            with self.subTest(terminal=terminal), tempfile.TemporaryDirectory() as temp:
+                job = Path(temp)
+                report = {**terminal, 'source_changed_during_run': []}
+                script = ("import json,pathlib,time; p=pathlib.Path(" + repr(str(job/'run')) + "); "
+                          "p.mkdir(); (p/'report.json').write_text(" + repr(json.dumps(report)) + "); time.sleep(30)")
+                result = execute([sys.executable, '-c', script], job, 10, shutdown_timeout=.1)
+                self.assertTrue(result['timed_out'])
+                self.assertTrue(result['shutdown_timeout'])
+                self.assertLess(result['wall_seconds'], 5)
+                self.assertEqual(json.loads((job/'run/report.json').read_text()), report)
 
     def test_accepted_episode_validation_does_not_grow_with_every_batch(self):
         from collections import Counter

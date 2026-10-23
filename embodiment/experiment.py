@@ -46,7 +46,7 @@ def run_trial(backend, case, output, provenance, running=lambda: True):
                 'initial_object_poses': observation.cubes, 'camera_enabled': backend.camera is not None}
     recorder = Recorder(output, f"Pick up the {case['target']} cube and place it in the bin.", metadata)
     queue = deque()
-    errors, events, tick = [], [], 0
+    errors, events, tick = [], list(observation.safety_events), 0
     latency = int(perturbation.magnitude) if perturbation.kind == 'control_latency' else 0
     try:
         with (output/'execution.jsonl').open('x') as execution:
@@ -56,23 +56,33 @@ def run_trial(backend, case, output, provenance, running=lambda: True):
                 success = bool(expert.phase == 'done' and expert.lifted and expert.released and expert.failure is None and inside_bin(observation.cubes[case['target']]))
                 queue.append(requested)
                 action = queue.popleft() if len(queue) > latency else Action((0., 0., 0.), observation.gripper_open)
-                recorder.append(observation, action, expert.phase, success, backend.frame())
                 if terminal:
+                    recorder.append(observation, Action((0., 0., 0.), observation.gripper_open), expert.phase, success, backend.frame())
                     backend.safe_stop()
                     break
-                previous = observation
+                previous, frame = observation, backend.frame()
                 observation = backend.step(action)
+                events.extend(observation.safety_events)
+                if observation.time <= previous.time:
+                    if observation.time == previous.time and observation.unsafe:
+                        expert.fail('unsafe_movement')
+                        success = False
+                        recorder.append(observation, Action((0., 0., 0.), observation.gripper_open), expert.phase, False, frame)
+                        execution.write(json.dumps({'timestamp': previous.time, 'requested_action': [*requested.delta, requested.gripper],
+                            'rejected_action': [*action.delta, action.gripper], 'applied_action': None,
+                            'safety_events': list(observation.safety_events)}, allow_nan=False)+'\n')
+                        backend.safe_stop()
+                        break
+                    raise RuntimeError('simulator stalled or returned nonmonotonic time')
+                recorder.append(previous, action, expert.phase, False, frame)
                 target = tuple(value+delta for value, delta in zip(previous.ee, action.delta, strict=True))
                 error = math.dist(observation.ee, target)
                 errors.append(error)
-                events.extend(observation.safety_events)
                 execution.write(json.dumps({'timestamp': previous.time, 'requested_action': [*requested.delta, requested.gripper],
                     'applied_action': [*action.delta, action.gripper], 'desired_ee': target,
                     'observed_next_ee': observation.ee, 'tracking_error_m': error}, allow_nan=False)+'\n')
                 execution.flush()
                 tick += 1
-                if observation.time <= previous.time:
-                    raise RuntimeError('simulator stalled or returned nonmonotonic time')
             else:
                 raise RuntimeError('simulation stopped before trial completion')
         result = {**case, 'robot': robot, 'controller': 'classical_only', 'success': success,
@@ -80,7 +90,8 @@ def run_trial(backend, case, output, provenance, running=lambda: True):
                   'pick_result': expert.lifted, 'placement_result': success,
                   'final_object_pose': list(observation.cubes[case['target']]),
                   'safety_events': sorted(set(events)), 'fallback_triggers': [],
-                  'simulation_executed': True,
+                  'simulation_executed': True, 'recovery_behavior': 'not_needed' if success else 'safe_stop_no_retry',
+                  'tracking_samples': len(errors),
                   'mean_tracking_error_m': sum(errors)/len(errors) if errors else None,
                   'peak_tracking_error_m': max(errors) if errors else None,
                   'placement_error_xy_m': math.dist(observation.cubes[case['target']][:2], BIN[:2])}
@@ -109,8 +120,14 @@ def aggregate(trials, planned):
             raise ValueError('missing safety or fallback accounting')
         for field in ('duration', 'mean_tracking_error_m', 'peak_tracking_error_m', 'placement_error_xy_m'):
             value = trial.get(field)
+            if field in ('mean_tracking_error_m', 'peak_tracking_error_m') and value is None and type(trial.get('tracking_samples')) is int and trial['tracking_samples'] == 0 and trial.get('duration') == 0 and trial.get('failure_reason') == 'unsafe_movement' and trial.get('success') is False:
+                continue
             if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
                 raise ValueError('invalid measured experiment metric')
+        if any(type(trial.get(field)) is not bool for field in ('pick_result', 'placement_result')):
+            raise ValueError('invalid grasp or placement outcome')
+        if trial.get('success') is False and (not isinstance(trial.get('failure_reason'), str) or not trial['failure_reason']):
+            raise ValueError('failed physical result lacks a reason')
         if trial.get('controller') != 'classical_only':
             raise ValueError('unsupported experiment controller')
         if trial['success'] and (trial.get('pick_result') is not True or trial.get('placement_result') is not True or trial.get('failure_reason') is not None or trial['safety_events']):
@@ -123,11 +140,13 @@ def aggregate(trials, planned):
         for condition in sorted({case['perturbation']['kind'] for case in planned}):
             rows = [row for row in trials if row['robot'] == robot and row['perturbation']['kind'] == condition]
             measured = metrics(rows)
+            tracked = [row for row in rows if row['mean_tracking_error_m'] is not None]
             measured.update(safety_event_trials=sum(bool(row['safety_events']) for row in rows),
                 fallback_trials=sum(bool(row['fallback_triggers']) for row in rows),
                 grasp_failures=sum(row['failure_reason'] == 'failed_grasp' for row in rows),
                 placement_failures=sum(row['pick_result'] and not row['placement_result'] for row in rows),
-                mean_tracking_error_m=sum(row['mean_tracking_error_m'] for row in rows)/len(rows) if rows else None,
+                mean_tracking_error_m=sum(row['mean_tracking_error_m'] for row in tracked)/len(tracked) if tracked else None,
+                tracking_measured_trials=len(tracked), recovery_policy='safe_stop_no_retry',
                 mean_task_duration=sum(row['duration'] for row in rows)/len(rows) if rows else None)
             summaries[robot][condition] = measured
     return {'schema': 'relic.experiment_summary.v1', 'completed': seen == expected,

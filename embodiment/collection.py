@@ -213,7 +213,7 @@ def execute(command, job, timeout, environment=None, shutdown_timeout=30):
                         report = read_json(report_path)
                     except (OSError, ValueError):
                         report = {}
-                    if report.get('completed') is True and report.get('source_changed_during_run') == []:
+                    if (report.get('completed') is True or report.get('error')) and report.get('source_changed_during_run') == []:
                         terminal_since = time.monotonic() if terminal_since is None else terminal_since
                     if terminal_since is not None and time.monotonic() - terminal_since >= shutdown_timeout:
                         shutdown_expired = True
