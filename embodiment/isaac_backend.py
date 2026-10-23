@@ -11,6 +11,7 @@ from .assets import ARM, FINGERS, ROOT, fetch
 from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLORS,
                         CONTROL_DT, CUBE, DT, Observation, layout, workspace)
 from .openmanipulator import LIMITS, bounded_reference, fk, ik
+from .safety import Guard, SafetyConfig, SafetyViolation
 
 HOME = (.17,0,.085)
 
@@ -34,6 +35,7 @@ class IsaacBackend:
         self.time = 0.0
         self.camera = None
         self.abort = False
+        self.safety_events = []
         ground = sim.GroundPlaneCfg()
         ground.func('/World/Ground',ground)
         light = sim.DomeLightCfg(intensity=2500)
@@ -126,6 +128,9 @@ class IsaacBackend:
         self.reference = ik(HOME) if robot == 'openmanipulator_x' else tuple(self.robot.data.joint_pos[0,self.arm_ids].cpu().tolist())
         self.grip_ref = self.gripper_open
         self.base_position = self.robot.data.body_pos_w[0,self.base_ids[0]].clone()
+        limits = LIMITS if robot == 'openmanipulator_x' else self.panda_control.limits
+        self.safety_config = SafetyConfig(tuple(limits)+((self.gripper_closed,self.gripper_open),)*2,len(self.arm_names))
+        self.guard = Guard(self.safety_config)
 
     def _bin(self):
         x,y,z = BIN
@@ -157,6 +162,8 @@ class IsaacBackend:
 
     def reset(self,seed):
         self.abort = False
+        self.safety_events = []
+        self.guard = Guard(self.safety_config)
         self.time = 0.
         self.reference = ik(HOME) if self.embodiment == 'openmanipulator_x' else tuple(self.robot.data.default_joint_pos[0,self.arm_ids].cpu().tolist())
         self.grip_ref = self.gripper_open
@@ -251,14 +258,17 @@ class IsaacBackend:
                   for sensor in self.contact_sensors]
         contacts = {color:all(values[i] > .005 for values in forces) for i,color in enumerate(COLORS)}
         return Observation(self.time,ee,q,dq,cubes,speeds,unsafe,contacts,
-                           max(0.,min(1.,(q[-2]-self.gripper_closed)/(self.gripper_open-self.gripper_closed))),dof,('unsafe_state',) if unsafe else ())
+                           max(0.,min(1.,(q[-2]-self.gripper_closed)/(self.gripper_open-self.gripper_closed))),dof,tuple(self.safety_events) or (('unsafe_state',) if unsafe else ()))
 
     def step(self,action):
         obs = self.observe()
-        if obs.unsafe:
-            self.abort = True
-            return obs
         try:
+            self.guard.state(obs)
+            action = self.guard.command(obs,action)
+            reason = self.guard.tracking(obs,(*self.reference,self.grip_ref,self.grip_ref)) or self.guard.progress(obs,action)
+            if reason:
+                raise SafetyViolation(reason)
+            previous = (*self.reference,self.grip_ref,self.grip_ref)
             goal = tuple(a+b for a,b in zip(obs.ee,action.delta))
             if not workspace(goal):
                 raise ValueError('outside shared workspace')
@@ -269,15 +279,25 @@ class IsaacBackend:
                 self.reference = self.panda_control.solve(goal,self.reference)
             target = self.gripper_closed + (self.gripper_open-self.gripper_closed)*action.gripper
             self.grip_ref += max(-.025*CONTROL_DT,min(.025*CONTROL_DT,target-self.grip_ref))
+            self.guard.joint_command(previous,(*self.reference,self.grip_ref,self.grip_ref))
             self._targets()
             for _ in range(round(CONTROL_DT/DT)):
                 self._tick()
                 if self.observe().unsafe:
                     self.abort = True
                     break
-        except ValueError:
-            self.abort = True
+        except ValueError as error:
+            self.safety_events.append(str(error) if isinstance(error,SafetyViolation) else 'ik_infeasible')
+            self.safe_stop()
         return self.observe()
+
+    def safe_stop(self):
+        self.abort = True
+        self.reference = tuple(self.robot.data.joint_pos[0,self.arm_ids].cpu().tolist())
+        self.grip_ref = float(self.robot.data.joint_pos[0,self.left_ids[0]])
+        self._targets()
+        self.robot.set_joint_velocity_target(torch.zeros((1,len(self.all_ids)),device=self.device),joint_ids=self.all_ids)
+        self.robot.write_data_to_sim()
 
     def frame(self):
         if self.camera is None:

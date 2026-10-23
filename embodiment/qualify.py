@@ -89,6 +89,7 @@ def main():
                     success = (expert.phase=='done' and expert.lifted and expert.released and expert.failure is None and inside_bin(obs.cubes[target]))
                     recorder.append(obs,action,expert.phase,success,backend.frame())
                     if terminal:
+                        backend.safe_stop()
                         break
                     new_obs = backend.step(action)
                     safety_events.extend(new_obs.safety_events)
