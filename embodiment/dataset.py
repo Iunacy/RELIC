@@ -52,6 +52,11 @@ def load_episode(path: Path, require_physics: bool = True) -> Episode:
     if target not in COLORS or type(seed) is not int or seed < 0:
         raise ValueError('missing scenario identity')
     if require_physics:
+        from .preflight import LAB_COMMIT, SIM
+        from .assets import MANIFEST
+        expected_runtime = {'isaacsim': SIM, 'isaaclab_commit': LAB_COMMIT, 'robot_commit': MANIFEST['commit']}
+        if metadata.get('runtime_pin') != expected_runtime or not metadata.get('source_sha256') or not metadata.get('relic_commit'):
+            raise ValueError('pinned simulator and source provenance required')
         if metadata.get('scene_revision') != SCENE_REVISION:
             raise ValueError('scene/control calibration revision mismatch')
         from .assets import ARM, FINGERS

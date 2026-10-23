@@ -7,6 +7,30 @@ from .dataset import DOF, read_json
 from .upstream_validation import verify_source
 
 
+def validate_checkpoint(checkpoint: Path, require_processor: bool = True):
+    checkpoint = Path(checkpoint).resolve()
+    if not checkpoint.is_dir() or not (checkpoint/'config.json').is_file():
+        raise ValueError('local GR00T checkpoint configuration required')
+    config = read_json(checkpoint/'config.json')
+    if 'gr00t' not in str(config.get('model_type', '')).lower():
+        raise ValueError('checkpoint is not a GR00T model')
+    index = checkpoint/'model.safetensors.index.json'
+    if index.exists():
+        mapping = read_json(index).get('weight_map', {})
+        if not mapping or not all(isinstance(name, str) for name in mapping.values()):
+            raise ValueError('invalid safe checkpoint shard index')
+        weights = [checkpoint/name for name in set(mapping.values())]
+    else:
+        weights = [checkpoint/'model.safetensors']
+    if any(path.parent != checkpoint or path.suffix != '.safetensors' or not path.is_file()
+           or path.stat().st_size <= 8 for path in weights):
+        raise ValueError('local safe checkpoint weights are incomplete')
+    processor = checkpoint if (checkpoint/'processor_config.json').exists() else checkpoint/'processor'
+    if require_processor and (not (processor/'processor_config.json').is_file() or not (processor/'statistics.json').is_file()):
+        raise ValueError('checkpoint processor and embodiment statistics required')
+    return {'checkpoint': str(checkpoint), 'weight_files': len(weights), 'processor': str(processor)}
+
+
 @dataclass(frozen=True)
 class PolicyInput:
     embodiment: str
@@ -47,14 +71,7 @@ class GrootPolicy:
     def from_checkpoint(cls, source: Path, checkpoint: Path, device: str = 'cuda:0'):
         verify_source(source)
         checkpoint = Path(checkpoint).resolve()
-        if not checkpoint.is_dir() or not (checkpoint/'config.json').is_file():
-            raise ValueError('local GR00T checkpoint configuration required')
-        weights = list(checkpoint.glob('*.safetensors'))
-        if not weights or any(path.stat().st_size == 0 for path in weights):
-            raise ValueError('local safe checkpoint weights required')
-        config = read_json(checkpoint/'config.json')
-        if 'gr00t' not in str(config.get('model_type','')).lower():
-            raise ValueError('checkpoint is not a GR00T model')
+        validate_checkpoint(checkpoint)
         sys.path.insert(0,str(Path(source).resolve()))
         from gr00t.policy.gr00t_policy import Gr00tPolicy
         return cls(Gr00tPolicy('NEW_EMBODIMENT',str(checkpoint),device=device,strict=True))
@@ -85,8 +102,11 @@ class GrootPolicy:
                 'language':{'annotation.human.task_description':[[observation.instruction]]}}
 
     def actions(self, observation: PolicyInput) -> tuple[Action, ...]:
-        import numpy as np
         output,info = self.policy.get_action(self.pack(observation))
+        return self.decode(output)
+
+    def decode(self, output) -> tuple[Action, ...]:
+        import numpy as np
         if not isinstance(output,dict) or set(output) != {'delta_position','gripper'}:
             raise ValueError('GR00T action modality mismatch')
         delta,gripper = np.asarray(output['delta_position']),np.asarray(output['gripper'])

@@ -8,6 +8,8 @@ from embodiment.benchmark import Action, Observation, SCENE_REVISION, layout
 from embodiment.dataset import export, load_episode, read_json, validate_collection, validate_export
 from embodiment.recording import Recorder
 from embodiment.scenarios import plan
+from embodiment.preflight import LAB_COMMIT, SIM
+from embodiment.assets import MANIFEST
 
 HAS_IMAGES = importlib.util.find_spec('PIL') is not None
 HAS_EXPORT = HAS_IMAGES and all(importlib.util.find_spec(name) is not None for name in ('numpy','pyarrow','av'))
@@ -65,7 +67,9 @@ class EpisodeValidation(unittest.TestCase):
             path = fixture(Path(temp)/'episode')
             metadata = read_json(path/'metadata.json')
             metadata.update(simulation_executed=True,physics_engine='physx',controller='classical_only',
-                            evidence_source='isaac_lab_physx',joint_names=list(ARM+FINGERS))
+                            evidence_source='isaac_lab_physx',joint_names=list(ARM+FINGERS),
+                            runtime_pin={'isaacsim':SIM,'isaaclab_commit':LAB_COMMIT,'robot_commit':MANIFEST['commit']},
+                            source_sha256={'fixture':'test-only'},relic_commit='unit-fixture')
             (path/'metadata.json').write_text(json.dumps(metadata))
             outcome = {'success':True,'robot':metadata['embodiment'],'seed':metadata['seed'],
                        'target':metadata['target'],'simulation_executed':True,'controller':'classical_only',
@@ -82,7 +86,9 @@ class EpisodeValidation(unittest.TestCase):
                 path = fixture(Path(temp)/'episode')
                 metadata = read_json(path/'metadata.json')
                 metadata.update(simulation_executed=True, physics_engine='physx', controller='classical_only',
-                                evidence_source='isaac_lab_physx', joint_names=list(ARM+FINGERS))
+                                evidence_source='isaac_lab_physx', joint_names=list(ARM+FINGERS),
+                                runtime_pin={'isaacsim':SIM,'isaaclab_commit':LAB_COMMIT,'robot_commit':MANIFEST['commit']},
+                                source_sha256={'fixture':'test-only'},relic_commit='unit-fixture')
                 (path/'metadata.json').write_text(json.dumps(metadata))
                 target = metadata['target']
                 poses = {color: [*pose, 1, 0, 0, 0] for color, pose in layout(metadata['seed']).items()}

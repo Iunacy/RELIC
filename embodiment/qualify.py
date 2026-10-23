@@ -110,7 +110,8 @@ def main():
             from .benchmark import GRASP_Z
             expert = Expert(target,PANDA_GRASP_Z if args.robot == 'franka_panda' else GRASP_Z)
             recorder = Recorder(args.output/f'trial_{seed:02d}',f'Pick up the {target} cube and place it in the bin.',
-                metadata={'embodiment':args.robot,'joint_names':[*backend.arm_names,*backend.finger_names],
+                metadata={**provenance,'runtime_pin':{'isaacsim':SIM,'isaaclab_commit':LAB_COMMIT,
+                          'robot_commit':MANIFEST['commit']},'embodiment':args.robot,'joint_names':[*backend.arm_names,*backend.finger_names],
                           'joint_units':['radian']*len(backend.arm_names)+['meter']*2,'control_dt':CONTROL_DT,
                           'camera_eye':CAMERA_EYE,'camera_look':CAMERA_LOOK,
                           'camera_enabled':args.enable_cameras,'seed':seed,'target':target,

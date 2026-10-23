@@ -58,7 +58,7 @@ def hashes(path):
     return result
 
 
-def inspect_job(job, robot, split):
+def inspect_job(job, robot, split, source_hashes):
     with (job/'.running').open('a') as stream:
         try:
             fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -87,6 +87,8 @@ def inspect_job(job, robot, split):
             episode = load_episode(path)
             if any(episode.metadata.get(key) != value for key, value in case.items()):
                 raise ValueError('episode scenario differs from assigned case')
+            if episode.metadata.get('source_sha256') != source_hashes:
+                raise ValueError('episode source differs from frozen collection source')
             if episode.metadata['embodiment'] != robot or episode.metadata.get('purpose') != 'collection':
                 raise ValueError('episode embodiment or purpose mismatch')
             if not episode.outcome['success']:
@@ -104,10 +106,13 @@ def inspect_job(job, robot, split):
 def progress(root, robot, split):
     successes, failures, jobs = [], [], []
     next_index = 0
+    source_hashes = read_json(root/'collection.json')['source_sha256']
+    if source_provenance()['source_sha256'] != source_hashes:
+        raise ValueError('collection source changed during execution')
     for job in sorted((root/'jobs').glob('job-*')):
         if not (job/'request.json').exists():
             continue
-        receipt = inspect_job(job, robot, split)
+        receipt = inspect_job(job, robot, split, source_hashes)
         request = receipt['request']
         if request['start'] != next_index:
             raise ValueError('job ranges overlap or contain a gap')
@@ -120,12 +125,12 @@ def progress(root, robot, split):
     return successes, failures, next_index, jobs
 
 
-def execute(command, job, timeout):
+def execute(command, job, timeout, environment=None):
     started = time.monotonic()
     with (job/'process.log').open('xb') as log, (job/'.running').open('a') as lease:
         fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
         process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
-                                   pass_fds=(lease.fileno(),), cwd=Path(__file__).resolve().parents[1])
+                                   pass_fds=(lease.fileno(),), cwd=Path(__file__).resolve().parents[1], env=environment)
         try:
             code = process.wait(timeout=timeout)
             result = {'returncode': code, 'timed_out': False}

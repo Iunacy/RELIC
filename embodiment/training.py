@@ -91,7 +91,7 @@ def prepare(source: Path, dataset_a: Path, dataset_b: Path, output: Path, budget
     if all(datasets[name].get('episodes') for name in ('a','b')) and datasets['a']['episodes'] != datasets['b']['episodes']:
         blockers.append('scripted episode counts differ across embodiments')
     runs = []
-    checkpoint_a = Path(output).resolve()/'a'/f'checkpoint-{budget.steps}'
+    checkpoint_a = Path(output).resolve()/'a'
     for condition,robot,path,base,key in (
             ('a','openmanipulator_x',dataset_a,BASE_MODEL,'a'),
             ('b_only','franka_panda',dataset_b,BASE_MODEL,'b'),
@@ -102,7 +102,7 @@ def prepare(source: Path, dataset_a: Path, dataset_b: Path, output: Path, budget
                      'evaluation_scenarios':evaluations,'success_definition':'relic.cube_bin.v2',
                      'action_horizon':16,'execution_horizon':16,
                      'arguments':arguments,'command':[sys.executable,str(Path(source).resolve()/'gr00t/experiment/launch_finetune.py'),*arguments],
-                     'checkpoint':str(Path(output).resolve()/condition/f'checkpoint-{budget.steps}'),
+                     'checkpoint':str(Path(output).resolve()/condition),
                      'training_executed':False,'checkpoint_save_load_verified':False})
     matched = None
     if datasets['b']['digest']:
@@ -137,8 +137,14 @@ def main():
     parser.add_argument('--dataset-b',type=Path,required=True)
     parser.add_argument('--run-root',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--steps',type=int,default=2000)
+    parser.add_argument('--batch-size',type=int,default=12)
+    parser.add_argument('--learning-rate',type=float,default=1e-4)
+    parser.add_argument('--gradient-accumulation',type=int,default=1)
+    parser.add_argument('--save-steps',type=int,default=500)
     args = parser.parse_args()
-    result = prepare(args.source,args.dataset_a,args.dataset_b,args.run_root)
+    budget = Budget(args.steps,args.batch_size,args.learning_rate,args.gradient_accumulation,42,args.save_steps)
+    result = prepare(args.source,args.dataset_a,args.dataset_b,args.run_root,budget)
     for run in result['runs']:
         validate_upstream_arguments(args.source,run['arguments'])
     with args.output.open('x') as stream:

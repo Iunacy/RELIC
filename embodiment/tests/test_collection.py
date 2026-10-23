@@ -21,7 +21,8 @@ class CollectionRecovery(unittest.TestCase):
         for case in request['cases']:
             path = job/'run'/f"trial_{case['seed']:02d}"
             path.mkdir(parents=True)
-            atomic_json(path/'metadata.json', {**case, 'embodiment': request['robot'], 'purpose': 'collection'})
+            atomic_json(path/'metadata.json', {**case, 'embodiment': request['robot'], 'purpose': 'collection',
+                        'source_sha256': json.loads((job.parent.parent/'collection.json').read_text())['source_sha256']})
         atomic_json(job/'process.json', {'wall_seconds': 10., 'returncode': 0, 'timed_out': False})
 
     def mocks(self):
