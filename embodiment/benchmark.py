@@ -1,5 +1,5 @@
 """Meters, seconds, radians; common world and VLA boundary for both embodiments."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import math
 import random
 from typing import Protocol
@@ -57,6 +57,10 @@ class Observation:
     cubes: dict  # privileged simulator poses, xyz + quaternion wxyz
     cube_speeds: dict
     unsafe: bool = False
+    contacts: dict = field(default_factory=dict)
+    gripper_open: float | None = None
+    arm_dof: int = 4
+    safety_events: tuple = ()
 
 
 class Embodiment(Protocol):

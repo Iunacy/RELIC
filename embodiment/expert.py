@@ -3,7 +3,7 @@ import math
 from .benchmark import Action, BIN, COLORS, GRASP_Z, TIMEOUT, inside_bin
 
 PHASES = ('approach','align','descend','grasp','verify','lift','transport',
-          'release','verify_placement','retreat','done')
+          'lower','release','verify_placement','retreat','done')
 FAILURES = ('wrong_color','failed_grasp','dropped_object','timeout','unsafe_movement')
 
 
@@ -61,7 +61,7 @@ class Expert:
             goal,grip = (x,y,.085),0.0
         elif self.phase == 'transport':
             goal,grip = (BIN[0],BIN[1],.085),0.0
-        elif self.phase in ('release','verify_placement'):
+        elif self.phase in ('lower','release','verify_placement'):
             goal = (BIN[0],BIN[1],.065)
             if self.phase == 'release' and math.dist(obs.ee,goal) <= .004:
                 self.released = True
@@ -69,24 +69,24 @@ class Expert:
         elif self.phase == 'retreat':
             goal = (BIN[0],BIN[1],.085)
         arrived = math.dist(obs.ee,goal) < .004
-        slow = max(map(abs,obs.velocities[:4]),default=0) < .12
+        slow = max(map(abs,obs.velocities[:obs.arm_dof]),default=0) < .12
         if self.phase == 'grasp':
             if elapsed >= 1.6:
                 self.advance(obs.time)
         elif self.phase == 'verify':
             # Physical aperture must remain blocked by the cube, near the tool.
             if elapsed >= .4:
-                if obs.joints[4] < -.009 or math.dist(cube[:3],obs.ee) > .025:
+                if not obs.contacts.get(self.target, False) or math.dist(cube[:3],obs.ee) > .025:
                     return self.fail('failed_grasp')
                 self.advance(obs.time)
         elif self.phase == 'lift':
             if arrived and slow:
-                if cube[2] < .055 or math.dist(cube[:3],obs.ee) > .035:
+                if not obs.contacts.get(self.target, False) or cube[2] < .055 or math.dist(cube[:3],obs.ee) > .035:
                     return self.fail('failed_grasp')
                 self.lifted = True
                 self.advance(obs.time)
         elif self.phase == 'release':
-            if arrived and grip == 1 and elapsed > 1 and obs.joints[4] >= .015:
+            if arrived and grip == 1 and elapsed > 1 and (obs.gripper_open if obs.gripper_open is not None else (obs.joints[4]+.011)/.031) >= .84:
                 self.advance(obs.time)
         elif self.phase in ('verify_placement','retreat'):
             stable = inside_bin(cube) and obs.cube_speeds[self.target] < .02

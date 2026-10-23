@@ -10,6 +10,7 @@ import traceback
 from .assets import ARM, FINGERS, MANIFEST
 from .benchmark import CAMERA_EYE, CAMERA_LOOK, COLORS, CONTROL_DT, inside_bin
 from .expert import Expert, FAILURES
+from .evaluation import metrics
 from .preflight import LAB_COMMIT, SIM
 from .recording import Recorder
 
@@ -23,7 +24,7 @@ def aggregate(trials, executed, completed, error=None):
                 successes=successes,required_successes=18,required_trials=20,
                 threshold_achieved=bool(valid and successes>=18),
                 failures=dict(Counter(t['failure_reason'] for t in trials if not t['success'])),
-                error=error,trials=trials)
+                error=error,trials=trials,statistics=metrics(trials))
 
 
 def main():
@@ -64,12 +65,20 @@ def main():
             target = COLORS[seed%3]
             obs = backend.reset(seed)
             executed = True
+            initial_positions = {color:list(pose) for color,pose in obs.cubes.items()}
+            safety_events = []
             expert = Expert(target)
             recorder = Recorder(args.output/f'trial_{seed:02d}',f'Pick up the {target} cube and place it in the bin.',
                 metadata={'embodiment':'openmanipulator_x','joint_names':[*ARM,*FINGERS],
                           'joint_units':['radian']*4+['meter']*2,'control_dt':CONTROL_DT,
                           'camera_eye':CAMERA_EYE,'camera_look':CAMERA_LOOK,
-                          'camera_enabled':args.enable_cameras,'seed':seed,'target':target})
+                          'camera_enabled':args.enable_cameras,'seed':seed,'target':target,
+                          'initial_object_poses':initial_positions,'physics_engine':'physx',
+                          'simulation_executed':True,'controller':'classical_only',
+                          'purpose':'qualification','split':'evaluation','scene_revision':2,
+                          'cube_yaw':'radial_about_openmanipulator_base_joint',
+                          'light_intensity_range':[1800,2800],
+                          'grasp_evidence':'bilateral_finger_contact_and_lift'})
             try:
                 while app.is_running():
                     action = expert.update(obs)
@@ -79,6 +88,7 @@ def main():
                     if terminal:
                         break
                     new_obs = backend.step(action)
+                    safety_events.extend(new_obs.safety_events)
                     if new_obs.time <= obs.time:
                         expert.failure = 'unsafe_movement'
                         obs = new_obs
@@ -89,7 +99,11 @@ def main():
                 if reason is not None and reason not in FAILURES:
                     raise RuntimeError('unknown physical failure reason')
                 result = dict(seed=seed,target=target,success=success,duration=obs.time,
-                              failure_reason=reason,final_object_pose=list(obs.cubes[target]),phase=expert.phase)
+                              failure_reason=reason,final_object_pose=list(obs.cubes[target]),phase=expert.phase,
+                              robot='openmanipulator_x',initial_object_poses=initial_positions,
+                              pick_result=expert.lifted,placement_result=success,
+                              safety_events=sorted(set(safety_events)),controller='classical_only',
+                              simulation_executed=True)
                 recorder.close(result)
                 trials.append(result)
                 _save(known.output,aggregate(trials,True,False))

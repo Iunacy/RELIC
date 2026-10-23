@@ -1,11 +1,12 @@
 """Real Isaac Lab/PhysX adapter. Import only after AppLauncher starts Kit."""
 import math
+import random
 import torch
 import isaaclab.sim as sim
 from isaaclab.sim.converters import UrdfConverter
 from isaaclab.assets import Articulation, ArticulationCfg, RigidObject, RigidObjectCfg
 from isaaclab.actuators import ImplicitActuatorCfg
-from isaaclab.sensors import Camera, CameraCfg
+from isaaclab.sensors import Camera, CameraCfg, ContactSensor, ContactSensorCfg
 from .assets import ARM, FINGERS, ROOT, fetch
 from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLORS,
                         CONTROL_DT, CUBE, DT, Observation, layout, workspace)
@@ -43,7 +44,7 @@ class IsaacBackend:
             usd_dir=str(ROOT/'cache/usd'),force_usd_conversion=True,
             merge_fixed_joints=False,convert_mimic_joints_to_normal_joints=False,
             self_collision=True,collider_type='convex_decomposition',joint_drive=drive))
-        spawn = sim.UsdFileCfg(usd_path=converter.usd_path,
+        spawn = sim.UsdFileCfg(usd_path=converter.usd_path,activate_contact_sensors=True,
             rigid_props=sim.RigidBodyPropertiesCfg(max_depenetration_velocity=.5),
             articulation_props=sim.ArticulationRootPropertiesCfg(
                 enabled_self_collisions=True,solver_position_iteration_count=16,solver_velocity_iteration_count=4))
@@ -67,6 +68,15 @@ class IsaacBackend:
                     visual_material=sim.PreviewSurfaceCfg(diffuse_color=rgb)),
                 init_state=RigidObjectCfg.InitialStateCfg(pos=layout(0)[color])))
         self._bin()
+        from pxr import Usd
+        self.contact_sensors = []
+        for name in ('gripper_left_link', 'gripper_right_link'):
+            matches = [str(prim.GetPath()) for prim in Usd.PrimRange(self.sim.stage.GetPrimAtPath('/World/Robot'))
+                       if prim.GetName() == name]
+            if len(matches) != 1:
+                raise RuntimeError(f'contact body mapping is ambiguous: {name}')
+            self.contact_sensors.append(ContactSensor(ContactSensorCfg(prim_path=matches[0],
+                filter_prim_paths_expr=[f'/World/{color}' for color in COLORS],update_period=0.)))
         if cameras:
             self.camera = Camera(CameraCfg(prim_path='/World/Camera',width=640,height=480,
                 data_types=['rgb'],update_period=0.,spawn=sim.PinholeCameraCfg(focal_length=24.,
@@ -114,6 +124,8 @@ class IsaacBackend:
         self.robot.update(DT)
         for obj in self.cubes.values():
             obj.update(DT)
+        for sensor in self.contact_sensors:
+            sensor.update(DT)
         if self.camera:
             self.camera.update(DT)
         self.time += DT
@@ -129,10 +141,14 @@ class IsaacBackend:
         q[:,self.left_ids+self.right_ids] = .02
         self.robot.write_joint_state_to_sim(q,torch.zeros_like(q))
         self.robot.reset()
+        self.sim.stage.GetPrimAtPath('/World/Light').GetAttribute('inputs:intensity').Set(random.Random(seed).uniform(1800.,2800.))
+        for sensor in self.contact_sensors:
+            sensor.reset()
         for color,p in layout(seed).items():
             state = self.cubes[color].data.default_root_state.clone()
             state[:,:3] = torch.tensor([p],device=self.device)
-            state[:,3:7] = torch.tensor([[1.,0.,0.,0.]],device=self.device)
+            yaw = math.atan2(p[1],p[0]-.012)
+            state[:,3:7] = torch.tensor([[math.cos(yaw/2),0.,0.,math.sin(yaw/2)]],device=self.device)
             state[:,7:] = 0
             self.cubes[color].write_root_pose_to_sim(state[:,:7])
             self.cubes[color].write_root_velocity_to_sim(state[:,7:])
@@ -194,7 +210,11 @@ class IsaacBackend:
                   any(not -.013 <= v <= .022 for v in q[4:]) or
                   float(torch.linalg.vector_norm(self.robot.data.body_pos_w[0,self.base_ids[0]]-self.base_position)) > .001 or
                   any(not all(math.isfinite(v) for v in p) for p in cubes.values()))
-        return Observation(self.time,ee,q,dq,cubes,speeds,unsafe)
+        forces = [torch.linalg.vector_norm(sensor.data.force_matrix_w[0,0],dim=-1).cpu().tolist()
+                  for sensor in self.contact_sensors]
+        contacts = {color:all(values[i] > .005 for values in forces) for i,color in enumerate(COLORS)}
+        return Observation(self.time,ee,q,dq,cubes,speeds,unsafe,contacts,
+                           max(0.,min(1.,(q[4]+.011)/.031)),4,('unsafe_state',) if unsafe else ())
 
     def step(self,action):
         obs = self.observe()
