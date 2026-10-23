@@ -55,6 +55,16 @@ class Execution(unittest.TestCase):
             self.assertEqual(len(backend.commands),0)
             self.assertEqual(executor.result()['fallback_triggers'],[])
 
+    def test_unsafe_state_never_enters_enabled_fallback(self):
+        backend,policy = Backend(),MockPolicy()
+        executor = ClosedLoop(backend,policy,'red')
+        executor.tick(replace(observation(),unsafe=True),None)
+        self.assertTrue(backend.stopped)
+        self.assertEqual(policy.inputs,[])
+        self.assertEqual(backend.commands,[])
+        self.assertIsNone(executor.expert)
+        self.assertEqual(executor.result()['failure_reason'],'unsafe_movement')
+
     def test_actual_lift_release_and_dwell_required_for_success(self):
         executor = ClosedLoop(Backend(),MockPolicy(),'red')
         first = observation()
