@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 SIM = '5.1.0'
-LAB_COMMIT = '37ddf626871758333d6ed89cf64ad702aef127d0'
+LAB_COMMIT = '3c6e67bb5c7ada942a6d1884ab69338f57596f77'
 
 
 def command(args):
@@ -34,7 +34,7 @@ def audit():
             'gpu':command(['nvidia-smi','--query-gpu=name,memory.total,driver_version','--format=csv,noheader']),
             'memory':command(['free','-b']),'packages':packages,'package_versions':versions,
             'selected_runtime':{'os':'Ubuntu 22.04 x86_64','python':'3.11','isaacsim':SIM,
-                                'isaaclab_tag':'v2.3.2','isaaclab_commit':LAB_COMMIT},
+                                'isaaclab_tag':'v2.3.0','isaaclab_commit':LAB_COMMIT},
             'runtime_tested':False,
             'recovery':'bash embodiment/qualify.sh --headless --device cuda:0 --enable_cameras',
             'blockers':[f'{p} not installed in this interpreter' for p in ('isaacsim','isaaclab') if not packages[p]]}

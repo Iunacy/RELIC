@@ -17,11 +17,13 @@ py="$root/venv/bin/python"
 "$py" -m pip install 'pip==25.3' 'setuptools==80.9.0' 'wheel==0.45.1'
 "$py" -m pip install 'torch==2.7.0' 'torchvision==0.22.0' --index-url https://download.pytorch.org/whl/cu128
 "$py" -m pip install 'isaacsim[all,extscache]==5.1.0' --extra-index-url https://pypi.nvidia.com -c embodiment/runtime_constraints.txt
-if [[ ! -d "$root/IsaacLab" ]]; then
-    git clone --branch v2.3.2 --depth 1 https://github.com/isaac-sim/IsaacLab.git "$root/IsaacLab"
+if [[ ! -d "$root/IsaacLab-2.3.0" ]]; then
+    git clone --branch v2.3.0 --depth 1 https://github.com/isaac-sim/IsaacLab.git "$root/IsaacLab-2.3.0"
 fi
-[[ "$(git -C "$root/IsaacLab" rev-parse HEAD)" == 37ddf626871758333d6ed89cf64ad702aef127d0 ]]
-"$py" -m pip install -e "$root/IsaacLab/source/isaaclab" -e "$root/IsaacLab/source/isaaclab_assets" -c embodiment/runtime_constraints.txt
+[[ "$(git -C "$root/IsaacLab-2.3.0" rev-parse HEAD)" == 3c6e67bb5c7ada942a6d1884ab69338f57596f77 ]]
+
+"$py" -m pip install --no-build-isolation 'flatdict==4.0.1'
+"$py" -m pip install -e "$root/IsaacLab-2.3.0/source/isaaclab" -e "$root/IsaacLab-2.3.0/source/isaaclab_assets" -c embodiment/runtime_constraints.txt
 "$py" -m pip check
 "$py" -m pip freeze > "$root/resolved-requirements.txt"
 printf 'Activate with: source %q\n' "$root/venv/bin/activate"

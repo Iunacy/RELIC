@@ -1,7 +1,11 @@
 # Selected compatibility pins; runtime not yet executed on this workstation.
 isaacsim==5.1.0
-isaaclab==0.54.2
+isaaclab==0.47.2
 numpy==1.26.0
 torch==2.7.0
 torchvision==0.22.0
 pillow==11.3.0
+starlette==0.45.3
+fastapi==0.115.7
+transformers==4.57.6
+warp-lang==1.8.2
