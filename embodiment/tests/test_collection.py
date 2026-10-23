@@ -94,6 +94,32 @@ class CollectionRecovery(unittest.TestCase):
             self.assertTrue(result['timed_out'])
             self.assertNotEqual(result['returncode'], 0)
 
+    def test_completed_campaign_shutdown_is_bounded_without_losing_artifacts(self):
+        import sys
+        with tempfile.TemporaryDirectory() as temp:
+            job = Path(temp)
+            script = ("import json,pathlib,time; p=pathlib.Path('" + str(job/'run') + "'); "
+                      "p.mkdir(); (p/'report.json').write_text(json.dumps({'completed':True, "
+                      "'source_changed_during_run':[]})); time.sleep(30)")
+            result = execute([sys.executable, '-c', script], job, 10, shutdown_timeout=.1)
+            self.assertTrue(result['timed_out'])
+            self.assertTrue(result['shutdown_timeout'])
+            self.assertLess(result['wall_seconds'], 5)
+            self.assertTrue((job/'run/report.json').exists())
+
+    def test_accepted_episode_validation_does_not_grow_with_every_batch(self):
+        from collections import Counter
+        with tempfile.TemporaryDirectory() as temp, self.mocks():
+            def successful(path):
+                episode = self.fake_episode(path)
+                episode.outcome['success'] = True
+                return episode
+            with patch('embodiment.collection.load_episode', side_effect=successful) as loader:
+                result = collect(Path(temp), 'openmanipulator_x', 'train', 5,
+                                 batch_size=1, runner=self.fake_runner)
+            self.assertEqual(result['successful_episodes'], 5)
+            self.assertTrue(all(count <= 2 for count in Counter(call.args[0] for call in loader.call_args_list).values()))
+
     def test_scenario_offset_preserves_prefix_and_rejects_invalid_ranges(self):
         self.assertEqual(plan('train', 3, 2), plan('train', 5)[2:])
         self.assertEqual([asdict(case) for case in plan('evaluation', 2, 7)],

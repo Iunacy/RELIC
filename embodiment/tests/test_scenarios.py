@@ -36,6 +36,15 @@ class CollectionScenarios(unittest.TestCase):
         with self.assertRaises(ValueError):
             campaign_cases('smoke','train',20)
 
+    def test_unseen_smoke_seeds_do_not_enter_dataset_or_qualification_schedules(self):
+        cases = campaign_cases('smoke', 'train', 3, smoke_seed=1000000000)
+        self.assertEqual([case['seed'] for case in cases], [1000000000, 1000000001, 1000000002])
+        self.assertTrue(all(case['seed'] < plan('train', 1)[0].seed for case in cases))
+        with self.assertRaises(ValueError):
+            campaign_cases('qualification', 'train', 20, smoke_seed=1000000000)
+        with self.assertRaises(ValueError):
+            campaign_cases('smoke', 'train', 1, smoke_seed=-1)
+
     def test_invalid_requests(self):
         for split, count in (('test', 10), ('train', 0), ('train', True), ('train', 100001)):
             with self.assertRaises(ValueError):

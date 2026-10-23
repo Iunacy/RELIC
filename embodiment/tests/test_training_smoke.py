@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from embodiment.policy import validate_checkpoint
+from embodiment.policy import checkpoint_digest, validate_checkpoint
 from embodiment.training import Budget, prepare, training_arguments, validate_upstream_arguments
 from embodiment.training_smoke import smoke
 
@@ -16,6 +16,7 @@ class TrainingSmoke(unittest.TestCase):
         (root/'processor').mkdir()
         (root/'processor/processor_config.json').write_text('{}')
         (root/'processor/statistics.json').write_text('{}')
+        (root/'processor/embodiment_id.json').write_text('{}')
 
     def test_checkpoint_requires_complete_shards_and_processor(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -29,6 +30,18 @@ class TrainingSmoke(unittest.TestCase):
             (root/'processor/statistics.json').unlink()
             with self.assertRaisesRegex(ValueError, 'statistics'):
                 validate_checkpoint(root)
+
+    def test_checkpoint_identity_excludes_training_logs_and_nested_checkpoints(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.checkpoint(root)
+            before = checkpoint_digest(root)
+            (root/'trainer_state.json').write_text('{"global_step": 2}')
+            (root/'checkpoint-1').mkdir()
+            (root/'checkpoint-1/model.safetensors').write_bytes(b'unit-fixture')
+            self.assertEqual(before, checkpoint_digest(root))
+            (root/'processor/statistics.json').write_text('{"changed": true}')
+            self.assertNotEqual(before, checkpoint_digest(root))
 
     def test_preflight_cannot_claim_training(self):
         with tempfile.TemporaryDirectory() as temp:

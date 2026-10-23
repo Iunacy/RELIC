@@ -102,9 +102,9 @@ def main():
         policy = RemotePolicy(known.policy_port)
         if policy.metadata.get('source_sha256') != provenance['source_sha256']:
             raise ValueError('policy service and simulator source versions differ')
-        from .training import dataset_digest
+        from .policy import checkpoint_digest
         checkpoint = Path(run['checkpoint'])
-        if not checkpoint.is_dir() or dataset_digest(checkpoint) != policy.metadata['checkpoint_sha256']:
+        if not checkpoint.is_dir() or checkpoint_digest(checkpoint) != policy.metadata['checkpoint_sha256']:
             raise ValueError('served checkpoint differs from the planned experiment checkpoint')
         report['training_run'] = run
         report['policy_service'] = policy.metadata

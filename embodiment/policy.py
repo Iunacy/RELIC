@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
+import hashlib
 import sys
 from typing import Any, Protocol
 from .benchmark import Action, Observation, TASK_GRIPPER_LIMITS, finite
@@ -26,9 +27,28 @@ def validate_checkpoint(checkpoint: Path, require_processor: bool = True):
            or path.stat().st_size <= 8 for path in weights):
         raise ValueError('local safe checkpoint weights are incomplete')
     processor = checkpoint if (checkpoint/'processor_config.json').exists() else checkpoint/'processor'
-    if require_processor and (not (processor/'processor_config.json').is_file() or not (processor/'statistics.json').is_file()):
+    if require_processor and any(not (processor/name).is_file() for name in
+                                 ('processor_config.json', 'statistics.json', 'embodiment_id.json')):
         raise ValueError('checkpoint processor and embodiment statistics required')
-    return {'checkpoint': str(checkpoint), 'weight_files': len(weights), 'processor': str(processor)}
+    return {'checkpoint': str(checkpoint), 'weight_files': len(weights), 'processor': str(processor),
+            'weight_paths': sorted(path.name for path in weights)}
+
+
+def checkpoint_digest(checkpoint: Path):
+    checkpoint = Path(checkpoint).resolve()
+    manifest = validate_checkpoint(checkpoint)
+    files = [checkpoint/'config.json', *(checkpoint/name for name in manifest['weight_paths'])]
+    if (checkpoint/'model.safetensors.index.json').exists():
+        files.append(checkpoint/'model.safetensors.index.json')
+    files.extend(Path(manifest['processor'])/name for name in
+                 ('processor_config.json', 'statistics.json', 'embodiment_id.json'))
+    digest = hashlib.sha256()
+    for path in sorted(files):
+        digest.update(str(path.relative_to(checkpoint)).encode())
+        with path.open('rb') as stream:
+            while chunk := stream.read(1024*1024):
+                digest.update(chunk)
+    return digest.hexdigest()
 
 
 @dataclass(frozen=True)

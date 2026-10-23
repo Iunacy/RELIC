@@ -30,7 +30,11 @@ def aggregate(trials, executed, completed, error=None):
                 error=error,trials=trials,statistics=metrics(trials))
 
 
-def campaign_cases(mode, split, episodes, start_index=0):
+def campaign_cases(mode, split, episodes, start_index=0, smoke_seed=0):
+    if type(smoke_seed) is not int or not 0 <= smoke_seed < 2**48:
+        raise ValueError('invalid diagnostic seed')
+    if mode != 'smoke' and smoke_seed != 0:
+        raise ValueError('diagnostic seed is only valid for smoke trials')
     if mode != 'collection' and start_index != 0:
         raise ValueError('scenario offset is only valid for collection')
     if mode == 'qualification':
@@ -38,7 +42,7 @@ def campaign_cases(mode, split, episodes, start_index=0):
     if mode == 'smoke':
         if type(episodes) is not int or not 1 <= episodes <= 3:
             raise ValueError('smoke campaigns allow one to three trials')
-        return [dict(seed=seed,target=COLORS[seed%3]) for seed in range(episodes)]
+        return [dict(seed=seed,target=COLORS[seed%3]) for seed in range(smoke_seed,smoke_seed+episodes)]
     return [asdict(case) for case in plan(split,episodes,start_index)]
 
 
@@ -62,6 +66,7 @@ def main():
     parser.add_argument('--split',choices=['train','validation','evaluation'],default='train')
     parser.add_argument('--episodes',type=int,default=1)
     parser.add_argument('--start-index',type=int,default=0)
+    parser.add_argument('--smoke-seed',type=int,default=0)
     parser.add_argument('--robot',choices=['openmanipulator_x','franka_panda'],default='openmanipulator_x')
     parser.add_argument('--preflight-only',action='store_true')
     known,_ = parser.parse_known_args()
@@ -73,7 +78,7 @@ def main():
     cases = []
     provenance = source_provenance()
     try:
-        cases = campaign_cases(known.mode,known.split,known.episodes,known.start_index)
+        cases = campaign_cases(known.mode,known.split,known.episodes,known.start_index,known.smoke_seed)
         if known.preflight_only:
             raise RuntimeError('preflight only; real Isaac Lab simulation was not executed')
         from isaaclab.app import AppLauncher

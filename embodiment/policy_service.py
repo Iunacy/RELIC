@@ -8,9 +8,8 @@ import urllib.request
 
 from .benchmark import Action
 from .dataset import GROOT_COMMIT
-from .policy import GrootPolicy, PolicyInput
+from .policy import GrootPolicy, PolicyInput, checkpoint_digest
 from .qualify import source_provenance
-from .training import dataset_digest
 
 MAX_MESSAGE = 8 * 1024 * 1024
 
@@ -142,7 +141,7 @@ def main():
         parser.error('invalid port')
     policy = GrootPolicy.from_checkpoint(args.source, args.checkpoint, args.device)
     metadata = {'schema': 'relic.policy_service.v1', 'groot_commit': GROOT_COMMIT,
-                'checkpoint': str(args.checkpoint.resolve()), 'checkpoint_sha256': dataset_digest(args.checkpoint),
+                'checkpoint': str(args.checkpoint.resolve()), 'checkpoint_sha256': checkpoint_digest(args.checkpoint),
                 'source_sha256': source_provenance()['source_sha256']}
     with HTTPServer(('127.0.0.1', args.port), handler(policy, metadata)) as server:
         print(json.dumps(metadata), flush=True)

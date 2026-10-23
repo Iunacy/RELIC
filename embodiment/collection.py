@@ -106,8 +106,10 @@ def inspect_job(job, robot, split, source_hashes):
     return receipt
 
 
-def progress(root, robot, split):
+def progress(root, robot, split, verified_jobs=None):
     successes, failures, jobs = [], [], []
+    verified_jobs = {} if verified_jobs is None else verified_jobs
+    fingerprints = set()
     next_index = 0
     source_hashes = read_json(root/'collection.json')['source_sha256']
     if source_provenance()['source_sha256'] != source_hashes:
@@ -115,28 +117,54 @@ def progress(root, robot, split):
     for job in sorted((root/'jobs').glob('job-*')):
         if not (job/'request.json').exists():
             continue
-        receipt = inspect_job(job, robot, split, source_hashes)
+        if job not in verified_jobs:
+            verified_jobs[job] = inspect_job(job, robot, split, source_hashes)
+        receipt = verified_jobs[job]
         request = receipt['request']
         if request['start'] != next_index:
             raise ValueError('job ranges overlap or contain a gap')
         next_index += request['count']
-        successes.extend(job/'run'/item['folder'] for item in receipt['successes'])
+        for item in receipt['successes']:
+            fingerprint = item['case']['scenario_id']
+            if fingerprint in fingerprints:
+                raise ValueError('duplicate successful scenario')
+            fingerprints.add(fingerprint)
+            successes.append(job/'run'/item['folder'])
         failures.extend(receipt['failures'])
         jobs.append(job)
-    if successes:
-        validate_collection(successes)
     return successes, failures, next_index, jobs
 
 
-def execute(command, job, timeout, environment=None):
+def execute(command, job, timeout, environment=None, shutdown_timeout=30):
+    if timeout <= 0 or shutdown_timeout <= 0:
+        raise ValueError('process deadlines must be positive')
     started = time.monotonic()
+    terminal_since = None
+    shutdown_expired = False
     with (job/'process.log').open('xb') as log, (job/'.running').open('a') as lease:
         fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
+        process = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True,
                                    pass_fds=(lease.fileno(),), cwd=Path(__file__).resolve().parents[1], env=environment)
         try:
-            code = process.wait(timeout=timeout)
-            result = {'returncode': code, 'timed_out': False}
+            while True:
+                remaining = timeout - (time.monotonic() - started)
+                if remaining <= 0:
+                    raise subprocess.TimeoutExpired(command, timeout)
+                try:
+                    code = process.wait(timeout=min(1., remaining, shutdown_timeout))
+                    break
+                except subprocess.TimeoutExpired:
+                    report_path = job/'run/report.json'
+                    try:
+                        report = read_json(report_path)
+                    except (OSError, ValueError):
+                        report = {}
+                    if report.get('completed') is True and report.get('source_changed_during_run') == []:
+                        terminal_since = time.monotonic() if terminal_since is None else terminal_since
+                    if terminal_since is not None and time.monotonic() - terminal_since >= shutdown_timeout:
+                        shutdown_expired = True
+                        raise subprocess.TimeoutExpired(command, shutdown_timeout)
+            result = {'returncode': code, 'timed_out': False, 'shutdown_timeout': False}
         except BaseException as error:
             import signal
             os.killpg(process.pid, signal.SIGTERM)
@@ -147,7 +175,7 @@ def execute(command, job, timeout, environment=None):
                 process.wait()
             if not isinstance(error, subprocess.TimeoutExpired):
                 raise
-            result = {'returncode': process.returncode, 'timed_out': True}
+            result = {'returncode': process.returncode, 'timed_out': True, 'shutdown_timeout': shutdown_expired}
     result['wall_seconds'] = time.monotonic() - started
     atomic_json(job/'process.json', result)
     return result
@@ -172,7 +200,8 @@ def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600
                 raise ValueError('existing jobs lack collection provenance')
             atomic_json(config_path, configuration)
         (root/'jobs').mkdir(exist_ok=True)
-        paths, failures, offset, jobs = progress(root, robot, split)
+        verified_jobs = {}
+        paths, failures, offset, jobs = progress(root, robot, split, verified_jobs)
         stalled = 0
         for _ in range(max_jobs):
             if len(paths) >= target or stalled >= 3:
@@ -191,9 +220,10 @@ def collect(root, robot, split, target, batch_size=10, max_jobs=30, timeout=3600
             atomic_json(job/'command.json', command)
             before = len(paths)
             runner(command, job, timeout)
-            paths, failures, offset, jobs = progress(root, robot, split)
+            paths, failures, offset, jobs = progress(root, robot, split, verified_jobs)
             stalled = stalled + 1 if len(paths) == before else 0
             summarize(root, target, paths, failures, jobs)
+        paths, failures, offset, jobs = progress(root, robot, split)
         return summarize(root, target, paths, failures, jobs)
 
 
@@ -244,7 +274,8 @@ def main():
             total_seconds = summary['measured_process_seconds'] + export_seconds
             atomic_json(args.root/'export.json', {'output': str(args.export.resolve()),
                         'episodes': len(paths), 'export_wall_seconds': export_seconds,
-                        'collection_and_export_seconds': total_seconds if summary['timing_complete'] else None,
+                        'measured_process_and_export_seconds': total_seconds if summary['timing_complete'] else None,
+                        'throughput_scope': 'simulator process and export; admission validation excluded',
                         'successful_episodes_per_hour': len(paths)*3600/total_seconds if summary['timing_complete'] else None})
     return 0 if summary['status'] == 'COMPLETE' else 2
 
