@@ -62,6 +62,35 @@ class Robustness(unittest.TestCase):
             campaign(Path(temporary), count=1, conditions=['baseline'], runner=lambda *args: self.fail('overwrote failed run'))
             self.assertEqual(len(calls), 2)
 
+    def test_changed_report_metrics_cannot_override_recorded_outcome(self):
+        planned = plan_robustness(1, ['baseline'])
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            episodes = {}
+            def worker(command, job, timeout):
+                request = json.loads((job/'request.json').read_text())
+                robot = request['robot']
+                result = {**planned[0], 'robot': robot, 'controller': 'classical_only',
+                    'simulation_executed': True, 'success': True, 'duration': 20.,
+                    'safety_events': [], 'fallback_triggers': [], 'failure_reason': None,
+                    'pick_result': True, 'placement_result': True, 'mean_tracking_error_m': .001,
+                    'peak_tracking_error_m': .003, 'placement_error_xy_m': .002}
+                folder = job/'run/trial_0000'
+                folder.mkdir(parents=True)
+                recorded = episode()
+                recorded.metadata.update(embodiment=robot, source_sha256=request['source_sha256'], scenario_id=planned[0]['scenario_id'])
+                recorded.outcome = dict(result)
+                episodes[folder] = recorded
+                result.update(mean_tracking_error_m=0., evidence_sha256={'fixture': 'test'})
+                (job/'run/report.json').write_text(json.dumps({'source_sha256': request['source_sha256'],
+                    'source_changed_during_run': [], 'error': None, 'trials': [result]}))
+            with patch('embodiment.replay.load_episode', side_effect=lambda folder: episodes[folder]), patch('embodiment.experiment.hashes', return_value={'fixture': 'test'}):
+                result = campaign(root, count=1, conditions=['baseline'], runner=worker)
+            self.assertEqual(result['status'], 'INCOMPLETE')
+            self.assertEqual(result['physical_trials'], 0)
+            self.assertEqual(len(result['errors']), 2)
+            self.assertTrue((root/'summary.json').is_file())
+
     def test_delay_records_applied_actions_and_true_observations(self):
         record = episode()
         class Backend:
