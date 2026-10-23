@@ -1,0 +1,376 @@
+{
+  "schema": "relic.qualification_evidence.v1",
+  "status": "PASS",
+  "embodiment": "openmanipulator_x",
+  "statistics": {
+    "trials": 20,
+    "successes": 20,
+    "success_rate": 1.0,
+    "wilson_95": [
+      0.8388748419471806,
+      1.0
+    ],
+    "wrong_color_picks": 0,
+    "failures": {}
+  },
+  "runtime_pin": {
+    "isaacsim": "5.1.0",
+    "isaaclab_commit": "3c6e67bb5c7ada942a6d1884ab69338f57596f77",
+    "robot_commit": "ee9a720bcc45acda9c0df8fe689b1182844307db"
+  },
+  "relic_commit": "0091cfe16aa29a0f54eee2bf13b962f612c67144",
+  "source_sha256": {
+    "__init__.py": "7ad4e0a2933c402c44a1681393d2e72c42a5e6276b5657c0ed8eeb3c74739c7a",
+    "assets.py": "cbd1c0f887dfd02c957dbd61d3b59d9adaf487f4b9ab71ac08c150205146b46e",
+    "benchmark.py": "5a4f80b67961b7c1f41f1f32799106a502d151867304a3a3398e9eee84eb61e3",
+    "contact_probe.py": "33f0d2dcc83173b88916ae5c1e06374f9fe75c13ed74d2eb007bd4aa9d3b3347",
+    "dataset.py": "9a040458fa9b9f9f90534d76c271de2761e77d552e6d11f3d248bfc8886067d3",
+    "evaluation.py": "dd609d0e7187aeab25264d9e0f60cf7398de4d02b50db2530583ac7f20932527",
+    "expert.py": "12171e028ff53c88df5b47ad0f25010cab0db725e4eee9e9ddf39d94be77ace5",
+    "groot_modalities.py": "4d646e158b8f5fff88fc1f06063afcc787c701a98b33a961929b817b1965cf12",
+    "isaac_backend.py": "3b7885c2f4d10c3abab8f2c2c54810afad2a6758217e92c60a9675c8df409025",
+    "openmanipulator.py": "3b29570ec62ba7743342bebb1132d30012c09ac8e4255b80ba3264768bb56dc6",
+    "panda.py": "a08a8707920e79bb78d5d0b79c33bf40ac824f184033ad0722f53a7a6de0c913",
+    "planner.py": "33a1b8be07df38bd74c224e6144bb069da64c33c95dab98f11f4141035348dfe",
+    "policy.py": "e5604723c74a4af16fdafcbaa531e8184af49f4cb3148c7c1dc83e9509167bfa",
+    "preflight.py": "a02a1d10d97c8935585333fab3ce50c6c5d8271a7495807f2015b849435462bb",
+    "qualify.py": "b110dcd7c6d741540c384deda6e67c02ea11f87c23895bcdff4c1dbaa36cae9c",
+    "recording.py": "b476dba6a2704722f6efa25348a37fbcf3767c7773b338f748acf8f0fd92da8e",
+    "runtime_config.py": "674a7e82035b8cf6e4024f13e8f9ce347a51b041fffa07245f4bda4ff093725a",
+    "safety.py": "c6e4f5f4fb92db377a717c91e804d9efa3d5daf8d311e402acf51f618608d832",
+    "scenarios.py": "46ba6e407e25b5cc648e45a0e4c50f1283da0764415576872e00462a48a27a77",
+    "training.py": "0b90f8edc8fbbab71c6a6a9aeefb0765455bac87f53774d15905656c87af21b2",
+    "upstream_validation.py": "786200f75ebe9a043bd4d27e089ab5c6a12d536d3a606df3534d755872be6860"
+  },
+  "articulation": {
+    "fixed_base": true,
+    "fk_error_m": 7.855531230673162e-08,
+    "empty_gripper_endpoints": [
+      [
+        -0.009244890883564949,
+        -0.00923641212284565
+      ],
+      [
+        0.01999986171722412,
+        0.01999986544251442
+      ]
+    ],
+    "physical_checks_executed": true,
+    "body_masses_kg": {
+      "world": 1.0,
+      "link1": 0.0791199654340744,
+      "link2": 0.0984068363904953,
+      "link3": 0.13850916922092438,
+      "link4": 0.132745623588562,
+      "link5": 0.14327572286128998,
+      "gripper_left_link": 0.0010000000474974513,
+      "gripper_right_link": 0.0010000000474974513
+    },
+    "mass_validation": "URDF links; fixed world body excluded"
+  },
+  "trials": [
+    {
+      "seed": 0,
+      "target": "red",
+      "success": true,
+      "duration": 26.09999999999916,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "fb1c8b4d27d723f0be9bda507cac83ba503e75b35340e87fb269b769809c219d",
+        "outcome.json": "1eae4fde6b03152275a0b6fb4fbbd203a3320748712f679bfc92e865d8c99f0f",
+        "samples.jsonl": "2798b300d331292f90d40e9798b8da5d2b71690b29c7c49dd5dd919665abccb7",
+        "telemetry.jsonl": "108d87d1f5ffa332e82d3728b4b3efcaa743300771e67cc1c736db025291712e"
+      }
+    },
+    {
+      "seed": 1,
+      "target": "green",
+      "success": true,
+      "duration": 18.89999999999957,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "eea40ccbd96af92c325b33b86c81f92aa242a5c6350bf5d816a0fc5937b36dd1",
+        "outcome.json": "048ad2f899097425531e017e7f81ff8d13322e2a94af1f46694b0afc82536244",
+        "samples.jsonl": "7d8227efd8281117ca94b6ade842825e438b22ab5e6fa1a22dbc6ecc2888a627",
+        "telemetry.jsonl": "77bcf932ee6fadd60230502c7821f72d7522f53ed83d336ecc8d7e2cc11d44ba"
+      }
+    },
+    {
+      "seed": 2,
+      "target": "blue",
+      "success": true,
+      "duration": 27.133333333332434,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "64205d6b3f7e09ad5a2496231b2cc07fa51ff3a86d8bbd270bbb11e5750f81af",
+        "outcome.json": "0fa80f0d9753b3baf5132f0b2e8d8a5745b7741c11369a59dc2396639595ee1e",
+        "samples.jsonl": "e3e7a9ebf9a249d072b48cc8d46e7195f02ca0178518659e8f3b45b0c47d8186",
+        "telemetry.jsonl": "fa204e173b60c7007f7a636fd05e1768de4dbd0d0be5c619b77de3c3a216aeb3"
+      }
+    },
+    {
+      "seed": 3,
+      "target": "red",
+      "success": true,
+      "duration": 20.699999999999466,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "09f82e1a28857e2ae7e944822f919dfd158d9c0b58acf0e1c57b2f33f9d97470",
+        "outcome.json": "0af474e93d1d03cc6ced878584e7c046a0168c64f04aba8e64cfeb35e2690066",
+        "samples.jsonl": "453d7b9c402e0a64349cb1112fba41e0f73934a07e4c386766d6aeb3a627695c",
+        "telemetry.jsonl": "c3bfe4baf4b6ea5abeccbd10a4d4530c06099a5311a88584b6c6fb1d891d7101"
+      }
+    },
+    {
+      "seed": 4,
+      "target": "green",
+      "success": true,
+      "duration": 21.133333333332775,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "812584b9b31e41a148960d6e8b47ee47b387442e7d941a992dff85e530903647",
+        "outcome.json": "7345b5512a83d5042393b7cf800a1e5d07a0312dc6f51f2a9a3f9e7993707942",
+        "samples.jsonl": "d8aa641ca1ad4436c3be7579c65ca9a7e221ab08d76eab0a88136b8cb171a8d9",
+        "telemetry.jsonl": "2b4dc44f985a4ecaa932306c2da52fb404f6dedc83c5da73f49da44c5c903ab9"
+      }
+    },
+    {
+      "seed": 5,
+      "target": "blue",
+      "success": true,
+      "duration": 19.566666666666197,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "1d5e6906047e167dfdd05663ee7df9f9176017ea0a153d32da78f06d02005d78",
+        "outcome.json": "fd83cc939d5c61ee939ddcfb2b4efa7417e64b2aee6fe6690a2ec982af8b455d",
+        "samples.jsonl": "6100e93431a1d043ea6b3de73c70e48a638aa7830f0fec65d4092d8946e9cbde",
+        "telemetry.jsonl": "ad398a0e2d190f66ec20c0c1ce004d1adca0b14400a32fb636fdc09b7f324661"
+      }
+    },
+    {
+      "seed": 6,
+      "target": "red",
+      "success": true,
+      "duration": 21.49999999999942,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "a82d6a1d1fb186095d8b774215b381d63ca03ef620cd9b72b83f4a41ad13b995",
+        "outcome.json": "3805db1fbfed2055f3449a472c4abb883433f8541145d9c759b33e9a1f0de089",
+        "samples.jsonl": "0b88da6dddf4d90c6314a4061b66bd1c966a473e6240cb413dd68f405ae1eb04",
+        "telemetry.jsonl": "cc5ccb552996a992488e31831c8d81afe1bee96e695e5ae88d368806dea5b44e"
+      }
+    },
+    {
+      "seed": 7,
+      "target": "green",
+      "success": true,
+      "duration": 28.69999999999901,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "0219d6b278163bb9239eab3f7a0b6bee5f9369a1a0a2bd47c9bd586cc997f36a",
+        "outcome.json": "356238e4e027a182abbd134b46ba31d51b2b47803ad40b656b40406b3ae3ab54",
+        "samples.jsonl": "2814a1c5c853829ca8396cd444a4cce920d80f9da2bace373e05edd6acf35a7d",
+        "telemetry.jsonl": "a7f0de95dd456131866fbb56b4882676c700d3a388e6f4f196d522f2634b4b98"
+      }
+    },
+    {
+      "seed": 8,
+      "target": "blue",
+      "success": true,
+      "duration": 26.59999999999913,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "e921983c44ac9cb892b3903e99e3132f2a004cf03bc508ce0dfa72eecfdb0d7d",
+        "outcome.json": "b3ff16811e008024aec1f2e64d3732fd8267caf43f60d8b50f9f6242b21e86fd",
+        "samples.jsonl": "4a80bd00ae2528cdee3998c27b3410564893465a6767ae76608eb3e183a0ee4d",
+        "telemetry.jsonl": "50e391d58468f5d1cd7a8472a0dbcd5b8d0584df222b8f22aca9d9774422168f"
+      }
+    },
+    {
+      "seed": 9,
+      "target": "red",
+      "success": true,
+      "duration": 27.53333333333241,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "79154cf78e48206871743c0341b36ada35eca8830357fb7336e3a1bfabd5720d",
+        "outcome.json": "a8217ae15faceffd6401cb9af55ab026b5a5ff08aff8fd68d8502c58f3ab95ec",
+        "samples.jsonl": "f8de7ed576753da8fde559c111a220d742712d21458403d1e6f43b53be6a5c36",
+        "telemetry.jsonl": "345bc505132c70161b24f82c696a9bbbbb48c1a78dec6af32c9ca93940358e2a"
+      }
+    },
+    {
+      "seed": 10,
+      "target": "green",
+      "success": true,
+      "duration": 26.766666666665788,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "f15882a05bf1039aef1927cf8c264efc36741e2d73c5eabd60084e3da6b6c4ee",
+        "outcome.json": "8bdb249e1563b2fd2d31e490e03024b2e3931772db609540be0f71b32e2ffe1f",
+        "samples.jsonl": "549878ca5f46812023f9307a1b57e1bbcfed4f035f090360075116db29938741",
+        "telemetry.jsonl": "57e83da1407b04fa3acd865ddce9bd5ec110858958342f7ae5c6d5df85447584"
+      }
+    },
+    {
+      "seed": 11,
+      "target": "blue",
+      "success": true,
+      "duration": 21.066666666666112,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "590842144b1358ed5664e4d9d7b218e7a8cdd29192d426f259afdd4177b3fe65",
+        "outcome.json": "6f00059c73fc76c80cdfd13c6785861418b17e78a57a53673939800a3b23e1fa",
+        "samples.jsonl": "f46c7266521a97faeabeb0068ceabe33f46245881c4a59a748c349db69b4994f",
+        "telemetry.jsonl": "97f10d74ad1e0780f35684ba6482273b9f3af93694ef03b1c4a3bd217601f59f"
+      }
+    },
+    {
+      "seed": 12,
+      "target": "red",
+      "success": true,
+      "duration": 27.666666666665737,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "cd75771ac29055af1052562b70bfde6f33c2a34f380f123afbb1562c07ed2204",
+        "outcome.json": "1f4c4eb77caa5d21bf23ddf0757e063bf1fea26ed963c537531cfe61a19023ae",
+        "samples.jsonl": "53976614da6f199b9d368075e7030a6c269c34b7e9810645b1d3db3d7bbc7773",
+        "telemetry.jsonl": "c15050d56c01a279804aab9705bf2b2706beb32ad68df523bda846bf7feccf5d"
+      }
+    },
+    {
+      "seed": 13,
+      "target": "green",
+      "success": true,
+      "duration": 19.43333333333287,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "d12e13a7af8a4bbb513247c9f4e8f5c8b46146923aeb814ec7800bda4396826d",
+        "outcome.json": "84c8263a84352f83a074c9c25f2d3c8bf0a98539f023dc1aff1f9e578eef7f03",
+        "samples.jsonl": "bd7d3d5cb7be7e501b263edae7182131d2e702bb1e5977c2ccc1b0d811fe9cbb",
+        "telemetry.jsonl": "e60b5db36b500ca4843d1fbbc3e3fb59fbebae973ce572e0c03232096ec58881"
+      }
+    },
+    {
+      "seed": 14,
+      "target": "blue",
+      "success": true,
+      "duration": 27.06666666666577,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "f18a4d7c6962a52c598b720bb152e255b0ad22fce8e21a1bd380ddc589045e07",
+        "outcome.json": "5cdcd7c6c066a65d86e397ee5a9be406b2f8e00804e074980f69ad8cd9c1d685",
+        "samples.jsonl": "777e8992816d8177458bb6f88911984d6be5b3558c8a2ec8320eeb65a3f42a6e",
+        "telemetry.jsonl": "661c2dc025ef47928ef46d02c367a980961ec3073b9358444fd2daf82eb926b4"
+      }
+    },
+    {
+      "seed": 15,
+      "target": "red",
+      "success": true,
+      "duration": 21.833333333332735,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "45114e3a3b6afcaa94d0961072fd1c364e6fedac91cc1dcb32125e1e44ff4182",
+        "outcome.json": "18fa898c928f5f489af2ad6ea9ebc204d070652c8f3bc6e126dd33ef0c89a552",
+        "samples.jsonl": "1ed6c67ae68c110dc94cdb0269317fe0300c68bba52ce7c9af47f2a9a8a8ea0b",
+        "telemetry.jsonl": "2791ef0e8da90d7f94e0c3fc6c7df97fac103c353157f25961612263169e6544"
+      }
+    },
+    {
+      "seed": 16,
+      "target": "green",
+      "success": true,
+      "duration": 18.9333333333329,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "b8eeb10742834df23a3d463de839c858dc67fdbbec4b41e32b26124923bbb385",
+        "outcome.json": "3408105cfa0455eaa1978989c03cf8e2058f2cf7a414549d7be4137d7e3dd7cb",
+        "samples.jsonl": "e1e08fb45c4a8e1c8210bbec7d8533defe07a4949a4160f5b13a9d3bf1f316e6",
+        "telemetry.jsonl": "a31de23d3fa94d14ac15ba3b85c3962774fce441634a4a5aa9b263aae46d382b"
+      }
+    },
+    {
+      "seed": 17,
+      "target": "blue",
+      "success": true,
+      "duration": 19.19999999999955,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "41d27ee46857cbe4e01e1a20f98c7e1e38e6115700684629007cfa43c527ef73",
+        "outcome.json": "6bf098703c6616621cdb1eb946342b405f710c655b29b26f5a92ac0acb91116f",
+        "samples.jsonl": "f422016d2a69de80d76c85e2d50ccf93ac684b1bbb8c4ab05dfb645b5ddaa036",
+        "telemetry.jsonl": "7ea6a38999155e771859013b17b0ed97f7d0391418444cc8a5ba5d96307e92c8"
+      }
+    },
+    {
+      "seed": 18,
+      "target": "red",
+      "success": true,
+      "duration": 21.73333333333274,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "d63c8507dd7ca5286de234d4c88aa394a14a18fc495cb7e7eb8889f4052dd36e",
+        "outcome.json": "9a8df243f8631647a8aa49f979bb49b71fab25e49c30b0e790b95e40d4acef33",
+        "samples.jsonl": "25040bb8ed35292b3bbe6605c1f77deec16466f3e5394f379ed158ad1b1f2105",
+        "telemetry.jsonl": "774ded9c50792a82ef935e7d81174e0c554f8c72bef90776f3d7318ab763396a"
+      }
+    },
+    {
+      "seed": 19,
+      "target": "green",
+      "success": true,
+      "duration": 27.7333333333324,
+      "failure_reason": null,
+      "physical_lift_with_bilateral_forces": true,
+      "wrong_color_lift": false,
+      "sha256": {
+        "metadata.json": "013f634543a7c90fc707bb19d731b806c1ae9a48e446c100a1b8ff6c7fafc3b7",
+        "outcome.json": "e4be91f59756ed017082e4aaf7aef1fbf3961832f0f9fc4313acfbd3881e9a45",
+        "samples.jsonl": "4b0dc3a0431581ce870588a680d600cbab8f6c190f72a1708c2f5f62c65e7e31",
+        "telemetry.jsonl": "bdf98bf02b5dfb2b556031b6cebaea26946cdd181e110d0bd9de8670c617c491"
+      }
+    }
+  ],
+  "report_sha256": "b3db0b092e18985dee8a0dc58c5a13fc65892fdfd49a4a39918b2aba2127101d",
+  "raw_artifact_root": "/home/iris/relic-consolidation-backups/20261023/omx-qualification-2",
+  "claim": "classical physical embodiment qualification; no learned-policy inference"
+}
