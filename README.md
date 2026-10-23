@@ -2,12 +2,12 @@
 
 *From intent to motion.*
 
-![RELIC simulation: a classical controller moves the Koch arm to a target in MuJoCo](assets/simulation.gif)
+![RELIC: OpenMANIPULATOR-X and Franka Panda perform the same pick-and-place task](assets/simulation.gif)
 
-<sub>Early control study · MuJoCo · recorded classical execution</sub>
+<sub>Recorded PhysX execution · MuJoCo state rendering · classical control · 4×</sub>
 
 RELIC is a robotic manipulation research system exploring how intelligence takes shape across different bodies.
 
-Its current foundation combines analytical kinematics, trajectory planning, bounded control, and measured execution. In Isaac Lab, scripted controllers perform colored-cube pick-and-place with the OpenMANIPULATOR-X and Franka Panda, with recorded contact, lift, and placement evidence. Both embodiments passed 20 of 20 classical qualification trials.
+Its current foundation combines analytical kinematics, trajectory planning, bounded control, and verified pick-and-place execution with OpenMANIPULATOR-X and Franka Panda. A shared experiment viewer exposes their motion, timing, and physical outcomes, alongside controlled robustness comparisons.
 
-The system includes interfaces for language-conditioned GR00T policies and Nemotron planning. Learned manipulation and cross-embodiment transfer remain unvalidated.
+Interfaces for language-conditioned GR00T policies and Nemotron planning are in place. Learned manipulation and cross-embodiment transfer remain unvalidated.
