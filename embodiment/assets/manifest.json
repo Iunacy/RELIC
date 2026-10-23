@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/ROBOTIS-GIT/open_manipulator",
+  "commit": "ee9a720bcc45acda9c0df8fe689b1182844307db",
+  "files": {
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "open_manipulator_description/package.xml": "fcf7a23efaf7263f42708ff0fcb075704ddbf35ebb460bff60043c067025b5a6",
+    "open_manipulator_description/urdf/open_manipulator_x/open_manipulator_x.urdf": "784078c2a5bb16accd2ca4cbcf0d340403d6d343f047b433b503aeae85ef17d3",
+    "open_manipulator_description/meshes/open_manipulator_x/gripper_left_palm.stl": "fb4dfabe68712bbba34deb9f8469f9187009c07579dccd5401b82d08de425267",
+    "open_manipulator_description/meshes/open_manipulator_x/gripper_right_palm.stl": "a5bfc10a067c806a19062e2fcb58989623a09edc0e9bbc4fd735a56d83f99752",
+    "open_manipulator_description/meshes/open_manipulator_x/link1.stl": "d2b84e13ccd3f923148bb26c95723bb3c9e7af0a7cc85cd315ee70ce7629dd1f",
+    "open_manipulator_description/meshes/open_manipulator_x/link2.stl": "20a6cc8a673b90ab02f97e4c2f0437ff692e71daded8a82a77b54254ae877c66",
+    "open_manipulator_description/meshes/open_manipulator_x/link3.stl": "e6904447bca7888acb6a3a170d220b12e92f6dbf53c560987527cfd115f6eb19",
+    "open_manipulator_description/meshes/open_manipulator_x/link4.stl": "9da72baf0854e0335bf0fe199da3676c57625e17277a4fa455b995130b29ffab",
+    "open_manipulator_description/meshes/open_manipulator_x/link5.stl": "75e7596295dd5f5cbc68d81b2c875058f28721f98d7402d2d431ccf2334b57a6",
+    "open_manipulator_description/meshes/open_manipulator_x/plate.stl": "e665dce646cb07f6124846f79be0943d3a42e791b0867fb569007b49db2eb3b8"
+  }
+}
