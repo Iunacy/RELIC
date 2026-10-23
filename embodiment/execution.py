@@ -37,6 +37,8 @@ class ClosedLoop:
         self.failure = None
         self.success = False
         self.safety_events = []
+        self.rejected_policy_actions = []
+        self.policy_errors = []
         self.instruction = f'Pick up the {target} cube and place it in the bin.'
         self.policy.reset()
 
@@ -95,7 +97,11 @@ class ClosedLoop:
                     reason = self.guard.progress(obs,action)
                     if reason:
                         self._fallback(reason,obs)
-                except (ValueError,RuntimeError,TypeError) as error:
+                except SafetyViolation as error:
+                    self.rejected_policy_actions.append(str(error))
+                    self._fallback('unsafe_policy_action:'+str(error),obs)
+                except (ValueError,RuntimeError,TypeError,TimeoutError) as error:
+                    self.policy_errors.append(type(error).__name__)
                     self._fallback('policy_error:'+type(error).__name__,obs)
             if self.failure:
                 self.backend.safe_stop()
@@ -123,4 +129,5 @@ class ClosedLoop:
         return {'success':self.success,'failure_reason':self.failure,'pick_result':self.lifted,
                 'placement_result':self.success,'controller':'fallback_assisted' if self.triggers else 'vla_only',
                 'fallback_triggers':list(self.triggers),'safety_events':list(self.safety_events),
+                'rejected_policy_actions':list(self.rejected_policy_actions),'policy_errors':list(self.policy_errors),
                 'fallback_protocol_sha256':self.protocol_digest()}

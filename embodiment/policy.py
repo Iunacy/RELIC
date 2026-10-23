@@ -26,6 +26,17 @@ def validate_checkpoint(checkpoint: Path, require_processor: bool = True):
     if any(path.parent != checkpoint or path.suffix != '.safetensors' or not path.is_file()
            or path.stat().st_size <= 8 for path in weights):
         raise ValueError('local safe checkpoint weights are incomplete')
+    from safetensors import safe_open
+    try:
+        for path in weights:
+            with safe_open(path, framework='np') as tensors:
+                keys = set(tensors.keys())
+                if not keys:
+                    raise ValueError('checkpoint shard contains no tensors')
+                if index.exists() and keys != {key for key, value in mapping.items() if value == path.name}:
+                    raise ValueError('checkpoint tensor index differs from saved shards')
+    except Exception as error:
+        raise ValueError('invalid safetensors checkpoint or shard index') from error
     processor = checkpoint if (checkpoint/'processor_config.json').exists() else checkpoint/'processor'
     if require_processor and any(not (processor/name).is_file() for name in
                                  ('processor_config.json', 'statistics.json', 'embodiment_id.json')):
@@ -49,6 +60,27 @@ def checkpoint_digest(checkpoint: Path):
             while chunk := stream.read(1024*1024):
                 digest.update(chunk)
     return digest.hexdigest()
+
+
+def prepare_training_checkpoint(checkpoint: Path):
+    checkpoint = Path(checkpoint).resolve()
+    manifest = validate_checkpoint(checkpoint)
+    processor = Path(manifest['processor'])
+    names = ('processor_config.json', 'statistics.json', 'embodiment_id.json')
+    for name in names:
+        read_json(processor/name)
+        destination = checkpoint/name
+        if destination.exists() and destination.read_bytes() != (processor/name).read_bytes():
+            raise ValueError('checkpoint root and saved processor disagree')
+    copied = []
+    if processor != checkpoint:
+        for name in ('statistics.json', 'embodiment_id.json', 'processor_config.json'):
+            destination = checkpoint/name
+            if not destination.exists():
+                with destination.open('xb') as stream:
+                    stream.write((processor/name).read_bytes())
+                copied.append(name)
+    return {**validate_checkpoint(checkpoint), 'prepared_processor_files': copied}
 
 
 @dataclass(frozen=True)
@@ -138,3 +170,12 @@ class GrootPolicy:
         if not np.isfinite(delta).all() or not np.isfinite(gripper).all():
             raise ValueError('nonfinite GR00T action')
         return tuple(Action(tuple(float(v) for v in delta[0,i]),float(gripper[0,i,0])) for i in range(length))
+
+
+if __name__ == '__main__':
+    import argparse
+    import json
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--prepare-training-checkpoint', type=Path, required=True)
+    args = parser.parse_args()
+    print(json.dumps(prepare_training_checkpoint(args.prepare_training_checkpoint), indent=2))

@@ -9,7 +9,7 @@ import time
 
 from .collection import atomic_json
 from .dataset import DOF, VIDEO_KEY, read_json, validate_export
-from .policy import GrootPolicy, PolicyInput, validate_checkpoint
+from .policy import GrootPolicy, PolicyInput, prepare_training_checkpoint, validate_checkpoint
 from .training import Budget, dataset_digest, training_arguments, validate_upstream_arguments
 from .upstream_validation import validate_with_upstream, verify_source
 
@@ -76,7 +76,8 @@ def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vr
             raise ValueError('checkpoint does not prove completion of the requested steps')
         result['training_executed'] = True
         result['training_steps_per_second'] = budget.steps / process['wall_seconds']
-        policy = GrootPolicy.from_checkpoint(source, checkpoint)
+        result['transfer_checkpoint'] = prepare_training_checkpoint(output/'training')
+        policy = GrootPolicy.from_checkpoint(source, output/'training')
         result['checkpoint_reload_verified'] = True
         policy.reset()
         observation = first_observation(dataset, validation['embodiment'])

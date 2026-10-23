@@ -83,3 +83,38 @@ class Execution(unittest.TestCase):
         obs = observation(); obs.cubes['blue'] = (.17,0.,.06,1.,0.,0.,0.)
         executor.tick(obs,None)
         self.assertEqual(executor.result()['failure_reason'],'wrong_color')
+
+    def test_timeout_is_accounted_with_and_without_fallback(self):
+        class TimeoutPolicy(MockPolicy):
+            def actions(self, obs):
+                raise TimeoutError('unit fixture timeout')
+        for enabled in (False, True):
+            backend = Backend()
+            executor = ClosedLoop(backend, TimeoutPolicy(), 'red', ExecutionConfig(fallback_enabled=enabled))
+            executor.tick(observation(), None)
+            if enabled:
+                executor.tick(observation(45.), None)
+            result = executor.result()
+            self.assertEqual(result['policy_errors'], ['TimeoutError'])
+            self.assertEqual(result['controller'], 'fallback_assisted' if enabled else 'vla_only')
+
+    def test_rejected_unsafe_policy_command_is_retained_after_fallback(self):
+        class UnsafePolicy(MockPolicy):
+            def actions(self, obs):
+                return (Action((.003, 0., 0.), 1.),)
+        executor = ClosedLoop(Backend(), UnsafePolicy(), 'red')
+        executor.tick(replace(observation(), ee=(.281, 0., .085)), None)
+        executor.tick(observation(45.), None)
+        result = executor.result()
+        self.assertEqual(result['rejected_policy_actions'], ['workspace_command'])
+        self.assertEqual(result['fallback_triggers'], ['unsafe_policy_action:workspace_command'])
+        self.assertEqual(result['safety_events'], [])
+
+    def test_simulator_stall_stops_execution(self):
+        backend = Backend()
+        executor = ClosedLoop(backend, MockPolicy(), 'red')
+        executor.tick(observation(), None)
+        executor.tick(observation(), None)
+        self.assertTrue(backend.stopped)
+        self.assertEqual(len(backend.commands), 1)
+        self.assertEqual(executor.result()['failure_reason'], 'unsafe_movement')

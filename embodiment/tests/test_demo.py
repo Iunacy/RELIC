@@ -15,7 +15,8 @@ class Demo(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             Image.new('RGB',(640,480),'gray').save(root/'fixture.png')
-            episode = SimpleNamespace(metadata={'split':'evaluation','embodiment':'fixture','target':'red'},
+            episode = SimpleNamespace(metadata={'split':'evaluation','embodiment':'fixture','target':'red',
+                                                'controller':'fallback_assisted'},
                 shape=(480,640,3),path=root,rows=[{'frame':'fixture.png'}]*2,outcome={'success':False})
             output = root/'fixture.mp4'
             with patch('embodiment.demo.load_episode',return_value=episode): result = render(root,output)
@@ -23,6 +24,7 @@ class Demo(unittest.TestCase):
             self.assertEqual(len(frames),2)
             self.assertEqual(result['frames'],2)
             self.assertTrue(result['prerecorded'])
+            self.assertEqual(result['controller'], 'fallback_assisted')
 
     def test_training_footage_cannot_be_presented_as_evaluation(self):
         with tempfile.TemporaryDirectory() as temporary:

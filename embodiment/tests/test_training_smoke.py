@@ -4,15 +4,17 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from embodiment.policy import checkpoint_digest, validate_checkpoint
+from embodiment.policy import checkpoint_digest, prepare_training_checkpoint, validate_checkpoint
 from embodiment.training import Budget, prepare, training_arguments, validate_upstream_arguments
 from embodiment.training_smoke import smoke
 
 
 class TrainingSmoke(unittest.TestCase):
     def checkpoint(self, root):
+        import numpy as np
+        from safetensors.numpy import save_file
         (root/'config.json').write_text(json.dumps({'model_type': 'gr00t_n1d7'}))
-        (root/'model.safetensors').write_bytes(b'unit-fixture-not-real-weights')
+        save_file({'unit_fixture': np.zeros(1, dtype=np.float32)}, root/'model.safetensors')
         (root/'processor').mkdir()
         (root/'processor/processor_config.json').write_text('{}')
         (root/'processor/statistics.json').write_text('{}')
@@ -42,6 +44,19 @@ class TrainingSmoke(unittest.TestCase):
             self.assertEqual(before, checkpoint_digest(root))
             (root/'processor/statistics.json').write_text('{"changed": true}')
             self.assertNotEqual(before, checkpoint_digest(root))
+
+    def test_invalid_tensor_contents_and_incorrect_index_are_rejected(self):
+        for defect in ('contents', 'index'):
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                self.checkpoint(root)
+                if defect == 'contents':
+                    (root/'model.safetensors').write_bytes(b'unit-fixture-not-real-weights')
+                else:
+                    (root/'model.safetensors.index.json').write_text(json.dumps({
+                        'weight_map': {'nonexistent_tensor': 'model.safetensors'}}))
+                with self.assertRaisesRegex(ValueError, 'invalid safetensors'):
+                    validate_checkpoint(root)
 
     def test_preflight_cannot_claim_training(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -77,6 +92,30 @@ class TrainingSmoke(unittest.TestCase):
                              Budget(steps=11, save_steps=5))
         self.assertEqual(result['runs'][2]['base_model'], '/runs/a')
         self.assertEqual(result['runs'][0]['checkpoint'], '/runs/a')
+        self.assertEqual(result['runs'][2]['initialization_commands'][0][-1], '/runs/a')
+
+    def test_transfer_preparation_copies_only_saved_processor_and_is_restartable(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.checkpoint(root)
+            weights = (root/'model.safetensors').read_bytes()
+            result = prepare_training_checkpoint(root)
+            self.assertEqual(result['processor'], str(root))
+            self.assertEqual(len(result['prepared_processor_files']), 3)
+            self.assertEqual(prepare_training_checkpoint(root)['prepared_processor_files'], [])
+            self.assertEqual((root/'model.safetensors').read_bytes(), weights)
+            (root/'processor_config.json').unlink()
+            (root/'statistics.json').unlink()
+            self.assertEqual(len(prepare_training_checkpoint(root)['prepared_processor_files']), 2)
+
+    def test_transfer_preparation_rejects_conflicting_processor_before_copy(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.checkpoint(root)
+            (root/'statistics.json').write_text('{"conflict": true}')
+            with self.assertRaisesRegex(ValueError, 'disagree'):
+                prepare_training_checkpoint(root)
+            self.assertFalse((root/'processor_config.json').exists())
 
 
 if __name__ == '__main__':

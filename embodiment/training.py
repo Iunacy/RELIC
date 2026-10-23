@@ -102,6 +102,8 @@ def prepare(source: Path, dataset_a: Path, dataset_b: Path, output: Path, budget
                      'evaluation_scenarios':evaluations,'success_definition':'relic.cube_bin.v2',
                      'action_horizon':16,'execution_horizon':16,
                      'arguments':arguments,'command':[sys.executable,str(Path(source).resolve()/'gr00t/experiment/launch_finetune.py'),*arguments],
+                     'initialization_commands':[[sys.executable,'-m','embodiment.policy',
+                         '--prepare-training-checkpoint',base]] if condition == 'a_to_b' else [],
                      'checkpoint':str(Path(output).resolve()/condition),
                      'training_executed':False,'checkpoint_save_load_verified':False})
     matched = None

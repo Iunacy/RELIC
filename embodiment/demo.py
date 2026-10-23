@@ -29,7 +29,8 @@ def render(episode_path, output):
                 frame.pts,frame.time_base = index,Fraction(1,30)
                 for packet in stream.encode(frame): container.mux(packet)
             for packet in stream.encode(): container.mux(packet)
-    return {'prerecorded':True,'controller':'classical_only','frames':len(episode.rows),'output':str(output)}
+    return {'prerecorded':True,'controller':episode.metadata.get('controller', 'classical_only'),
+            'frames':len(episode.rows),'output':str(output)}
 
 
 def main():

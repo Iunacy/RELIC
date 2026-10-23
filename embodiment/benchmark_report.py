@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 import hashlib
 import json
 import math
@@ -51,6 +52,10 @@ def validate_run(run):
             raise ValueError('policy condition contains a classical-only trial')
         if not isinstance(row.get('safety_events'), list):
             raise ValueError('missing safety outcome')
+        for field in ('rejected_policy_actions', 'policy_errors'):
+            values = row.get(field, [])
+            if not isinstance(values, list) or any(not isinstance(value, str) or not value for value in values):
+                raise ValueError('invalid policy failure accounting')
         if row['success']:
             if row.get('failure_reason') is not None or row.get('pick_result') is not True or row.get('placement_result') is not True:
                 raise ValueError('success lacks pick and placement evidence')
@@ -61,6 +66,9 @@ def validate_run(run):
     summary = metrics(trials)
     summary.update(successes_by_controller={name: sum(row['success'] and row['controller'] == name for row in trials) for name in CONTROLLERS},
                    fallback_trigger_rate=sum(bool(row['fallback_triggers']) for row in trials) / len(trials),
+                   rejected_policy_actions=sum(len(row.get('rejected_policy_actions', [])) for row in trials),
+                   policy_error_counts=dict(Counter(error for row in trials for error in row.get('policy_errors', []))),
+                   missed_grasps=sum(row.get('failure_reason') == 'failed_grasp' for row in trials),
                    safety_violation_trials=sum(bool(row['safety_events']) for row in trials),
                    mean_success_duration=sum(row['duration'] for row in trials if row['success']) / summary['successes'] if summary['successes'] else None)
     return summary
