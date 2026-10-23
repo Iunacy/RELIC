@@ -113,26 +113,31 @@ class Policy(Protocol):
 
 
 class GrootPolicy:
-    def __init__(self, policy, horizon: int = 16):
+    def __init__(self, policy, horizon: int = 16, embodiment=None):
         if type(horizon) is not int or not 1 <= horizon <= 16:
             raise ValueError('invalid inference horizon')
         self.policy = policy
         self.horizon = horizon
+        self.embodiment = embodiment
 
     @classmethod
     def from_checkpoint(cls, source: Path, checkpoint: Path, device: str = 'cuda:0'):
         verify_source(source)
         checkpoint = Path(checkpoint).resolve()
         validate_checkpoint(checkpoint)
+        from .checkpoint_compatibility import validate_processor
+        compatibility = validate_processor(checkpoint)
         sys.path.insert(0,str(Path(source).resolve()))
         from gr00t.policy.gr00t_policy import Gr00tPolicy
-        return cls(Gr00tPolicy('NEW_EMBODIMENT',str(checkpoint),device=device,strict=True))
+        return cls(Gr00tPolicy('NEW_EMBODIMENT',str(checkpoint),device=device,strict=True), embodiment=compatibility['embodiment'])
 
     def reset(self) -> None:
         self.policy.reset()
 
     def pack(self, observation: PolicyInput) -> dict:
         import numpy as np
+        if self.embodiment is not None and observation.embodiment != self.embodiment:
+            raise ValueError('observation embodiment differs from checkpoint statistics')
         if observation.embodiment not in DOF:
             raise ValueError('unknown policy embodiment')
         count = DOF[observation.embodiment]+2

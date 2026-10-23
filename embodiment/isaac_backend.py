@@ -204,7 +204,12 @@ class IsaacBackend:
             self.camera.update(DT)
         self.time += DT
 
-    def reset(self,seed):
+    def reset(self,seed,cube_positions=None):
+        positions = layout(seed) if cube_positions is None else cube_positions
+        if set(positions) != set(COLORS) or any(not workspace(position) or abs(position[2]-(CUBE/2+.001)) > 1e-8 for position in positions.values()):
+            raise ValueError('invalid explicit cube layout')
+        if any(math.dist(positions[a], positions[b]) < .05 for i,a in enumerate(COLORS) for b in COLORS[:i]):
+            raise ValueError('explicit cube layout violates separation')
         self.abort = False
         self.safety_events = []
         self.guard = Guard(self.safety_config)
@@ -219,7 +224,7 @@ class IsaacBackend:
         self.sim.stage.GetPrimAtPath('/World/Light').GetAttribute('inputs:intensity').Set(random.Random(seed).uniform(1800.,2800.))
         for sensor in self.contact_sensors:
             sensor.reset()
-        for color,p in layout(seed).items():
+        for color,p in positions.items():
             state = self.cubes[color].data.default_root_state.clone()
             state[:,:3] = torch.tensor([p],device=self.device)
             yaw = math.atan2(p[1],p[0]-.012)

@@ -11,6 +11,7 @@ from urllib.parse import urlparse, parse_qs
 from .actions import Client, load_env
 from .arm import ROOT
 from .engine import Capture, comparison, scene
+from .http import LocalHandler
 
 
 class Application:
@@ -81,21 +82,7 @@ class Application:
                 self.busy = False
 
 
-class Handler(BaseHTTPRequestHandler):
-    def log_message(self, *args):
-        pass
-
-    def send(self, status, value, content_type='application/json'):
-        raw = json.dumps(value).encode() if content_type == 'application/json' else value
-        self.send_response(status)
-        self.send_header('Content-Type', content_type)
-        self.send_header('Content-Length', str(len(raw)))
-        self.send_header('Cache-Control', 'no-store')
-        self.send_header('X-Content-Type-Options', 'nosniff')
-        self.send_header('Content-Security-Policy', "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self'")
-        self.end_headers()
-        self.wfile.write(raw)
-
+class Handler(LocalHandler):
     def do_GET(self):
         app = self.server.app
         url = urlparse(self.path)
