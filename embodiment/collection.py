@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 from contextlib import contextmanager
 from dataclasses import asdict
 import fcntl
@@ -45,6 +46,8 @@ def locked(root):
 
 
 def hashes(path):
+    if path.is_symlink():
+        raise ValueError('symlink episode directories are not permitted')
     result = {}
     for file in sorted(path.rglob('*')):
         if file.is_symlink():
@@ -198,10 +201,13 @@ def summarize(root, target, paths, failures, jobs):
     measurements = [read_json(job/'process.json') for job in jobs if (job/'process.json').exists()]
     seconds = sum(item['wall_seconds'] for item in measurements)
     complete_timing = len(measurements) == len(jobs) and bool(jobs)
+    metadata = [read_json(path/'metadata.json') for path in paths]
     summary = {'schema': 'relic.collection_progress.v1', 'target_successes': target,
                'successful_episodes': len(paths), 'failed_or_incomplete_attempts': len(failures),
                'status': 'COMPLETE' if len(paths) >= target else 'INCOMPLETE',
                'jobs': len(jobs), 'measured_process_seconds': seconds,
+               'successful_colors': dict(Counter(item['target'] for item in metadata)),
+               'successful_regions': dict(Counter(str(item['region']) for item in metadata)),
                'successful_episodes_per_hour': len(paths)*3600/seconds if complete_timing and seconds > 0 else None,
                'throughput_scope': 'simulator startup, physics, camera rendering and episode writing; export excluded',
                'timing_complete': complete_timing, 'failures': failures,
@@ -234,8 +240,12 @@ def main():
                 raise ValueError('no successful physical camera episodes to export')
             started = time.monotonic()
             export(paths, args.export)
+            export_seconds = time.monotonic() - started
+            total_seconds = summary['measured_process_seconds'] + export_seconds
             atomic_json(args.root/'export.json', {'output': str(args.export.resolve()),
-                        'episodes': len(paths), 'wall_seconds': time.monotonic() - started})
+                        'episodes': len(paths), 'export_wall_seconds': export_seconds,
+                        'collection_and_export_seconds': total_seconds if summary['timing_complete'] else None,
+                        'successful_episodes_per_hour': len(paths)*3600/total_seconds if summary['timing_complete'] else None})
     return 0 if summary['status'] == 'COMPLETE' else 2
 
 

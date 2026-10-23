@@ -1,3 +1,4 @@
+import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 import tempfile
@@ -7,6 +8,7 @@ from embodiment.demo import render
 
 
 class Demo(unittest.TestCase):
+    @unittest.skipUnless(importlib.util.find_spec('av') and importlib.util.find_spec('PIL'), 'video dependencies unavailable')
     def test_fixture_video_encodes_and_decodes(self):
         import av
         from PIL import Image

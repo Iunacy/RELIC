@@ -37,15 +37,18 @@ class Episode:
     fingerprint: str
 
 
-def load_episode(path: Path, require_physics: bool = True) -> Episode:
+def load_episode(path: Path, require_physics: bool = True, expert_only: bool = True) -> Episode:
     from PIL import Image
     path = Path(path).resolve()
     metadata, outcome = read_json(path/'metadata.json'), read_json(path/'outcome.json')
     robot = metadata.get('embodiment')
     if robot not in DOF:
         raise ValueError('unknown embodiment')
-    if require_physics and (metadata.get('simulation_executed') is not True or metadata.get('physics_engine') != 'physx' or metadata.get('controller') != 'classical_only' or metadata.get('evidence_source') != 'isaac_lab_physx'):
+    allowed_controllers = ('classical_only',) if expert_only else ('classical_only', 'vla_only', 'fallback_assisted')
+    if require_physics and (metadata.get('simulation_executed') is not True or metadata.get('physics_engine') != 'physx' or metadata.get('controller') not in allowed_controllers or metadata.get('evidence_source') != 'isaac_lab_physx'):
         raise ValueError('physical scripted demonstration evidence required')
+    if require_physics and metadata.get('controller') != 'classical_only' and not metadata.get('policy_service', {}).get('checkpoint_sha256'):
+        raise ValueError('learned evaluation requires checkpoint provenance')
     if type(outcome.get('success')) is not bool:
         raise ValueError('missing episode outcome')
     target, seed = metadata.get('target'), metadata.get('seed')
@@ -66,7 +69,7 @@ def load_episode(path: Path, require_physics: bool = True) -> Episode:
             raise ValueError('embodiment joint names do not match the qualified adapter')
         if outcome.get('robot') != robot or outcome.get('seed') != seed or outcome.get('target') != target:
             raise ValueError('outcome identity mismatch')
-        if outcome.get('simulation_executed') is not True or outcome.get('controller') != 'classical_only':
+        if outcome.get('simulation_executed') is not True or outcome.get('controller') != metadata.get('controller'):
             raise ValueError('outcome provenance mismatch')
         if outcome['success'] and (outcome.get('pick_result') is not True or outcome.get('placement_result') is not True):
             raise ValueError('successful demonstration lacks physical pick-and-placement evidence')

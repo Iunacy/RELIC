@@ -5,11 +5,11 @@ from .dataset import load_episode
 
 
 def render(episode_path, output):
-    import av
-    from PIL import Image, ImageDraw
-    episode = load_episode(Path(episode_path))
+    episode = load_episode(Path(episode_path), expert_only=False)
     if episode.metadata.get('split') != 'evaluation':
         raise ValueError('prerecorded demo requires held-out evaluation footage')
+    import av
+    from PIL import Image, ImageDraw
     output = Path(output)
     with output.open('xb') as target:
         with av.open(target,mode='w',format='mp4') as container:
@@ -21,7 +21,8 @@ def render(episode_path, output):
                     image = source.convert('RGB')
                 draw = ImageDraw.Draw(image)
                 draw.rectangle((0,0,image.width,48),fill='black')
-                draw.text((8,6),'PRERECORDED EVALUATION | CLASSICAL ONLY',fill='white')
+                controller = episode.metadata.get('controller', 'classical_only').replace('_', ' ').upper()
+                draw.text((8,6),f'PRERECORDED EVALUATION | {controller}',fill='white')
                 label = 'running' if index < len(episode.rows)-1 else ('success' if episode.outcome['success'] else 'failure')
                 draw.text((8,25),f"{episode.metadata['embodiment']} | {episode.metadata['target']} | {label}",fill='white')
                 frame = av.VideoFrame.from_image(image)

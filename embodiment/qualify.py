@@ -182,8 +182,8 @@ def main():
 
 def source_provenance():
     root = Path(__file__).resolve().parent
-    return {'relic_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
-            'relic_worktree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],text=True).strip()),
+    return {'relic_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=root.parent,text=True).strip(),
+            'relic_worktree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=root.parent,text=True).strip()),
             'source_sha256':{path.name:hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(root.glob('*.py'))}}
 
 
