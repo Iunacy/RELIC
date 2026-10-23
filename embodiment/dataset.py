@@ -6,8 +6,11 @@ import json
 import math
 from pathlib import Path
 import subprocess
+import os
+import shutil
+import tempfile
 from .benchmark import COLORS, CONTROL_DT, SCENE_REVISION, TASK_GRIPPER_LIMITS, layout
-from .recording import validate_sample
+from .recording import validate_sample, validate_telemetry
 from .scenarios import HELD_OUT, identity, region
 
 GROOT_COMMIT = '944fe70c4fd54e3fcb80a7d7258a328f9c061176'
@@ -101,9 +104,15 @@ def load_episode(path: Path, require_physics: bool = True) -> Episode:
         telemetry = [json.loads(line) for line in (path/'telemetry.jsonl').read_text().splitlines()]
         if len(telemetry) != len(rows) or any(abs(a['timestamp']-b['timestamp']) > 1e-8 for a,b in zip(rows,telemetry,strict=True)):
             raise ValueError('physical telemetry is not aligned with demonstrations')
-        lifted_with_contact = any(item['contacts'].get(target) is True and item['cube_poses'][target][2] > .055 for item in telemetry)
+        for item in telemetry:
+            validate_telemetry(item)
+        lifted_with_contact = any(item['contacts'].get(target) is True
+                                  and len(item.get('contact_forces', {}).get(target, [])) == 2
+                                  and all(type(force) in (int, float) and math.isfinite(force) and force > .005
+                                          for force in item['contact_forces'][target])
+                                  and item['cube_poses'][target][2] >= .055 for item in telemetry)
         if outcome['success']:
-            if not lifted_with_contact or any(item['unsafe'] for item in telemetry):
+            if not lifted_with_contact or any(item['unsafe'] or item['safety_events'] for item in telemetry):
                 raise ValueError('physical contact/lift or safety evidence does not support success')
             if any(pose[2] > .045 for item in telemetry for color,pose in item['cube_poses'].items() if color != target):
                 raise ValueError('wrong-color lift cannot be labeled successful')
@@ -166,6 +175,23 @@ def state(row: dict, robot: str) -> list[float]:
 
 
 def export(paths: list[Path], output: Path, require_physics: bool = True) -> dict:
+    output = Path(output).resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if output.exists():
+        raise FileExistsError(output)
+    staging = Path(tempfile.mkdtemp(prefix=f'.{output.name}-', dir=output.parent))
+    try:
+        info = _export(paths, staging/'dataset', require_physics)
+        validate_export(staging/'dataset', require_physics)
+        if output.exists():
+            raise FileExistsError(output)
+        os.rename(staging/'dataset', output)
+        return info
+    finally:
+        shutil.rmtree(staging)
+
+
+def _export(paths: list[Path], output: Path, require_physics: bool = True) -> dict:
     import numpy as np
     import pyarrow as pa
     import pyarrow.parquet as pq

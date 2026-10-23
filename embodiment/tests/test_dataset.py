@@ -71,8 +71,44 @@ class EpisodeValidation(unittest.TestCase):
                        'target':metadata['target'],'simulation_executed':True,'controller':'classical_only',
                        'pick_result':True,'placement_result':True}
             (path/'outcome.json').write_text(json.dumps(outcome))
-            with self.assertRaisesRegex(ValueError,'contact/lift'):
+            with self.assertRaisesRegex(ValueError,'invalid contact labels|contact/lift'):
                 load_episode(path)
+
+    def test_bilateral_forces_and_safety_events_are_required(self):
+        from embodiment.assets import ARM, FINGERS
+        from embodiment.benchmark import BIN, COLORS
+        for defect in (None, 'one_finger', 'safety', 'nan'):
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as temp:
+                path = fixture(Path(temp)/'episode')
+                metadata = read_json(path/'metadata.json')
+                metadata.update(simulation_executed=True, physics_engine='physx', controller='classical_only',
+                                evidence_source='isaac_lab_physx', joint_names=list(ARM+FINGERS))
+                (path/'metadata.json').write_text(json.dumps(metadata))
+                target = metadata['target']
+                poses = {color: [*pose, 1, 0, 0, 0] for color, pose in layout(metadata['seed']).items()}
+                telemetry = []
+                for index in range(3):
+                    current = {color: list(pose) for color, pose in poses.items()}
+                    current[target] = [*BIN[:2], .085 if index < 2 else .0165, 1, 0, 0, 0]
+                    forces = {color: [.1, .1] for color in COLORS}
+                    if defect == 'one_finger':
+                        forces[target] = [.1, 0.]
+                    if defect == 'nan':
+                        current[next(color for color in COLORS if color != target)][2] = float('nan')
+                    telemetry.append({'timestamp': index/30, 'cube_poses': current,
+                                      'contacts': {color: True for color in COLORS}, 'contact_forces': forces,
+                                      'unsafe': False, 'safety_events': ['tracking_error'] if defect == 'safety' else []})
+                (path/'telemetry.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in telemetry))
+                outcome = {'success': True, 'robot': metadata['embodiment'], 'seed': metadata['seed'],
+                           'target': target, 'simulation_executed': True, 'controller': 'classical_only',
+                           'pick_result': True, 'placement_result': True,
+                           'final_object_pose': telemetry[-1]['cube_poses'][target]}
+                (path/'outcome.json').write_text(json.dumps(outcome))
+                if defect is None:
+                    self.assertTrue(load_episode(path).outcome['success'])
+                else:
+                    with self.assertRaises(ValueError):
+                        load_episode(path)
 
     def test_duplicate_and_qualification_leakage(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -116,6 +152,21 @@ class LeRobotSerialization(unittest.TestCase):
             (output/'meta/stats.json').write_text(json.dumps(stats))
             with self.assertRaisesRegex(ValueError,'statistics'):
                 validate_export(output,require_physics=False)
+
+    def test_export_failure_does_not_publish_partial_dataset(self):
+        from unittest.mock import patch
+        import subprocess
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = fixture(root/'episode')
+            output = root/'lerobot'
+            with patch('embodiment.dataset.subprocess.run', side_effect=subprocess.CalledProcessError(1, 'ffmpeg')):
+                with self.assertRaises(subprocess.CalledProcessError):
+                    export([path], output, require_physics=False)
+            self.assertFalse(output.exists())
+            self.assertEqual(sorted(item.name for item in root.iterdir()), ['episode'])
+            export([path], output, require_physics=False)
+            self.assertEqual(validate_export(output, require_physics=False)['episodes'], 1)
 
 
 if __name__ == '__main__':

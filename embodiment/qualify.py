@@ -30,14 +30,16 @@ def aggregate(trials, executed, completed, error=None):
                 error=error,trials=trials,statistics=metrics(trials))
 
 
-def campaign_cases(mode, split, episodes):
+def campaign_cases(mode, split, episodes, start_index=0):
+    if mode != 'collection' and start_index != 0:
+        raise ValueError('scenario offset is only valid for collection')
     if mode == 'qualification':
         return [dict(seed=seed,target=COLORS[seed%3]) for seed in range(20)]
     if mode == 'smoke':
         if type(episodes) is not int or not 1 <= episodes <= 3:
             raise ValueError('smoke campaigns allow one to three trials')
         return [dict(seed=seed,target=COLORS[seed%3]) for seed in range(episodes)]
-    return [asdict(case) for case in plan(split,episodes)]
+    return [asdict(case) for case in plan(split,episodes,start_index)]
 
 
 def campaign_report(trials,executed,completed,error,mode,cases,robot):
@@ -59,6 +61,7 @@ def main():
     parser.add_argument('--mode',choices=['qualification','smoke','collection'],default='qualification')
     parser.add_argument('--split',choices=['train','validation','evaluation'],default='train')
     parser.add_argument('--episodes',type=int,default=1)
+    parser.add_argument('--start-index',type=int,default=0)
     parser.add_argument('--robot',choices=['openmanipulator_x','franka_panda'],default='openmanipulator_x')
     parser.add_argument('--preflight-only',action='store_true')
     known,_ = parser.parse_known_args()
@@ -70,7 +73,7 @@ def main():
     cases = []
     provenance = source_provenance()
     try:
-        cases = campaign_cases(known.mode,known.split,known.episodes)
+        cases = campaign_cases(known.mode,known.split,known.episodes,known.start_index)
         if known.preflight_only:
             raise RuntimeError('preflight only; real Isaac Lab simulation was not executed')
         from isaaclab.app import AppLauncher

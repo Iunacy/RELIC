@@ -1,7 +1,7 @@
 """Synchronized simulation observations/actions; images are real camera frames only."""
 import json
 from pathlib import Path
-from .benchmark import Action, finite
+from .benchmark import Action, COLORS, finite
 
 
 def validate_sample(row, previous_time=-1):
@@ -28,6 +28,25 @@ def validate_sample(row, previous_time=-1):
     if frame is not None and (not isinstance(frame,str) or Path(frame).is_absolute() or '..' in Path(frame).parts):
         raise ValueError('invalid camera frame path')
     return row['timestamp']
+
+
+def validate_telemetry(row):
+    finite((row['timestamp'],), 1)
+    if set(row['cube_poses']) != set(COLORS) or type(row['unsafe']) is not bool:
+        raise ValueError('invalid physical telemetry')
+    if not isinstance(row['safety_events'], list) or any(not isinstance(event, str) for event in row['safety_events']):
+        raise ValueError('invalid telemetry safety events')
+    for pose in row['cube_poses'].values():
+        finite(pose, 7)
+    if set(row['contacts']) != set(COLORS) or any(type(value) is not bool for value in row['contacts'].values()):
+        raise ValueError('invalid contact labels')
+    if set(row['contact_forces']) != set(COLORS):
+        raise ValueError('missing bilateral contact forces')
+    for forces in row['contact_forces'].values():
+        finite(forces, 2)
+        if any(force < 0 for force in forces):
+            raise ValueError('negative contact force magnitude')
+    return row
 
 
 class Recorder:
@@ -69,7 +88,9 @@ class Recorder:
     def close(self,result):
         self.file.close()
         self.telemetry.close()
-        (self.path/'outcome.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+        temporary = self.path/'outcome.json.tmp'
+        temporary.write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+        temporary.replace(self.path/'outcome.json')
 
 
     def abort(self):

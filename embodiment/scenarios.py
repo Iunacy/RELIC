@@ -29,13 +29,14 @@ def identity(seed: int, target: str) -> str:
     return hashlib.sha256(payload.encode()).hexdigest()
 
 
-def plan(split: str, count: int) -> list[Scenario]:
-    if split not in SPLITS or type(count) is not int or not 0 < count <= 100000:
+def plan(split: str, count: int, start: int = 0) -> list[Scenario]:
+    if (split not in SPLITS or type(count) is not int or not 0 < count <= 100000
+            or type(start) is not int or not 0 <= start < 100000 or start + count > 100000):
         raise ValueError('invalid collection request')
     pairs = [(color, sector) for color in COLORS for sector in range(3)
              if ((color, sector) in HELD_OUT) == (split == 'evaluation')]
     result = []
-    for index in range(count):
+    for index in range(start, start + count):
         target, sector = pairs[index % len(pairs)]
         prefix = ((SPLITS.index(split) + 1) << 48) + (index << 16)
         for offset in range(65536):
