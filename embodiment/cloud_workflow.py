@@ -9,9 +9,10 @@ from .dataset import read_json
 from .qualify import source_provenance
 
 STAGES = ('interfaces', 'simulation_host', 'contact', 'qualification', 'manipulation', 'baseline',
+          'manipulation_mass', 'manipulation_friction', 'manipulation_geometry', 'manipulation_camera',
           'pilot', 'training_host', 'g3_preflight', 'g3',
           'train_a', 'train_b_only', 'train_a_to_b', 'evaluate_a', 'evaluate_b_only', 'evaluate_a_to_b',
-          'compare', 'artifacts')
+          'evaluate_b_only_noise', 'evaluate_a_to_b_noise', 'compare', 'compare_noise', 'artifacts')
 
 
 def commands(root, simulation_python, training_python, isaac_source, groot_source, pretrained, reader_library_path=None):
@@ -37,14 +38,21 @@ def commands(root, simulation_python, training_python, isaac_source, groot_sourc
         'g3_preflight': smoke,
         'g3': [*smoke, '--execute'],
         'compare': [train, '-m', 'embodiment.campaign_report', '--root', str(root/'campaign'), '--reference', str(root/'baseline')],
+        'compare_noise': [train, '-m', 'embodiment.campaign_report', '--root', str(root/'campaign'), '--reference', str(root/'baseline'),
+                          '--observation-disturbance', 'observation_noise'],
         'artifacts': [train, '-m', 'embodiment.artifacts', '--root', str(root), '--output', str(root.parent/(root.name+'.tar.gz'))],
     }
     for stage in STAGES:
+        if stage.startswith('manipulation_'):
+            command = list(planned['manipulation'])
+            command[command.index('--root')+1] = str(root/stage)
+            planned[stage] = [*command, '--physical-variation', stage.removeprefix('manipulation_')]
         if stage.startswith(('train_', 'evaluate_')):
             planned[stage] = [train, '-m', 'embodiment.training_campaign', '--source', str(groot_source),
                 '--dataset-a', str(pilot/'exports/openmanipulator_x/train'), '--dataset-b', str(pilot/'exports/franka_panda/train'),
                 '--pretrained', str(pretrained), '--root', str(root/'campaign'), '--smoke-root', str(root/'g3'),
-                '--simulation-python', sim, '--stage', stage, '--execute']
+                '--simulation-python', sim, '--stage', stage.removesuffix('_noise'), '--execute',
+                *(['--observation-disturbance', 'observation_noise'] if stage.endswith('_noise') else [])]
     return planned
 
 
@@ -65,9 +73,9 @@ def run(root, simulation_python, training_python, isaac_source, groot_source, pr
         if stage not in STAGES: raise ValueError('select an explicit workflow stage')
         if configuration['source']['relic_worktree_dirty']: raise ValueError('approved-host stages require a clean committed revision')
         checks = []
-        if stage in ('contact', 'qualification', 'pilot', 'manipulation', 'baseline') or stage.startswith('evaluate_'):
+        if stage in ('contact', 'qualification', 'pilot', 'baseline') or stage.startswith(('evaluate_', 'manipulation')):
             checks.append(planned['simulation_host'])
-        if stage in ('pilot', 'g3_preflight', 'g3', 'manipulation', 'baseline') or stage.startswith(('train_', 'evaluate_')):
+        if stage in ('pilot', 'g3_preflight', 'g3', 'baseline') or stage.startswith(('train_', 'evaluate_', 'manipulation')):
             if read_json(root/'qualification/result.json')['status'] != 'PASS': raise ValueError('common-revision qualification required')
             if read_json(root/'qualification/qualification.json')['source_sha256'] != configuration['source']['source_sha256']:
                 raise ValueError('qualification source differs from this workflow')
@@ -98,7 +106,7 @@ def run(root, simulation_python, training_python, isaac_source, groot_source, pr
             environment['VIPER_PANDA_USD'] = str(usd)
         if reader_library_path and (stage in ('g3', 'g3_preflight') or stage.startswith(('train_', 'evaluate_'))):
             environment['LD_LIBRARY_PATH'] = str(reader_library_path)
-        timeout = 15000 if stage.startswith(('train_', 'evaluate_')) else (7200 if stage in ('pilot', 'baseline', 'manipulation') else 3600)
+        timeout = 15000 if stage.startswith(('train_', 'evaluate_')) else (7200 if stage in ('pilot', 'baseline') or stage.startswith('manipulation') else 3600)
         measured = execute(planned[stage], attempt, timeout, environment)
         result.update(status='PROCESS_COMPLETED' if measured['returncode'] == 0 else 'BLOCKED', stage=stage, process=measured,
                       claim='process status only; qualification, pilot and G3 retain their own evidence gates')

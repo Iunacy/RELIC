@@ -16,21 +16,24 @@ from .expert import Expert
 from .perturbations import Perturbation
 from .qualify import source_provenance
 from .scenarios import plan
+from .scene import Scene, KINDS as PHYSICAL_KINDS, variation
 
 TASKS = ('reach', 'approach', 'grasp', 'pick_place', 'recover_grasp')
 STARTS = ('home', 'left', 'right')
 
 
-def cases(count=1, tasks=TASKS, starts=('home',), perturbed=False):
+def cases(count=1, tasks=TASKS, starts=('home',), perturbed=False, physical_variation='baseline', variation_seed=0):
     if type(count) is not int or not 1 <= count <= 20 or not tasks or len(set(tasks)) != len(tasks) or any(task not in TASKS for task in tasks):
         raise ValueError('invalid bounded benchmark task schedule')
     if not starts or len(set(starts)) != len(starts) or any(start not in STARTS for start in starts):
         raise ValueError('unknown initial configuration')
     result = []
+    physical_scene = variation(physical_variation, variation_seed).manifest()
     for scene in plan('evaluation', count):
         for task in tasks:
             for start in starts:
                 item = {**asdict(scene), 'task': task, 'initial_configuration': start,
+                        'physical_scene': physical_scene, 'task_description': task.replace('_', ' ')+' with the '+scene.target+' '+physical_scene['geometry'],
                         'perturbation': asdict(Perturbation('position_shift', scene.seed % 65536, .003)) if perturbed else asdict(Perturbation())}
                 item['scene_id'] = item.pop('scenario_id')
                 item['scenario_id'] = hashlib.sha256(json.dumps(item, sort_keys=True).encode()).hexdigest()
@@ -111,6 +114,9 @@ def run_trial(backend, case, output, running=lambda: True):
     obs = backend.reset(case['seed'], cube_positions=Perturbation(**case['perturbation']).positions(case['seed']),
                         initial_joints=initial_joints(backend, case['initial_configuration']))
     physical_check = backend.kinematic_check()
+    if backend.camera is not None:
+        from PIL import Image
+        Image.fromarray(backend.frame()).save(output/'initial_camera.png')
     controller = TaskController(case['task'], backend.embodiment, case['target'])
     errors, collisions, events = [], 0, []
     with (output/'trace.jsonl').open('x') as trace:
@@ -190,16 +196,17 @@ def worker(request, output):
     requirements = inspect_host('simulation')
     if not requirements['ready']: raise RuntimeError('; '.join(requirements['blockers']))
     from isaaclab.app import AppLauncher
+    if any(case['physical_scene'] != request['scene'] for case in request['cases']): raise ValueError('worker physical scene differs from assigned cases')
     parser = argparse.ArgumentParser()
     AppLauncher.add_app_launcher_args(parser)
-    args = parser.parse_args(['--headless', '--device', 'cuda:0'])
+    args = parser.parse_args(['--headless', '--device', 'cuda:0', *(['--enable_cameras'] if request['capture_camera'] else [])])
     app = AppLauncher(args).app
     backend = None
     rows = []
     provenance = source_provenance()
     try:
         from .isaac_backend import IsaacBackend
-        backend = IsaacBackend('cuda:0', False, request['robot'], collision_audit=True)
+        backend = IsaacBackend('cuda:0', request['capture_camera'], request['robot'], collision_audit=True, scene=Scene(**request['scene']))
         for index, case in enumerate(request['cases']):
             folder = output/f'trial_{index:04d}'
             try:
@@ -216,9 +223,10 @@ def worker(request, output):
     return rows
 
 
-def campaign(root, count=1, tasks=TASKS, starts=('home',), perturbed=False, run=False, python=sys.executable):
+def campaign(root, count=1, tasks=TASKS, starts=('home',), perturbed=False, run=False, python=sys.executable,
+             physical_variation='baseline', variation_seed=0):
     root = Path(root).resolve()
-    assigned = cases(count, tasks, starts, perturbed)
+    assigned = cases(count, tasks, starts, perturbed, physical_variation, variation_seed)
     configuration = {'schema': 'viper.manipulation.v1', 'cases': assigned, 'source': source_provenance()}
     with locked(root):
         path = root/'benchmark.json'
@@ -237,7 +245,8 @@ def campaign(root, count=1, tasks=TASKS, starts=('home',), perturbed=False, run=
         for robot, command in commands.items():
             job = root/robot
             job.mkdir(exist_ok=True)
-            atomic_json(job/'request.json', {'robot': robot, 'cases': assigned})
+            atomic_json(job/'request.json', {'robot': robot, 'cases': assigned,
+                        'scene': variation(physical_variation, variation_seed).manifest(), 'capture_camera': physical_variation == 'camera'})
             try:
                 if not (job/'run/report.json').exists() and not (job/'process.log').exists(): execute(command, job, 2400)
                 report = read_json(job/'run/report.json')
@@ -267,6 +276,8 @@ if __name__ == '__main__':
     parser.add_argument('--tasks', choices=TASKS, nargs='+', default=list(TASKS))
     parser.add_argument('--starts', choices=STARTS, nargs='+', default=['home'])
     parser.add_argument('--perturbed', action='store_true')
+    parser.add_argument('--physical-variation', choices=PHYSICAL_KINDS, default='baseline')
+    parser.add_argument('--variation-seed', type=int, default=0)
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--python', default=sys.executable)
     parser.add_argument('--worker', action='store_true')
@@ -277,6 +288,7 @@ if __name__ == '__main__':
         results = worker(read_json(args.request), args.root)
         raise SystemExit(2 if any(row.get('infrastructure_error') for row in results) else 0)
     else:
-        result = campaign(args.root, args.episodes, args.tasks, args.starts, args.perturbed, args.execute, args.python)
+        result = campaign(args.root, args.episodes, args.tasks, args.starts, args.perturbed, args.execute, args.python,
+                          args.physical_variation, args.variation_seed)
         print(json.dumps(result, indent=2))
         raise SystemExit(2 if result['status'] == 'BLOCKED' else 0)

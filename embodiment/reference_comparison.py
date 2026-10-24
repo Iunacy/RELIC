@@ -11,6 +11,8 @@ from .replay import load_episode
 def compare(reference_root, policy_report):
     reference_root, policy_report = Path(reference_root), Path(policy_report)
     policy = read_json(policy_report)
+    if policy.get('observation_condition', {}).get('kind', 'baseline') != 'baseline':
+        raise ValueError('classical reference comparison requires matched nominal observations')
     verify_evidence(policy_report.parent, policy)
     robot = policy['embodiment']
     configuration = read_json(reference_root/'experiment.json')

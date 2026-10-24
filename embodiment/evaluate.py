@@ -15,6 +15,8 @@ from .preflight import LAB_COMMIT, SIM
 from .qualify import _save, source_provenance
 from .recording import Recorder
 from .scenarios import plan
+from .perception import DisturbedPolicy, KINDS as OBSERVATION_KINDS, condition as observation_condition
+from .perturbations import Perturbation
 
 
 class RecordedBackend:
@@ -39,7 +41,10 @@ class RecordedBackend:
         return self.backend.step(action)
 
 
-def run_trial(backend, policy, case, output, provenance, config, running):
+def run_trial(backend, policy, case, output, provenance, config, running, disturbance=None):
+    disturbance = disturbance or Perturbation()
+    perception = observation_condition(disturbance.kind, disturbance.magnitude)
+    policy = DisturbedPolicy(policy, disturbance)
     observation = backend.reset(case.seed)
     metadata = {**asdict(case), **provenance, 'embodiment': backend.embodiment,
                 'joint_names': [*backend.arm_names, *backend.finger_names], 'control_dt': CONTROL_DT,
@@ -47,7 +52,7 @@ def run_trial(backend, policy, case, output, provenance, config, running):
                 'controller': 'vla_only', 'purpose': 'evaluation', 'scene_revision': SCENE_REVISION,
                 'runtime_pin': {'isaacsim': SIM, 'isaaclab_commit': LAB_COMMIT,
                                 'robot_commit': MANIFEST['commit']},
-                'policy_service': policy.metadata}
+                'policy_service': policy.metadata, 'observation_condition': perception}
     recorder = Recorder(output, f'Pick up the {case.target} cube and place it in the bin.', metadata)
     wrapper = RecordedBackend(backend, recorder)
     try:
@@ -70,6 +75,8 @@ def run_trial(backend, policy, case, output, provenance, config, running):
                 with (output/'execution.jsonl').open('x') as stream:
                     for trace in loop.action_trace:
                         stream.write(json.dumps(trace, allow_nan=False)+'\n')
+                with (output/'perception.jsonl').open('x') as stream:
+                    for trace in policy.trace: stream.write(json.dumps(trace, allow_nan=False)+'\n')
                 result['evidence_sha256'] = hashes(output)
                 return result
             observation = next_observation
@@ -87,10 +94,13 @@ def main():
     parser.add_argument('--training-plan', type=Path, required=True)
     parser.add_argument('--policy-port', type=int, default=8766)
     parser.add_argument('--no-fallback', action='store_true')
+    parser.add_argument('--observation-disturbance', choices=OBSERVATION_KINDS, default='baseline')
+    parser.add_argument('--disturbance-magnitude', type=float)
     known, _ = parser.parse_known_args()
     known.output.mkdir(parents=True, exist_ok=False)
     provenance = source_provenance()
     report = {'schema': 'relic.evaluation.v1', 'status': 'BLOCKED', 'mode': 'evaluation',
+              'observation_condition': observation_condition(known.observation_disturbance, known.disturbance_magnitude),
               'scene_revision': SCENE_REVISION, 'evidence_source': 'isaac_lab_physx',
               'embodiment': known.robot, 'condition': known.condition, 'trials': [],
               'simulation_executed': False, 'completed': False, 'error': None}
@@ -138,7 +148,8 @@ def main():
         if len(cases) not in (20, 50) or assigned != [asdict(case) for case in cases]:
             raise ValueError('evaluation scenes differ from frozen training plan')
         for case in cases:
-            result = run_trial(backend, policy, case, args.output/f'trial_{case.seed}', provenance, config, app.is_running)
+            disturbance = Perturbation(known.observation_disturbance, case.seed % 2**48, report['observation_condition']['magnitude_m'])
+            result = run_trial(backend, policy, case, args.output/f'trial_{case.seed}', provenance, config, app.is_running, disturbance)
             report['trials'].append(result)
             digest = result['fallback_protocol_sha256']
             if 'fallback_protocol_sha256' in report and report['fallback_protocol_sha256'] != digest:

@@ -9,12 +9,13 @@ from isaaclab.assets import Articulation, ArticulationCfg, RigidObject, RigidObj
 from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.sensors import Camera, CameraCfg, ContactSensor, ContactSensorCfg
 from .assets import ARM, FINGERS, fetch, link_masses, cache_root
-from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLORS,
+from .benchmark import (BIN, BIN_INNER, BIN_WALL, COLORS,
                         CONTROL_DT, CUBE, DT, Observation, TASK_GRIPPER_LIMITS, layout, workspace)
-from .openmanipulator import LIMITS, bounded_reference, fk, ik
+from .openmanipulator import LIMITS, bounded_reference, ik
 from .safety import Guard, SafetyConfig, SafetyViolation
 from .runtime_config import simulation_config
 from .kinematics import Kinematics
+from .scene import Scene
 
 HOME = (.17,0,.085)
 
@@ -28,10 +29,12 @@ class FaithfulUrdfConverter(UrdfConverter):
 
 
 class IsaacBackend:
-    def __init__(self,device='cuda:0',cameras=False,robot='openmanipulator_x',collision_audit=False):
+    def __init__(self,device='cuda:0',cameras=False,robot='openmanipulator_x',collision_audit=False,scene=None):
         if robot not in ('openmanipulator_x','franka_panda'):
             raise ValueError('unsupported embodiment')
         self.embodiment = robot
+        self.scene = Scene() if scene is None else scene
+        if not isinstance(self.scene, Scene): raise ValueError('validated physical scene configuration required')
         self.kinematics = Kinematics(robot)
         self.initializing = False
         self.sim = sim.SimulationContext(simulation_config(device,DT))
@@ -44,7 +47,7 @@ class IsaacBackend:
         ground.func('/World/Ground',ground)
         light = sim.DomeLightCfg(intensity=2500)
         light.func('/World/Light',light)
-        self.sim.set_camera_view(CAMERA_EYE,CAMERA_LOOK)
+        self.sim.set_camera_view(self.scene.camera_eye,self.scene.camera_look)
         if robot == 'openmanipulator_x':
             drive = sim.UrdfConverterCfg.JointDriveCfg(
                 gains=sim.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(stiffness=0,damping=0))
@@ -94,13 +97,14 @@ class IsaacBackend:
             self.gripper_closed,self.gripper_open = TASK_GRIPPER_LIMITS[robot]
         self.cubes = {}
         for color,rgb in zip(COLORS,((.8,.03,.03),(.03,.7,.03),(.03,.1,.8))):
-            self.cubes[color] = RigidObject(RigidObjectCfg(prim_path=f'/World/{color}',
-                spawn=sim.CuboidCfg(size=(CUBE,)*3,
+            geometry = sim.CuboidCfg(size=(CUBE,)*3) if self.scene.geometry == 'box' else sim.CylinderCfg(radius=CUBE/2, height=CUBE, axis='Z')
+            geometry = geometry.replace(
                     rigid_props=sim.RigidBodyPropertiesCfg(solver_position_iteration_count=16,solver_velocity_iteration_count=4),
-                    mass_props=sim.MassPropertiesCfg(mass=.012),
+                    mass_props=sim.MassPropertiesCfg(mass=self.scene.mass_kg),
                     collision_props=sim.CollisionPropertiesCfg(contact_offset=.001,rest_offset=0.),
-                    physics_material=sim.RigidBodyMaterialCfg(static_friction=.8,dynamic_friction=.6,restitution=0.),
-                    visual_material=sim.PreviewSurfaceCfg(diffuse_color=rgb)),
+                    physics_material=sim.RigidBodyMaterialCfg(static_friction=self.scene.static_friction,dynamic_friction=self.scene.dynamic_friction,restitution=0.),
+                    visual_material=sim.PreviewSurfaceCfg(diffuse_color=rgb))
+            self.cubes[color] = RigidObject(RigidObjectCfg(prim_path=f'/World/{color}', spawn=geometry,
                 init_state=RigidObjectCfg.InitialStateCfg(pos=layout(0)[color])))
         self._bin()
         from pxr import Usd
@@ -145,7 +149,7 @@ class IsaacBackend:
             raise RuntimeError('imported joint limits changed')
         if self.camera:
             self.camera.set_world_poses_from_view(
-                torch.tensor([CAMERA_EYE],device=self.device),torch.tensor([CAMERA_LOOK],device=self.device))
+                torch.tensor([self.scene.camera_eye],device=self.device),torch.tensor([self.scene.camera_look],device=self.device))
         if robot == 'franka_panda':
             from .panda import PandaControl
             self.panda_control = PandaControl(self.robot,self.arm_ids,self.tool_ids[0],self.device)

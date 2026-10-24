@@ -39,7 +39,10 @@ def restore_final_snapshot(checkpoint, destination):
 
 
 def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke_root,
-        stage=None, execute_stage=False, budget=Budget(batch_size=1, gradient_accumulation=12), timeout=14400):
+        stage=None, execute_stage=False, budget=Budget(batch_size=1, gradient_accumulation=12), timeout=14400,
+        observation_disturbance='baseline'):
+    from .perception import condition as perception_condition
+    perception = perception_condition(observation_disturbance)
     source, dataset_a, dataset_b, pretrained, root, smoke_root = map(lambda p: Path(p).resolve(),
         (source, dataset_a, dataset_b, pretrained, root, smoke_root))
     with locked(root):
@@ -88,8 +91,11 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
         condition = stage.split('_', 1)[1]
         selected = next(item for item in training['runs'] if item['condition'] == condition)
         model = Path(selected['checkpoint'])
-        job = root/stage
+        job = root/(stage+('_'+observation_disturbance if observation_disturbance != 'baseline' else ''))
         job.mkdir(exist_ok=True)
+        job_config = job/'configuration.json'
+        if job_config.exists() and read_json(job_config) != perception: raise ValueError('evaluation disturbance changed')
+        atomic_json(job_config, perception)
         completed = job/'completed.json'
         if completed.exists():
             saved = read_json(completed)
@@ -153,6 +159,7 @@ def run(source, dataset_a, dataset_b, pretrained, root, simulation_python, smoke
                             time.sleep(1)
                     command = [str(simulation_python), '-m', 'embodiment.evaluate', '--output', str(attempt/'evaluation'),
                         '--robot', selected['embodiment'], '--condition', condition, '--training-plan', str(root/'plan.json'),
+                        '--observation-disturbance', observation_disturbance,
                         '--headless', '--device', 'cuda:0', '--enable_cameras']
                     result['process'] = execute(command, attempt, timeout, environment)
                     if result['process']['returncode']: raise RuntimeError('policy evaluation failed')
@@ -190,9 +197,12 @@ if __name__ == '__main__':
     parser.add_argument('--batch-size', type=int, default=1)
     parser.add_argument('--gradient-accumulation', type=int, default=12)
     parser.add_argument('--timeout', type=int, default=14400)
+    from .perception import KINDS as OBSERVATION_KINDS
+    parser.add_argument('--observation-disturbance', choices=OBSERVATION_KINDS, default='baseline')
     args = parser.parse_args()
     measured = run(args.source, args.dataset_a, args.dataset_b, args.pretrained, args.root,
         args.simulation_python, args.smoke_root, args.stage, args.execute,
-        Budget(args.steps, args.batch_size, gradient_accumulation=args.gradient_accumulation, save_steps=args.save_steps), args.timeout)
+        Budget(args.steps, args.batch_size, gradient_accumulation=args.gradient_accumulation, save_steps=args.save_steps), args.timeout,
+        args.observation_disturbance)
     print(json.dumps(measured, indent=2))
     raise SystemExit(2 if measured['status'] == 'BLOCKED' else 0)

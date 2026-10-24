@@ -72,6 +72,8 @@ def bootstrap(baseline, transfer, seed=BOOTSTRAP_SEED, baseline_metric='vla_only
 
 
 def compare(baseline, transfer):
+    if baseline.get('observation_condition') != transfer.get('observation_condition'):
+        raise ValueError('policy observation disturbances differ across compared conditions')
     from .benchmark_report import validate_run
     from .training import validate_matched
     for run in (baseline, transfer): validate_run(run)
@@ -105,6 +107,10 @@ def verify_evidence(root, report):
             raise ValueError('episode source differs from evaluation')
         if episode.metadata.get('policy_service', {}).get('checkpoint_sha256') != report.get('policy_service', {}).get('checkpoint_sha256'):
             raise ValueError('trial checkpoint differs from served model')
+        if episode.metadata.get('observation_condition') != report.get('observation_condition'):
+            raise ValueError('trial observation disturbance differs from evaluation report')
+        from .perception import verify_trace
+        verify_trace(folder/'perception.jsonl', episode.metadata, episode.rows)
     return True
 
 
