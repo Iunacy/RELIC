@@ -133,6 +133,8 @@ def load_episode(path: Path, require_physics: bool = True, expert_only: bool = T
             final_pose = telemetry[-1]['cube_poses'][target]
             if not inside_bin(final_pose) or final_pose != outcome.get('final_object_pose'):
                 raise ValueError('placement evidence does not support success')
+        from .completion import validate_completion
+        validate_completion(metadata, outcome, rows, telemetry)
     fingerprint = identity(seed, target)
     if metadata.get('scenario_id', fingerprint) != fingerprint:
         raise ValueError('scenario fingerprint mismatch')

@@ -38,7 +38,9 @@ def category(row):
             'classical_only': 'classical_controller_completion'}[controller]
 
 
-def bootstrap(baseline, transfer, seed=BOOTSTRAP_SEED):
+def bootstrap(baseline, transfer, seed=BOOTSTRAP_SEED, baseline_metric='vla_only_success'):
+    if baseline_metric not in ('vla_only_success', 'classical_controller_completion'):
+        raise ValueError('unknown baseline success metric')
     def indexed(rows):
         result = {}
         for row in rows:
@@ -51,7 +53,7 @@ def bootstrap(baseline, transfer, seed=BOOTSTRAP_SEED):
     if not left or set(left) != set(right):
         raise ValueError('paired analysis requires every scene in both conditions')
     identities = sorted(left)
-    differences = [int(right[key] == 'vla_only_success')-int(left[key] == 'vla_only_success') for key in identities]
+    differences = [int(right[key] == 'vla_only_success')-int(left[key] == baseline_metric) for key in identities]
     rng = random.Random(seed)
     size = len(differences)
     samples = sorted(sum(differences[rng.randrange(size)] for _ in range(size))/size for _ in range(RESAMPLES))
@@ -61,7 +63,7 @@ def bootstrap(baseline, transfer, seed=BOOTSTRAP_SEED):
         return samples[low]+(samples[min(low+1, RESAMPLES-1)]-samples[low])*(index-low)
     wins, losses = differences.count(1), differences.count(-1)
     interval = [quantile(.025), quantile(.975)]
-    return {'scene_count': size, 'scene_ids': identities, 'difference': sum(differences)/size,
+    return {'baseline_metric': baseline_metric, 'scene_count': size, 'scene_ids': identities, 'difference': sum(differences)/size,
             'paired_bootstrap_95': interval, 'resamples': RESAMPLES, 'bootstrap_seed': seed,
             'wins': wins, 'losses': losses, 'ties': size-wins-losses, 'discordant_pairs': wins+losses,
             'baseline_categories': dict(Counter(left.values())), 'transfer_categories': dict(Counter(right.values())),

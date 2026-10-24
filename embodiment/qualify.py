@@ -15,6 +15,7 @@ from .evaluation import metrics
 from .preflight import LAB_COMMIT, SIM
 from .recording import Recorder
 from .scenarios import plan
+from .contract import manifest as robot_contract
 from dataclasses import asdict
 
 
@@ -130,7 +131,9 @@ def main():
                           'gripper_mechanical_joint_limits':backend.finger_limits,
                           'cube_yaw':'radial_about_openmanipulator_base_joint',
                           'light_intensity_range':[1800,2800],
-                          'grasp_evidence':'bilateral_finger_contact_and_lift'})
+                          'grasp_evidence':'bilateral_finger_contact_and_lift',
+                          'episode_contract':'viper.physical_episode.v2',
+                          'robot_contract':robot_contract(args.robot)})
             try:
                 while app.is_running():
                     action = expert.update(obs)

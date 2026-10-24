@@ -81,7 +81,7 @@ class Recorder:
         self.file.write(json.dumps(row,allow_nan=False)+'\n')
         self.file.flush()
         self.telemetry.write(json.dumps({'timestamp':obs.time,'cube_poses':obs.cubes,'contacts':obs.contacts,'contact_forces':obs.contact_forces,
-                                         'unsafe':obs.unsafe,'safety_events':list(obs.safety_events)},allow_nan=False)+'\n')
+                                         'cube_speeds':obs.cube_speeds, 'unsafe':obs.unsafe,'safety_events':list(obs.safety_events)},allow_nan=False)+'\n')
         self.telemetry.flush()
         self.count += 1
 
@@ -99,21 +99,18 @@ class Recorder:
 
 
 def lerobot_rows(path):
-    """Validated export boundary for a future pinned LeRobot dataset writer.
-
-    No dataset is fabricated. Missing-camera episodes are rejected for VLA export.
-    Episode-wide outcome labels come from the final physical result. Map returned
-    rows into LeRobotDataset.add_frame and save_episode once its version is selected.
-    """
+    """Legacy row iterator using the same state encoder as the verified exporter."""
     path = Path(path)
     outcome = json.loads((path/'outcome.json').read_text())
+    metadata = json.loads((path/'metadata.json').read_text())
     last = -1
     for line in (path/'samples.jsonl').read_text().splitlines():
         row = json.loads(line)
         last = validate_sample(row,last)
         if row['frame'] is None or not (path/row['frame']).is_file():
             raise ValueError('VLA export requires synchronized camera data')
-        yield {'observation.state':row['joint_position']+row['joint_velocity'],
+        from .dataset import state
+        yield {'observation.state':state(row, metadata['embodiment']),
                'observation.images.overhead':str(path/row['frame']),
                'action':row['action'],'task':row['instruction'],
                'timestamp':row['timestamp'],'next.success':outcome['success']}

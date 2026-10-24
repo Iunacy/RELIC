@@ -124,6 +124,8 @@ def load_episode(path, expected_hashes=None, runtime_pin=None, source_sha256=Non
             or any(item['unsafe'] or item['safety_events'] for item in telemetry)
             or telemetry[-1]['cube_poses'][metadata['target']] != outcome.get('final_object_pose')):
         raise ValueError('recorded success lacks physical grasp and placement evidence')
+    from .completion import validate_completion
+    validate_completion(metadata, outcome, rows, telemetry)
     return Episode(path, metadata, outcome, rows, telemetry, hashes)
 
 

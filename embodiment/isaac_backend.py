@@ -1,5 +1,6 @@
 """Real Isaac Lab/PhysX adapter. Import only after AppLauncher starts Kit."""
 import math
+import os
 import random
 import torch
 import isaaclab.sim as sim
@@ -13,6 +14,7 @@ from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLOR
 from .openmanipulator import LIMITS, bounded_reference, fk, ik
 from .safety import Guard, SafetyConfig, SafetyViolation
 from .runtime_config import simulation_config
+from .kinematics import Kinematics
 
 HOME = (.17,0,.085)
 
@@ -26,10 +28,11 @@ class FaithfulUrdfConverter(UrdfConverter):
 
 
 class IsaacBackend:
-    def __init__(self,device='cuda:0',cameras=False,robot='openmanipulator_x'):
+    def __init__(self,device='cuda:0',cameras=False,robot='openmanipulator_x',collision_audit=False):
         if robot not in ('openmanipulator_x','franka_panda'):
             raise ValueError('unsupported embodiment')
         self.embodiment = robot
+        self.kinematics = Kinematics(robot)
         self.initializing = False
         self.sim = sim.SimulationContext(simulation_config(device,DT))
         self.device = self.sim.device
@@ -70,6 +73,8 @@ class IsaacBackend:
             from isaaclab_assets import FRANKA_PANDA_CFG
             from .panda import ARM as PANDA_ARM, FINGERS as PANDA_FINGERS, BASE
             cfg = FRANKA_PANDA_CFG.copy()
+            if os.environ.get('VIPER_PANDA_USD'):
+                cfg.spawn.usd_path = os.environ['VIPER_PANDA_USD']
             cfg.prim_path = '/World/Robot'
             cfg.spawn.activate_contact_sensors = True
             cfg.spawn.articulation_props.solver_position_iteration_count = 16
@@ -105,6 +110,13 @@ class IsaacBackend:
                 raise RuntimeError(f'contact body mapping is ambiguous: {name}')
             self.contact_sensors.append(ContactSensor(ContactSensorCfg(prim_path=matches[0],
                 filter_prim_paths_expr=[f'/World/{color}' for color in COLORS],update_period=0.)))
+        self.collision_sensors = []
+        if collision_audit:
+            moving = [joint.find('child').get('link') for joint in self.kinematics.chain if joint.get('type') != 'fixed']
+            for name in [*moving, *self.finger_bodies]:
+                matches = [str(prim.GetPath()) for prim in Usd.PrimRange(self.sim.stage.GetPrimAtPath('/World/Robot')) if prim.GetName() == name]
+                if len(matches) != 1: raise RuntimeError('collision audit body mapping is ambiguous: '+name)
+                self.collision_sensors.append((name, ContactSensor(ContactSensorCfg(prim_path=matches[0], update_period=0.))))
         if cameras:
             self.camera = Camera(CameraCfg(prim_path='/World/Camera',width=640,height=480,
                 data_types=['rgb'],update_period=0.,spawn=sim.PinholeCameraCfg(focal_length=24.,
@@ -127,7 +139,7 @@ class IsaacBackend:
             raise RuntimeError('imported robot is not fixed-base')
         self.all_ids = self.arm_ids+self.left_ids+self.right_ids
         imported = self.robot.data.joint_pos_limits[0,self.arm_ids].cpu().tolist()
-        if robot == 'openmanipulator_x' and any(abs(v-e)>1e-4 for pair,expected in zip(imported,LIMITS) for v,e in zip(pair,expected)):
+        if any(abs(v-e)>1e-4 for pair,expected in zip(imported,self.kinematics.limits,strict=True) for v,e in zip(pair,expected,strict=True)):
             raise RuntimeError('imported joint limits changed')
         if self.camera:
             self.camera.set_world_poses_from_view(
@@ -200,21 +212,29 @@ class IsaacBackend:
             obj.update(DT)
         for sensor in self.contact_sensors:
             sensor.update(DT)
+        for name, sensor in self.collision_sensors:
+            sensor.update(DT)
         if self.camera:
             self.camera.update(DT)
         self.time += DT
 
-    def reset(self,seed,cube_positions=None):
+    def reset(self,seed,cube_positions=None,initial_joints=None):
         positions = layout(seed) if cube_positions is None else cube_positions
         if set(positions) != set(COLORS) or any(not workspace(position) or abs(position[2]-(CUBE/2+.001)) > 1e-8 for position in positions.values()):
             raise ValueError('invalid explicit cube layout')
         if any(math.dist(positions[a], positions[b]) < .05 for i,a in enumerate(COLORS) for b in COLORS[:i]):
             raise ValueError('explicit cube layout violates separation')
+        if initial_joints is not None:
+            proposed = self.kinematics.forward(initial_joints)
+            if not workspace(tuple(float(v) for v in proposed[:3, 3])):
+                raise ValueError('initial joints place tool outside shared workspace')
         self.abort = False
         self.safety_events = []
         self.guard = Guard(self.safety_config)
         self.time = 0.
         self.reference = ik(HOME) if self.embodiment == 'openmanipulator_x' else tuple(self.robot.data.default_joint_pos[0,self.arm_ids].cpu().tolist())
+        if initial_joints is not None:
+            self.reference = tuple(initial_joints)
         self.grip_ref = 0.
         q = self.robot.data.default_joint_pos.clone()
         q[:,self.arm_ids] = torch.tensor([self.reference],device=self.device)
@@ -222,7 +242,7 @@ class IsaacBackend:
         self.robot.write_joint_state_to_sim(q,torch.zeros_like(q))
         self.robot.reset()
         self.sim.stage.GetPrimAtPath('/World/Light').GetAttribute('inputs:intensity').Set(random.Random(seed).uniform(1800.,2800.))
-        for sensor in self.contact_sensors:
+        for sensor in [*self.contact_sensors, *(sensor for name, sensor in self.collision_sensors)]:
             sensor.reset()
         for color,p in positions.items():
             state = self.cubes[color].data.default_root_state.clone()
@@ -238,7 +258,7 @@ class IsaacBackend:
             self.grip_ref += min(.025*DT,self.gripper_open-self.grip_ref)
             self._targets()
             self._tick()
-        if self.embodiment == 'franka_panda':
+        if self.embodiment == 'franka_panda' and initial_joints is None:
             self.initializing = True
             for _ in range(900):
                 self.reference = self.panda_control.solve(HOME,self.reference)
@@ -250,7 +270,7 @@ class IsaacBackend:
             self.initializing = False
         self.time = 0.
         obs = self.observe()
-        expected = fk(obs.joints[:4]) if self.embodiment == 'openmanipulator_x' else HOME
+        expected = tuple(float(v) for v in self.kinematics.forward(obs.joints[:len(self.arm_names)])[:3, 3])
         if math.dist(expected,obs.ee) > .003:
             raise RuntimeError('imported end-effector transform fails URDF FK check')
         quat = self.robot.data.body_quat_w[0,self.tool_ids[0]].cpu().tolist()
@@ -258,7 +278,7 @@ class IsaacBackend:
         downward = 2*(x*z-w*y) if self.embodiment == 'openmanipulator_x' else 1-2*(x*x+y*y)
         if downward > -.995:
             raise RuntimeError('imported tool does not point downward')
-        if obs.unsafe or math.dist(obs.ee,HOME) > .01:
+        if obs.unsafe or (initial_joints is None and math.dist(obs.ee,HOME) > .01):
             raise RuntimeError('articulation failed stable home check')
         return obs
 
@@ -276,10 +296,48 @@ class IsaacBackend:
             if abs(q[-2]-target) > .003 or abs(q[-2]-q[-1]) > .002:
                 raise RuntimeError('physical gripper opening/closing or mimic check failed')
             endpoints.append(list(q[-2:]))
-        return {'fixed_base':True,'fk_error_m':math.dist(fk(self.observe().joints[:4]),self.observe().ee) if self.embodiment == 'openmanipulator_x' else None,
+        checks = self.kinematic_check()
+        return {'fixed_base':True, **checks,
                 'empty_gripper_endpoints':endpoints,'physical_checks_executed':True,
                 'body_masses_kg':dict(zip(self.robot.body_names,self.robot.root_physx_view.get_masses()[0].cpu().tolist(),strict=True)),
-                'mass_validation':'URDF links; fixed world body excluded'}
+                'mass_validation':'URDF links; fixed world body excluded' if self.embodiment == 'openmanipulator_x' else 'measured USD masses; no URDF mass equivalence claim'}
+
+    def collision_state(self):
+        if not self.collision_sensors:
+            return {'measured': False, 'forbidden': [], 'coverage': 'body-contact audit disabled'}
+        forces, forbidden = {}, []
+        for name, sensor in self.collision_sensors:
+            magnitude = float(torch.linalg.vector_norm(sensor.data.net_forces_w[0,0]))
+            if not math.isfinite(magnitude): raise RuntimeError('nonfinite body-contact measurement')
+            forces[name] = magnitude
+            allowed = 0.
+            if name in self.finger_bodies:
+                index = self.finger_bodies.index(name)
+                allowed = float(torch.linalg.vector_norm(self.contact_sensors[index].data.force_matrix_w[0,0],dim=-1).sum())
+            if magnitude > allowed+.05:
+                forbidden.append({'body': name, 'net_force_n': magnitude, 'allowed_cube_force_n': allowed})
+        return {'measured': True, 'forbidden': forbidden, 'net_body_forces_n': forces,
+                'coverage': 'net moving-body contacts; filtered finger-cube forces allowed; opposing forces can cancel; no complete contact-pair claim'}
+
+    def kinematic_check(self):
+        import numpy as np
+        obs = self.observe()
+        expected, independent = self.kinematics.forward(obs.joints[:len(self.arm_names)], True)
+        fk_error = math.dist(expected[:3, 3], obs.ee)
+        quaternion = self.robot.data.body_quat_w[0,self.tool_ids[0]].cpu().tolist()
+        w, x, y, z = quaternion
+        rotation = np.array([[1-2*(y*y+z*z), 2*(x*y-z*w), 2*(x*z+y*w)],
+                             [2*(x*y+z*w), 1-2*(x*x+z*z), 2*(y*z-x*w)],
+                             [2*(x*z-y*w), 2*(y*z+x*w), 1-2*(x*x+y*y)]])
+        orientation_error = float(np.max(np.abs(expected[:3, :3]-rotation)))
+        derivative = self.robot.root_physx_view.get_jacobians()[0,self.tool_ids[0]-1][:,self.arm_ids].cpu().numpy().copy()
+        offset = rotation@self.kinematics.offset
+        derivative[:3] += np.cross(derivative[3:].T, offset).T
+        jacobian_error = float(np.max(np.abs(derivative-independent)))
+        if fk_error > .003 or orientation_error > .003 or jacobian_error > .003:
+            raise RuntimeError('PhysX FK/orientation/Jacobian differs from pinned URDF chain')
+        return {'fk_error_m': fk_error, 'orientation_matrix_error': orientation_error,
+                'jacobian_max_error': jacobian_error, 'kinematics_asset_sha256': self.kinematics.asset_sha256}
 
     def _targets(self):
         self.robot.set_joint_position_target(torch.tensor([self.reference],device=self.device),joint_ids=self.arm_ids)

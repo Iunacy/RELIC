@@ -25,10 +25,10 @@ from .scenarios import plan
 def cases(suite, count, conditions=KINDS):
     if suite == 'robustness':
         return plan_robustness(count, conditions)
-    if suite != 'heldout' or count != 20:
-        raise ValueError('held-out reference campaigns require the frozen twenty cases')
+    if suite != 'heldout' or count not in (20, 50):
+        raise ValueError('held-out reference campaigns require twenty legacy or fifty primary frozen cases')
     return [{**asdict(case), 'namespace': 'relic.heldout.v1', 'perturbation': asdict(Perturbation())}
-            for case in plan('evaluation', 20)]
+            for case in plan('evaluation', count)]
 
 
 def run_trial(backend, case, output, provenance, running=lambda: True):

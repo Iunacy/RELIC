@@ -13,8 +13,15 @@ from .panda import ARM as PANDA_ARM, BASE, FINGERS as PANDA_FINGERS, TOOL_OFFSET
 def panda_asset(source=None):
     cache = ROOT/'cache/panda_replay'
     manifest = read_json(ROOT/'assets/panda_replay_manifest.json')
-    source = Path(source) if source else Path(os.environ.get('RELIC_PANDA_DESCRIPTION',
-        str(Path.home()/'.local/share/relic-isaac/venv/lib/python3.11/site-packages/isaacsim/exts/isaacsim.asset.importer.urdf/data/urdf/robots/franka_description')))
+    if source is None:
+        source = os.environ.get('RELIC_PANDA_DESCRIPTION')
+    if source is None:
+        import importlib.metadata
+        try:
+            source = Path(importlib.metadata.distribution('isaacsim').locate_file('isaacsim'))/'exts/isaacsim.asset.importer.urdf/data/urdf/robots/franka_description'
+        except importlib.metadata.PackageNotFoundError:
+            source = Path.home()/'.local/share/relic-isaac/venv/lib/python3.11/site-packages/isaacsim/exts/isaacsim.asset.importer.urdf/data/urdf/robots/franka_description'
+    source = Path(source)
     for name, digest in manifest['files'].items():
         destination = cache/name
         if not destination.exists():
