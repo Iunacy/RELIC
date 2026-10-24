@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(RELIC VERSION 0.1.0 LANGUAGES CXX)
+project(VIPER VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -57,6 +57,7 @@ function(relic_executable target source)
 endfunction()
 
 relic_executable(relic_cli src/main.cpp)
+relic_executable(viper_cli src/main.cpp)
 relic_executable(relic_cartesian_demo src/cartesian_demo.cpp)
 include(CTest)
 option(RELIC_RUCKIG_EXPERIMENT "Build isolated Ruckig qualification and MuJoCo benchmark" OFF)

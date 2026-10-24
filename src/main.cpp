@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i) {
       const std::string_view arg(argv[i]);
       if (arg == "--help") {
-        std::cout << "relic_cli --config FILE --csv FILE [--steps 1..1000000] [--mjcf FILE]\n"
+        std::cout << "viper_cli --config FILE --csv FILE [--steps 1..1000000] [--mjcf FILE]\n"
                   << "SYNTHETIC simulation only. Times: seconds from reset; angles: radians; world: metres.\n";
         return 0;
       }
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
               << "\nNo path-feasibility, collision-safety or harvesting-success claim.\n";
     return 0;
   } catch (const std::exception& error) {
-    std::cerr << "RELIC error: " << error.what() << '\n';
+    std::cerr << "VIPER error: " << error.what() << '\n';
     return 1;
   }
 }

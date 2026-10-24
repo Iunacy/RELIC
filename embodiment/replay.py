@@ -22,6 +22,7 @@ class Episode:
     rows: list
     telemetry: list
     provenance: dict
+    source_revision: str | None = None
 
     @property
     def duration(self):
@@ -37,11 +38,23 @@ class Episode:
         row, physical = self.rows[index], self.telemetry[index]
         requested = [value+delta for value, delta in zip(row['ee_position'], row['action'][:3], strict=True)]
         ended = index == len(self.rows)-1
+        tracking = None if ended else math.dist(self.rows[index+1]['ee_position'], requested)
+        interventions = [{'timestamp': item['timestamp'], 'reason': reason}
+                         for item in self.telemetry[:index+1] for reason in item['safety_events']]
+        checkpoint = self.metadata.get('policy_service', {}).get('checkpoint_sha256')
         return {'embodiment': self.metadata['embodiment'], 'arm_dof': DOF[self.metadata['embodiment']],
                 'controller': self.metadata['controller'], 'instruction': row['instruction'],
                 'recorded_time': row['timestamp'], 'duration': self.duration, 'frame_index': index,
                 'phase': row['phase'], 'ee_position': row['ee_position'], 'control_target': requested,
                 'target_error_m': math.dist(row['ee_position'], requested),
+                'requested_step_m': math.dist(row['ee_position'], requested),
+                'tracking_error_m': tracking, 'applied_action': row['action'],
+                'tracking_measurement': 'next recorded end effector versus current measured position plus command',
+                'checkpoint_sha256': checkpoint, 'condition': self.metadata.get('condition', 'E0' if self.metadata['controller'] == 'classical_only' else 'unrecorded'),
+                'dataset_sha256': self.metadata.get('dataset_sha256'),
+                'source_revision': self.metadata.get('relic_commit') or self.source_revision,
+                'intervention_timeline': interventions,
+                'learned_evidence': self.metadata['controller'] != 'classical_only',
                 'joint_position': row['joint_position'], 'joint_velocity': row['joint_velocity'],
                 'cube_poses': physical['cube_poses'], 'contacts': physical['contacts'],
                 'contact_forces': physical['contact_forces'], 'safety_events': physical['safety_events'],
@@ -125,6 +138,7 @@ def load_qualified_pair(seed, roots=None):
             raise ValueError('qualification report hash mismatch')
         reference = next(item for item in evidence['trials'] if item['seed'] == seed)
         result[robot] = load_episode(root/f'trial_{seed:02d}', reference['sha256'], evidence['runtime_pin'], evidence['source_sha256'])
+        result[robot].source_revision = evidence.get('relic_commit')
     validate_pair(result)
     return result
 

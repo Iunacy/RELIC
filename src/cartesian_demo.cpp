@@ -88,5 +88,5 @@ int main(int argc, char** argv) {
     if (args.contains("--result")) { relic::write_execution_report(result_file,result); result_file.close(); if (!result_file) throw std::runtime_error("result flush failed"); }
     output.close(); if (!output) throw std::runtime_error("trace flush failed");
     return result.status == relic::MotionStatus::Success ? 0 : 2;
-  } catch (const std::exception& e) { std::cerr << "RELIC Cartesian error: " << e.what() << '\n'; return 1; }
+  } catch (const std::exception& e) { std::cerr << "VIPER Cartesian error: " << e.what() << '\n'; return 1; }
 }

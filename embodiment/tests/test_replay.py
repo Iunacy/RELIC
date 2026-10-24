@@ -50,6 +50,15 @@ class ReplayValidation(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'unmatched'):
             validate_pair(pair)
 
+    def test_tracking_error_uses_next_observation_and_terminal_is_unavailable(self):
+        record = episode()
+        record.rows[1]['ee_position'][0] += .0005
+        self.assertAlmostEqual(record.state(0.)['tracking_error_m'], .0005)
+        self.assertAlmostEqual(record.state(0.)['requested_step_m'], .001)
+        self.assertIsNone(record.state(record.duration)['tracking_error_m'])
+        self.assertIsNone(record.state(0.)['checkpoint_sha256'])
+        self.assertFalse(record.state(0.)['learned_evidence'])
+
     def test_shared_clock_holds_shorter_trial_without_rescaling(self):
         first = episode()
         for t, expected in ((0., 0), (.02, 0), (1/30, 1), (10., 2)):

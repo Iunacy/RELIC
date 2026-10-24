@@ -31,7 +31,7 @@ def compose(images, states, elapsed, speed, telemetry=True):
         small = ImageFont.truetype(font_path, 14)
     except OSError:
         font, small = ImageFont.load_default(size=18), ImageFont.load_default(size=14)
-    draw.text((20, 12), 'RELIC / Embodiment comparison', font=font, fill='#eef1f3')
+    draw.text((20, 12), 'VIPER / Embodiment comparison', font=font, fill='#eef1f3')
     draw.text((2*width-480, 15), f'PRERECORDED PHYSX STATE REPLAY / {speed:g}x / t = {elapsed:.2f} s', font=small, fill='#b4c2c8')
     for index, (robot, state) in enumerate(states.items()):
         left = index*width
@@ -42,7 +42,7 @@ def compose(images, states, elapsed, speed, telemetry=True):
         draw.text((left+20, height+104), status+' / recorded '+f"{state['recorded_time']:.2f} s", font=small, fill='#b4c2c8')
         if telemetry:
             text = 'EE (m) '+', '.join(f'{value:.3f}' for value in state['ee_position'])
-            text += f" / control error {state['target_error_m']*1000:.2f} mm"
+            text += (f" / tracking error {state['tracking_error_m']*1000:.2f} mm" if state.get('tracking_error_m') is not None else " / tracking error unavailable")
             draw.text((left+20, height+125), text, font=small, fill='#b4c2c8')
             draw.text((left+20, 77), f"safety {len(state['safety_events'])} / fallback {len(state['fallback_triggers'])}", font=small, fill='#d8e0e5')
     draw.line((width, 40, width, height+144), fill='#353c41')

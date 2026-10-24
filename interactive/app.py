@@ -163,7 +163,7 @@ def main():
     worker.join()
     server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
     server.app = app
-    print(f'RELIC http://127.0.0.1:{args.port} — live key {"available" if app.client.key else "missing"}', flush=True)
+    print(f'VIPER http://127.0.0.1:{args.port} — live key {"available" if app.client.key else "missing"}', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

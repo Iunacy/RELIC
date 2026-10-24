@@ -41,6 +41,10 @@ class Research:
                     'source': 'validated PhysX trajectories; MuJoCo state rendering',
                     'purpose': next(iter(self.episodes.values())).metadata['purpose'], 'scenarios': self.catalog,
                     'robots': {robot: episode.state(playback['elapsed']) for robot, episode in self.episodes.items()},
+                    'evidence': {'learned_policy': 'available' if any(episode.metadata['controller'] != 'classical_only' for episode in self.episodes.values()) else 'unavailable',
+                                 'transfer_comparison': 'unavailable; matched E2/E3 evaluation not loaded',
+                                 'common_revision_qualification': 'not established by legacy replay',
+                                 'scene': next(iter(self.episodes.values())).metadata.get('scenario_id', f'qualification-seed-{self.seed}')},
                     'error': self.error, 'cloud_required': False}
 
     def command(self, request):
@@ -150,7 +154,7 @@ def main():
         parser.exit(2, f'Cannot load physical replay: {error}. Supply verified campaign roots.\n')
     with ThreadingHTTPServer(('127.0.0.1', args.port), Handler) as server:
         server.app = app
-        print(f'RELIC research viewer http://127.0.0.1:{args.port} | prerecorded physical trajectories', flush=True)
+        print(f'VIPER research viewer http://127.0.0.1:{args.port} | prerecorded physical trajectories', flush=True)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
