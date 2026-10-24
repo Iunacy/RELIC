@@ -30,7 +30,30 @@ def first_observation(dataset, robot):
                        tuple(state[2*joints:2*joints+3]), state[-1], image)
 
 
-def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vram_gib=40):
+def validate_resume(checkpoint):
+    import zipfile
+    from .dataset import file_digest
+    checkpoint = Path(checkpoint).resolve()
+    validate_checkpoint(checkpoint)
+    trainer = read_json(checkpoint/'trainer_state.json')
+    step = trainer.get('global_step')
+    if type(step) is not int or not 0 < step <= 2:
+        raise ValueError('resume checkpoint step is outside the bounded smoke schedule')
+    integrity = {}
+    for name in ('optimizer.pt', 'scheduler.pt', 'rng_state.pth'):
+        path = checkpoint/name
+        if not path.is_file() or not zipfile.is_zipfile(path):
+            raise ValueError('resume requires complete upstream optimizer, scheduler and RNG archives')
+        with zipfile.ZipFile(path) as archive:
+            if archive.testzip() is not None:
+                raise ValueError('corrupted resume archive')
+        integrity[name] = file_digest(path)
+    from .policy import checkpoint_digest
+    return {'checkpoint': str(checkpoint), 'step': step, 'checkpoint_sha256': checkpoint_digest(checkpoint),
+            'optimizer_state_sha256': integrity}
+
+
+def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vram_gib=40, resume_checkpoint=None):
     source, dataset, base, output = (Path(path).resolve() for path in (source, dataset, base, output))
     if type(timeout) is not int or timeout <= 0 or minimum_vram_gib < 40:
         raise ValueError('positive timeout and at least 40 GiB VRAM are required')
@@ -39,6 +62,8 @@ def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vr
     result = {'schema': 'relic.training_smoke.v1', 'status': 'BLOCKED', 'budget': asdict(budget),
               'training_executed': False, 'checkpoint_reload_verified': False,
               'inference_executed': False, 'safe_action_chunk_verified': False,
+              'safety_validation_scope': 'decoded finite action dimensions and scalar limits; workspace, IK and physical tracking require closed-loop execution',
+              'closed_loop_executed': False, 'peak_training_memory_bytes': None,
               'errors': [], 'dataset_digest': None}
     started = time.monotonic()
     try:
@@ -50,8 +75,13 @@ def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vr
         result['upstream'] = validate_with_upstream(source, dataset, decode_video=True)
         result['base_checkpoint'] = validate_checkpoint(base, require_processor=False)
         arguments = training_arguments(dataset, str(base), output/'training', budget)
+        if resume_checkpoint is not None:
+            result['resume'] = validate_resume(resume_checkpoint)
+            arguments += ['--resume-from-checkpoint', str(Path(resume_checkpoint).resolve())]
         result['upstream_config'] = validate_upstream_arguments(source, arguments)
-        result['command'] = [sys.executable, str(source/'gr00t/experiment/launch_finetune.py'), *arguments]
+        result['upstream_command'] = [sys.executable, str(source/'gr00t/experiment/launch_finetune.py'), *arguments]
+        result['command'] = [sys.executable, '-m', 'embodiment.training_worker', '--source', str(source),
+                             '--metrics', str(output/'training_resources.json'), *arguments]
         if not execute:
             result['status'] = 'PREFLIGHT_ONLY'
             return result
@@ -69,6 +99,11 @@ def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vr
         result['process'] = process
         if process['returncode'] != 0:
             raise RuntimeError('upstream training failed or timed out; inspect process/process.log')
+        resources = read_json(output/'training_resources.json')
+        if resources.get('training_process_completed') is not True or not resources.get('trainable_parameters'):
+            raise ValueError('training resource and parameter inventory receipt is incomplete')
+        result['training_resources'] = resources
+        result['peak_training_memory_bytes'] = resources['peak_allocated_gpu_bytes']
         checkpoint = output/'training/checkpoint-2'
         result['saved_checkpoint'] = validate_checkpoint(checkpoint)
         trainer = read_json(checkpoint/'trainer_state.json')
@@ -104,9 +139,10 @@ def main():
     parser.add_argument('--base-checkpoint', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--resume-checkpoint', type=Path)
     parser.add_argument('--timeout', type=int, default=1800)
     args = parser.parse_args()
-    result = smoke(args.source, args.dataset, args.base_checkpoint, args.output, args.execute, args.timeout)
+    result = smoke(args.source, args.dataset, args.base_checkpoint, args.output, args.execute, args.timeout, resume_checkpoint=args.resume_checkpoint)
     print(json.dumps(result, indent=2))
     return 0 if result['status'] in ('PASS', 'PREFLIGHT_ONLY') else 2
 

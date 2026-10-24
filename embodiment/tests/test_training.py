@@ -49,3 +49,26 @@ class TrainingProtocol(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class MatchedTargetInitialization(unittest.TestCase):
+    def test_new_protocol_compares_target_recipe_and_preserves_source_cost(self):
+        from unittest.mock import patch
+        from embodiment.training import prepare
+        with patch('embodiment.training.verify_source'), \
+             patch('embodiment.training.validate_export', side_effect=[
+                 {'embodiment': 'openmanipulator_x', 'split': 'train', 'episodes': 100},
+                 {'embodiment': 'franka_panda', 'split': 'train', 'episodes': 100}]), \
+             patch('embodiment.training.dataset_digest', return_value='unit-fixture-digest'):
+            result = prepare(Path('/source'), Path('/a'), Path('/b'), Path('/runs'), pretrained=Path('/weights'))
+        baseline, transfer = result['runs'][1:]
+        self.assertEqual(len(transfer['evaluation_scenarios']), 50)
+        self.assertEqual(transfer['demonstration_budget'], 100)
+        self.assertTrue(validate_matched(baseline, transfer))
+        self.assertIsNone(baseline['additional_source_budget'])
+        self.assertEqual(transfer['additional_source_budget']['steps'], 2000)
+        for key, value in (('trainable_selection', ['different']), ('normalizer_source', 'other'),
+                           ('target_initialization_donor', '/different'), ('optimizer', 'sgd'),
+                           ('inference_config', {'execution_horizon': 1}), ('safety_config', 'changed')):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                validate_matched(baseline, {**transfer, key: value})

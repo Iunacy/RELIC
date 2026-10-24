@@ -56,6 +56,9 @@ def dataset_digest(path: Path) -> str:
 
 def adaptation_signature(run: dict) -> str:
     keys = ('dataset_digest','budget','evaluation_scenarios','success_definition','action_horizon','execution_horizon')
+    if run.get('initialization_protocol') == 'viper.matched_target.v1':
+        keys += ('initialization_protocol', 'target_initialization_donor', 'trainable_selection',
+                 'optimizer', 'normalizer_source', 'demonstration_budget', 'inference_config', 'safety_config')
     if not run.get('dataset_digest'):
         raise ValueError('validated adaptation dataset required')
     payload = {key:run[key] for key in keys}
@@ -65,7 +68,14 @@ def adaptation_signature(run: dict) -> str:
 def validate_matched(baseline: dict, transfer: dict) -> str:
     if baseline['condition'] != 'b_only' or transfer['condition'] != 'a_to_b':
         raise ValueError('invalid transfer conditions')
-    if baseline['base_model'] != BASE_MODEL or transfer['base_model'] == BASE_MODEL:
+    modern = baseline.get('initialization_protocol') == 'viper.matched_target.v1'
+    if modern:
+        if (transfer.get('initialization_protocol') != baseline['initialization_protocol'] or
+                baseline.get('initialization_shared_weights') != 'pretrained' or
+                transfer.get('initialization_shared_weights') != 'robot_a' or
+                baseline['base_model'] == transfer['base_model']):
+            raise ValueError('unmatched target initialization provenance')
+    elif baseline['base_model'] != BASE_MODEL or transfer['base_model'] == BASE_MODEL:
         raise ValueError('baseline and transfer initializations must differ')
     if baseline['embodiment'] != 'franka_panda' or transfer['embodiment'] != baseline['embodiment']:
         raise ValueError('adaptation embodiment mismatch')
@@ -75,9 +85,9 @@ def validate_matched(baseline: dict, transfer: dict) -> str:
     return signature
 
 
-def prepare(source: Path, dataset_a: Path, dataset_b: Path, output: Path, budget: Budget = Budget()) -> dict:
+def prepare(source: Path, dataset_a: Path, dataset_b: Path, output: Path, budget: Budget = Budget(), pretrained: Path | None = None) -> dict:
     verify_source(source)
-    evaluations = [asdict(case) for case in plan('evaluation',20)]
+    evaluations = [asdict(case) for case in plan('evaluation',50)]
     blockers, datasets = [], {}
     for name,path,robot in (('a',dataset_a,'openmanipulator_x'),('b',dataset_b,'franka_panda')):
         try:
@@ -96,16 +106,38 @@ def prepare(source: Path, dataset_a: Path, dataset_b: Path, output: Path, budget
             ('a','openmanipulator_x',dataset_a,BASE_MODEL,'a'),
             ('b_only','franka_panda',dataset_b,BASE_MODEL,'b'),
             ('a_to_b','franka_panda',dataset_b,str(checkpoint_a),'b')):
-        arguments = training_arguments(path,base,Path(output)/condition,budget)
-        runs.append({'condition':condition,'embodiment':robot,'base_model':base,
+        initialization = Path(output).resolve()/'initialization'/condition
+        training_base = base if condition == 'a' else str(initialization)
+        arguments = training_arguments(path,training_base,Path(output)/condition,budget)
+        runs.append({'condition':condition,'embodiment':robot,'base_model':training_base,
                      'dataset_digest':datasets[key]['digest'],'budget':asdict(budget),
                      'evaluation_scenarios':evaluations,'success_definition':'relic.cube_bin.v2',
                      'action_horizon':16,'execution_horizon':16,
                      'arguments':arguments,'command':[sys.executable,str(Path(source).resolve()/'gr00t/experiment/launch_finetune.py'),*arguments],
-                     'initialization_commands':[[sys.executable,'-m','embodiment.policy',
-                         '--prepare-training-checkpoint',base]] if condition == 'a_to_b' else [],
+                     'initialization_commands': ([[sys.executable,'-m','embodiment.policy',
+                         '--prepare-training-checkpoint',str(checkpoint_a)],
+                         [sys.executable, '-m', 'embodiment.transfer', '--source', str(checkpoint_a),
+                          '--pretrained', str(pretrained.resolve()) if pretrained else '<local-pretrained-checkpoint>',
+                          '--dataset', str(Path(dataset_b).resolve()), '--upstream', str(Path(source).resolve()),
+                          '--output', str(initialization), '--condition', 'E2' if condition == 'b_only' else 'E3']]
+                         if condition != 'a' else []),
                      'checkpoint':str(Path(output).resolve()/condition),
                      'training_executed':False,'checkpoint_save_load_verified':False})
+    for run in runs[1:]:
+        run.update(initialization_protocol='viper.matched_target.v1',
+                   target_initialization_donor=str(pretrained.resolve()) if pretrained else BASE_MODEL,
+                   initialization_shared_weights='pretrained' if run['condition'] == 'b_only' else 'robot_a',
+                   trainable_selection=['action_head.state_encoder.*', 'action_head.action_encoder.*',
+                       'action_head.action_decoder.*', 'action_head.model.*', 'action_head.position_embedding.*',
+                       'action_head.vlln.*', 'action_head.vl_self_attention.*'],
+                   optimizer='adamw_torch', normalizer_source=datasets['b']['digest'],
+                   demonstration_budget=datasets['b'].get('episodes'),
+                   inference_config={'prediction_horizon':16, 'execution_horizon':16},
+                   safety_config='frozen robot-specific SafetyConfig; record actual digest at evaluation',
+                   additional_source_budget=asdict(budget) if run['condition'] == 'a_to_b' else None,
+                   actual_cost=None, trainable_names_runtime_verified=False)
+    if pretrained is None:
+        blockers.append('local pinned pretrained checkpoint required for matched E2/E3 target projector initialization')
     matched = None
     if datasets['b']['digest']:
         matched = validate_matched(runs[1],runs[2])
@@ -135,6 +167,7 @@ def validate_upstream_arguments(source: Path, arguments: list[str]) -> dict:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--source',type=Path,required=True)
+    parser.add_argument('--pretrained-checkpoint',type=Path)
     parser.add_argument('--dataset-a',type=Path,required=True)
     parser.add_argument('--dataset-b',type=Path,required=True)
     parser.add_argument('--run-root',type=Path,required=True)
@@ -146,7 +179,7 @@ def main():
     parser.add_argument('--save-steps',type=int,default=500)
     args = parser.parse_args()
     budget = Budget(args.steps,args.batch_size,args.learning_rate,args.gradient_accumulation,42,args.save_steps)
-    result = prepare(args.source,args.dataset_a,args.dataset_b,args.run_root,budget)
+    result = prepare(args.source,args.dataset_a,args.dataset_b,args.run_root,budget,args.pretrained_checkpoint)
     for run in result['runs']:
         validate_upstream_arguments(args.source,run['arguments'])
     with args.output.open('x') as stream:

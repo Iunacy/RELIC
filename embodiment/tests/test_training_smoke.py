@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from embodiment.policy import checkpoint_digest, prepare_training_checkpoint, validate_checkpoint
 from embodiment.training import Budget, prepare, training_arguments, validate_upstream_arguments
-from embodiment.training_smoke import smoke
+from embodiment.training_smoke import smoke, validate_resume
 
 
 class TrainingSmoke(unittest.TestCase):
@@ -93,7 +93,9 @@ class TrainingSmoke(unittest.TestCase):
              patch('embodiment.training.validate_export', side_effect=OSError('no dataset')):
             result = prepare(Path('/source'), Path('/data/a'), Path('/data/b'), Path('/runs'),
                              Budget(steps=11, save_steps=5))
-        self.assertEqual(result['runs'][2]['base_model'], '/runs/a')
+        self.assertEqual(result['runs'][2]['base_model'], '/runs/initialization/a_to_b')
+        self.assertEqual(result['runs'][1]['base_model'], '/runs/initialization/b_only')
+        self.assertIn('/runs/a', result['runs'][2]['initialization_commands'][1])
         self.assertEqual(result['runs'][0]['checkpoint'], '/runs/a')
         self.assertEqual(result['runs'][2]['initialization_commands'][0][-1], '/runs/a')
 
@@ -123,3 +125,22 @@ class TrainingSmoke(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class OptimizerRecovery(unittest.TestCase):
+    def test_resume_requires_complete_integrity_checked_optimizer_state(self):
+        import zipfile
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            TrainingSmoke().checkpoint(root)
+            (root/'trainer_state.json').write_text('{"global_step": 1}')
+            with self.assertRaisesRegex(ValueError, 'complete upstream'):
+                validate_resume(root)
+            for name in ('optimizer.pt', 'scheduler.pt', 'rng_state.pth'):
+                with zipfile.ZipFile(root/name, 'w') as archive:
+                    archive.writestr('unit_fixture', 'synthetic optimizer archive; never training evidence')
+            result = validate_resume(root)
+            self.assertEqual(result['step'], 1)
+            self.assertEqual(len(result['optimizer_state_sha256']), 3)
+            (root/'optimizer.pt').write_bytes(b'corrupt')
+            with self.assertRaises(ValueError): validate_resume(root)
