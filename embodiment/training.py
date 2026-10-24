@@ -103,7 +103,7 @@ def prepare(source: Path, dataset_a: Path, dataset_b: Path, output: Path, budget
     runs = []
     checkpoint_a = Path(output).resolve()/'a'
     for condition,robot,path,base,key in (
-            ('a','openmanipulator_x',dataset_a,BASE_MODEL,'a'),
+            ('a','openmanipulator_x',dataset_a,str(pretrained.resolve()) if pretrained else BASE_MODEL,'a'),
             ('b_only','franka_panda',dataset_b,BASE_MODEL,'b'),
             ('a_to_b','franka_panda',dataset_b,str(checkpoint_a),'b')):
         initialization = Path(output).resolve()/'initialization'/condition

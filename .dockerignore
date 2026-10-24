@@ -1,0 +1,14 @@
+**/__pycache__
+**/*.pyc
+**/.venv
+**/*.log
+**/node_modules
+.env*
+build*
+embodiment/cache
+embodiment/runs
+embodiment/evidence
+adaptive/data
+adaptive/runs
+interactive/runs
+integration/runs

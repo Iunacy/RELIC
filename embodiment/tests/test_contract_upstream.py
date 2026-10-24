@@ -6,6 +6,32 @@ from embodiment.tests.test_checkpoint_compatibility import fixture
 
 @unittest.skipUnless(os.environ.get('RELIC_GROOT_SOURCE'), 'set RELIC_GROOT_SOURCE for actual upstream contract tests')
 class UpstreamContract(unittest.TestCase):
+    def test_public_checkpoint_defaults_and_actual_forty_to_sixteen_decoder(self):
+        from pathlib import Path
+        from types import SimpleNamespace
+        import numpy as np
+        from embodiment.dataset import read_json, file_digest
+        from embodiment.models import SOURCES
+        from embodiment.transfer import effective_configuration
+        path = Path(__file__).resolve().parents[1]/'assets/groot_model_config.json'
+        self.assertEqual(file_digest(path), SOURCES['groot']['config_sha256'])
+        config = effective_configuration(read_json(path), Path(os.environ['RELIC_GROOT_SOURCE']))
+        self.assertEqual(config['state_history_length'], 1)
+        self.assertEqual(config['action_horizon'], 40)
+        from gr00t.model.gr00t_n1d7.processing_gr00t_n1d7 import Gr00tN1d7Processor, validate_action_horizons
+        from gr00t.data.embodiment_tags import EmbodimentTag
+        from gr00t.data.state_action.state_action_processor import StateActionProcessor
+        from embodiment.groot_modalities import RELIC_CONFIG
+        modalities = {'new_embodiment': RELIC_CONFIG}
+        validate_action_horizons(modalities, config['action_horizon'])
+        _, statistics = fixture('franka_panda')
+        normalizer = StateActionProcessor(modalities, statistics, use_percentiles=True, use_relative_action=True)
+        normalizer.eval()
+        context = SimpleNamespace(modality_configs=modalities, state_action_processor=normalizer)
+        decoded = Gr00tN1d7Processor.decode_action(context, np.zeros((1,40,132), dtype=np.float32), EmbodimentTag.NEW_EMBODIMENT)
+        self.assertEqual(decoded['delta_position'].shape, (1,16,3))
+        self.assertEqual(decoded['gripper'].shape, (1,16,1))
+
     def test_real_normalization_roundtrips_and_clips_both_native_states(self):
         sys.path.insert(0, os.environ['RELIC_GROOT_SOURCE'])
         import numpy as np

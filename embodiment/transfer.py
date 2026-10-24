@@ -36,10 +36,19 @@ def tensor_catalog(checkpoint):
     return catalog
 
 
-def validate_architecture(source, base):
+def effective_configuration(config, upstream):
+    verify_source(upstream)
+    sys.path.insert(0, str(Path(upstream).resolve()))
+    from gr00t.configs.model.gr00t_n1d7 import Gr00tN1d7Config
+    return Gr00tN1d7Config(**config).to_filtered_dict(exclude_augment=True)
+
+
+def validate_architecture(source, base, upstream=None):
     configs = [read_json(Path(path)/'config.json') for path in (source, base)]
     if any(str(config.get('model_type', '')).lower().replace('_', '') != 'gr00tn1d7' for config in configs):
         raise ValueError('transfer requires exact N1.7 model architecture')
+    configs = [effective_configuration(config, upstream) for config in configs] if upstream else configs
+    for config in configs: config.setdefault('state_history_length', 1)
     architecture_configs = [{key: value for key, value in config.items() if key not in OPERATIONAL_CONFIG}
                             for config in configs]
     if architecture_configs[0] != architecture_configs[1]:
@@ -48,8 +57,10 @@ def validate_architecture(source, base):
     if config.get('max_state_dim', 0) < 22 or config.get('max_action_dim', 0) < 4 or config.get('state_history_length') != 1:
         raise ValueError('architecture cannot represent the explicit B state and shared action')
     source_catalog, base_catalog = tensor_catalog(source), tensor_catalog(base)
+    floating = {'F16', 'BF16', 'F32'}
     if set(source_catalog) != set(base_catalog) or any(
-            (value['shape'], value['dtype']) != (base_catalog[key]['shape'], base_catalog[key]['dtype'])
+            value['shape'] != base_catalog[key]['shape'] or
+            (value['dtype'] != base_catalog[key]['dtype'] and not {value['dtype'], base_catalog[key]['dtype']} <= floating)
             for key, value in source_catalog.items()):
         raise ValueError('missing, unexpected or incompatible source tensors')
     expected = {prefix+suffix for prefix in PROJECTORS for suffix in (
@@ -99,7 +110,7 @@ def prepare(source, pretrained, dataset, upstream, output, condition='E3'):
         raise ValueError('initialization output already exists; verify its manifest instead of overwriting')
     before = checkpoint_digest(source)
     data_before = dataset_digest(dataset)
-    source_catalog, base_catalog = validate_architecture(source, pretrained)
+    source_catalog, base_catalog = validate_architecture(source, pretrained, upstream)
     configuration, statistics, ids = target_processor(source, dataset, upstream)
     base_files = validate_checkpoint(pretrained, require_processor=False)['weight_paths']
     base_digest = hashlib.sha256()

@@ -79,7 +79,7 @@ def workflow(source, dataset_a, dataset_b, pretrained, output, execute=False, ti
                 atomic_json(output/'result.json', result)
                 if measured['status'] != 'PASS':
                     raise RuntimeError(name+' failed: '+'; '.join(measured['errors']))
-                checkpoint = attempt/'training'
+                checkpoint = Path(measured['checkpoint_directory'])
                 saved = {'checkpoint': str(checkpoint), 'checkpoint_sha256': checkpoint_digest(checkpoint),
                          'base_files': {filename: file_digest(base/filename) for filename in
                              ['config.json', *validate_checkpoint(base, require_processor=False)['weight_paths']]},

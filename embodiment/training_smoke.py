@@ -30,15 +30,19 @@ def first_observation(dataset, robot):
                        tuple(state[2*joints:2*joints+3]), state[-1], image)
 
 
-def validate_resume(checkpoint):
+def validate_resume(checkpoint, maximum_step=2):
     import zipfile
     from .dataset import file_digest
     checkpoint = Path(checkpoint).resolve()
+    candidates = [path for path in checkpoint.parent.glob('checkpoint-*')
+                  if path.is_dir() and path.name.removeprefix('checkpoint-').isdigit()]
+    if candidates and max(candidates, key=lambda path: int(path.name.split('-')[-1])) != checkpoint:
+        raise ValueError('upstream Boolean resume selects the latest checkpoint; requested checkpoint is older')
     validate_checkpoint(checkpoint)
     trainer = read_json(checkpoint/'trainer_state.json')
     step = trainer.get('global_step')
-    if type(step) is not int or not 0 < step <= 2:
-        raise ValueError('resume checkpoint step is outside the bounded smoke schedule')
+    if type(step) is not int or not 0 < step <= maximum_step:
+        raise ValueError('resume checkpoint step is outside the requested training schedule')
     integrity = {}
     for name in ('optimizer.pt', 'scheduler.pt', 'rng_state.pth'):
         path = checkpoint/name
@@ -74,10 +78,19 @@ def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vr
         result['dataset_digest'] = dataset_digest(dataset)
         result['upstream'] = validate_with_upstream(source, dataset, decode_video=True)
         result['base_checkpoint'] = validate_checkpoint(base, require_processor=False)
-        arguments = training_arguments(dataset, str(base), output/'training', budget)
+        training_output = Path(resume_checkpoint).resolve().parent if resume_checkpoint is not None else output/'training'
+        from .weights import inspect_weights
+        identity = {'dataset_sha256': result['dataset_digest'], 'base_sha256': inspect_weights(base)['sha256'],
+                    'budget': asdict(budget), 'source': str(source)}
+        identity_path = training_output/'viper_smoke_inputs.json'
+        if resume_checkpoint is not None:
+            if read_json(identity_path) != identity:
+                raise ValueError('resume dataset, initialization or training configuration changed')
+        arguments = training_arguments(dataset, str(base), training_output, budget)
         if resume_checkpoint is not None:
             result['resume'] = validate_resume(resume_checkpoint)
-            arguments += ['--resume-from-checkpoint', str(Path(resume_checkpoint).resolve())]
+            arguments += ['--resume-from-checkpoint']
+        result['checkpoint_directory'] = str(training_output)
         result['upstream_config'] = validate_upstream_arguments(source, arguments)
         result['upstream_command'] = [sys.executable, str(source/'gr00t/experiment/launch_finetune.py'), *arguments]
         result['command'] = [sys.executable, '-m', 'embodiment.training_worker', '--source', str(source),
@@ -92,27 +105,34 @@ def smoke(source, dataset, base, output, execute=False, timeout=1800, minimum_vr
         result['gpu'] = {'name': torch.cuda.get_device_name(0), 'vram_bytes': memory}
         if memory < minimum_vram_gib * 1024**3:
             raise RuntimeError('GPU memory is below the training smoke requirement')
+        training_output.mkdir(parents=True, exist_ok=True)
+        atomic_json(identity_path, identity)
         environment = {**os.environ, 'HF_HUB_OFFLINE': '1', 'TRANSFORMERS_OFFLINE': '1', 'WANDB_MODE': 'disabled'}
         from .collection import execute as run_process
-        (output/'process').mkdir()
-        process = run_process(result['command'], output/'process', timeout, environment=environment)
-        result['process'] = process
-        if process['returncode'] != 0:
-            raise RuntimeError('upstream training failed or timed out; inspect process/process.log')
-        resources = read_json(output/'training_resources.json')
-        if resources.get('training_process_completed') is not True or not resources.get('trainable_parameters'):
-            raise ValueError('training resource and parameter inventory receipt is incomplete')
-        result['training_resources'] = resources
-        result['peak_training_memory_bytes'] = resources['peak_allocated_gpu_bytes']
-        checkpoint = output/'training/checkpoint-2'
+        already_complete = result.get('resume', {}).get('step') == budget.steps
+        result['training_executed_this_attempt'] = not already_complete
+        if not already_complete:
+            (output/'process').mkdir()
+            process = run_process(result['command'], output/'process', timeout, environment=environment)
+            result['process'] = process
+            if process['returncode'] != 0:
+                raise RuntimeError('upstream training failed or timed out; inspect process/process.log')
+            resources = read_json(output/'training_resources.json')
+            if resources.get('training_process_completed') is not True or not resources.get('trainable_parameters'):
+                raise ValueError('training resource and parameter inventory receipt is incomplete')
+            result['training_resources'] = resources
+            result['peak_training_memory_bytes'] = resources['peak_allocated_gpu_bytes']
+            result['training_steps_per_second'] = (budget.steps-result.get('resume', {}).get('step', 0)) / process['wall_seconds']
+        checkpoint = training_output/'checkpoint-2'
         result['saved_checkpoint'] = validate_checkpoint(checkpoint)
         trainer = read_json(checkpoint/'trainer_state.json')
         if trainer.get('global_step') != budget.steps:
             raise ValueError('checkpoint does not prove completion of the requested steps')
         result['training_executed'] = True
-        result['training_steps_per_second'] = budget.steps / process['wall_seconds']
-        result['transfer_checkpoint'] = prepare_training_checkpoint(output/'training')
-        policy = GrootPolicy.from_checkpoint(source, output/'training')
+        inference_checkpoint = checkpoint if already_complete else training_output
+        result['checkpoint_directory'] = str(inference_checkpoint)
+        result['transfer_checkpoint'] = prepare_training_checkpoint(inference_checkpoint)
+        policy = GrootPolicy.from_checkpoint(source, inference_checkpoint)
         result['checkpoint_reload_verified'] = True
         policy.reset()
         observation = first_observation(dataset, validation['embodiment'])

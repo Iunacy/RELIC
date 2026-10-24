@@ -39,7 +39,8 @@ class Transfer(unittest.TestCase):
             self.checkpoint(root/'base', 'openmanipulator_x', 1.)
             cfg, stats = fixture('franka_panda')
             cfg['processor_kwargs'].update(max_state_dim=29, max_action_dim=4)
-            with patch('embodiment.transfer.target_processor', return_value=(cfg, stats, {'new_embodiment': 10})):
+            with patch('embodiment.transfer.target_processor', return_value=(cfg, stats, {'new_embodiment': 10})), \
+                 patch('embodiment.transfer.effective_configuration', side_effect=lambda config, upstream: config):
                 for condition in ('E2', 'E3'):
                     result = prepare(root/'a', root/'base', root/'b', root, root/condition, condition)
                     self.assertFalse(result['upstream_training_load_verified'])
@@ -71,3 +72,16 @@ class Transfer(unittest.TestCase):
                     if defect == 'unexpected': tensors['unknown'] = tensors['backbone.weight'].clone()
                     save_file(tensors, path)
                 with self.assertRaises(ValueError): validate_architecture(root/'a', root/'base')
+
+    def test_mixed_training_precision_is_allowed_but_integer_reinterpretation_is_rejected(self):
+        from safetensors.torch import load_file, save_file
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.checkpoint(root/'a', 'openmanipulator_x', 3.)
+            self.checkpoint(root/'base', 'openmanipulator_x', 1.)
+            path = root/'base/model.safetensors'
+            tensors = load_file(path)
+            save_file({name: tensor.bfloat16() for name, tensor in tensors.items()}, path)
+            self.assertTrue(validate_architecture(root/'a', root/'base'))
+            save_file({name: tensor.int() for name, tensor in tensors.items()}, path)
+            with self.assertRaises(ValueError): validate_architecture(root/'a', root/'base')

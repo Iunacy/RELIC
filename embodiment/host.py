@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -13,6 +14,10 @@ from .preflight import SIM, LAB_COMMIT
 
 STAGES = {'simulation': {'total_gib': 16, 'free_gib': 12, 'ram_gib': 24, 'disk_gib': 12},
           'training': {'total_gib': 40, 'free_gib': 38, 'ram_gib': 32, 'disk_gib': 32}}
+
+
+def rtx_capable(name):
+    return 'RTX' in name or bool(re.search(r'\b(?:A10G?|A40|L4|L40S?)\b', name))
 
 
 def inspect_host(stage, volume=None):
@@ -34,6 +39,8 @@ def inspect_host(stage, volume=None):
         if installed and Version(installed).base_version != expected:
             result['blockers'].append(name+' version differs from pinned runtime '+expected)
     if stage == 'simulation':
+        if os.environ.get('OMNI_KIT_ACCEPT_EULA', '').lower() not in ('y', 'yes', '1'):
+            result['blockers'].append('Isaac runtime license must be accepted through OMNI_KIT_ACCEPT_EULA before unattended Kit startup')
         if sys.version_info[:2] != (3, 11): result['blockers'].append('Isaac Sim stage requires Python 3.11')
         if 'isaacsim' in result['packages'] and Version(result['packages']['isaacsim']) != Version(SIM):
             result['blockers'].append('Isaac Sim version differs from pin')
@@ -53,6 +60,14 @@ def inspect_host(stage, volume=None):
             result['torch_cuda_build'] = torch.version.cuda
             if torch.version.cuda is None: result['blockers'].append('training interpreter contains a CPU-only PyTorch build')
         except ImportError: pass
+        compiler = shutil.which('nvcc')
+        if compiler is None:
+            result['blockers'].append('CUDA 12.8 development compiler required by installed DeepSpeed compatibility checks; use the pinned cloud image')
+        else:
+            try:
+                result['cuda_compiler'] = subprocess.check_output([compiler, '--version'], text=True, timeout=15)
+                if 'release 12.8,' not in result['cuda_compiler']: result['blockers'].append('CUDA compiler version differs from 12.8 pin')
+            except (OSError, subprocess.SubprocessError) as error: result['blockers'].append('CUDA compiler check: '+str(error))
     try:
         process = subprocess.run(['nvidia-smi', '--query-gpu=name,driver_version,memory.total,memory.free', '--format=csv,noheader,nounits'],
                                  capture_output=True, text=True, check=True, timeout=15)
@@ -60,7 +75,7 @@ def inspect_host(stage, volume=None):
         result['gpu'] = {'name': gpu[0].strip(), 'driver': gpu[1].strip(), 'total_mib': int(gpu[2]), 'free_mib': int(gpu[3])}
         if int(gpu[2]) < limits['total_gib']*1024 or int(gpu[3]) < limits['free_gib']*1024:
             result['blockers'].append('insufficient total or free GPU memory for '+stage)
-        if stage == 'simulation' and 'RTX' not in gpu[0] and not any(name in gpu[0] for name in ('A10', 'A40', 'L4', 'L40')):
+        if stage == 'simulation' and not rtx_capable(gpu[0]):
             result['blockers'].append('RTX-capable rendering GPU not verified for Isaac camera stage')
         driver = tuple(int(value) for value in gpu[1].strip().split('.'))
         minimum = (580, 65, 6) if stage == 'simulation' else (570, 0, 0)

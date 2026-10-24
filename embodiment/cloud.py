@@ -17,25 +17,40 @@ def preflight(source, pretrained, volume):
     result = {'schema': 'viper.cloud_preflight.v1', 'billing_started': False, 'training_executed': False,
               'model_downloads': False, 'blockers': [], 'python': sys.version,
               'persistent_volume': str(volume), 'packages': {}, 'groot_lock_sha256': None}
+    from .host import inspect_host
+    result['host'] = inspect_host('training', volume)
+    result['blockers'].extend(result['host']['blockers'])
     for name in ('torch', 'transformers', 'safetensors', 'pyarrow', 'av', 'torchcodec', 'tyro'):
         try: result['packages'][name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError: result['blockers'].append('missing dependency: '+name)
     try:
         verify_source(source)
         result['groot_lock_sha256'] = file_digest(source/'uv.lock')
-        result['checkpoint'] = validate_checkpoint(pretrained, require_processor=False)
+        result['checkpoint'] = validate_checkpoint(pretrained)
+        from .weights import inspect_weights, cached_backbone
+        result['weight_integrity'] = inspect_weights(pretrained)
+        from .models import SOURCES
+        result['model_sources'] = SOURCES
+        if pretrained.name != SOURCES['groot']['revision']:
+            result['blockers'].append('pretrained snapshot path does not identify the pinned model revision; use embodiment.models')
+        config = json.loads((pretrained/'config.json').read_text())
+        result['backbone'] = cached_backbone(config.get('model_name', 'nvidia/Cosmos-Reason2-2B'))
+        if Path(result['backbone']['directory']).name != SOURCES['backbone']['revision']:
+            result['blockers'].append('cached backbone differs from pinned snapshot revision')
         if not volume.is_dir() or not os.access(volume, os.W_OK): raise ValueError('existing writable persistent volume required')
         result['storage_free_bytes'] = shutil.disk_usage(volume).free
         result['persistent_storage_verified'] = False
-        result['blockers'].append('operator must verify volume persistence, host RAM, rental cap and gated backbone cache')
-    except (OSError, ValueError, subprocess.SubprocessError) as error:
+        result['operator_checks_required'] = ['verify persistent volume retention', 'approve rental cap before provisioning']
+    except (OSError, ValueError, RuntimeError, ImportError, subprocess.SubprocessError) as error:
         result['blockers'].append(f'{type(error).__name__}: {error}')
     try:
         gpu = subprocess.run(['nvidia-smi', '--query-gpu=name,driver_version,memory.total,memory.free', '--format=csv,noheader'],
                              text=True, capture_output=True, timeout=15, check=True)
         result['gpu'] = gpu.stdout.strip()
     except (OSError, subprocess.SubprocessError) as error: result['blockers'].append('GPU inspection: '+str(error))
-    result['setup_command'] = ['uv', 'sync', '--project', str(source), '--locked']
+    result['ready_for_training_preflight'] = not result['blockers']
+    result['paid_compute_go'] = False
+    result['setup_command'] = ['uv', 'sync', '--project', str(source), '--frozen', '--no-dev']
     result['compute_policy'] = 'training and simulator stages run separately; cross_smoke enforces memory and explicit execution opt-in'
     return result
 
@@ -44,4 +59,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('source', 'pretrained', 'volume'): parser.add_argument('--'+name, type=Path, required=True)
     args = parser.parse_args()
-    print(json.dumps(preflight(args.source, args.pretrained, args.volume), indent=2))
+    result = preflight(args.source, args.pretrained, args.volume)
+    print(json.dumps(result, indent=2))
+    raise SystemExit(0 if result['ready_for_training_preflight'] else 2)

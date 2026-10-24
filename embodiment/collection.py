@@ -341,7 +341,14 @@ def main():
             if not paths:
                 raise ValueError('no successful physical camera episodes to export')
             started = time.monotonic()
-            export(paths, args.export)
+            if args.export.exists():
+                from .dataset import validate_export
+                validate_export(args.export)
+                sources = [json.loads(line) for line in (args.export/'meta/relic_sources.jsonl').read_text().splitlines()]
+                if [row['scenario_id'] for row in sources] != [read_json(path/'metadata.json')['scenario_id'] for path in paths]:
+                    raise ValueError('existing export differs from the selected collection')
+            else:
+                export(paths, args.export)
             export_seconds = time.monotonic() - started
             total_seconds = summary['measured_process_seconds'] + export_seconds
             atomic_json(args.root/'export.json', {'output': str(args.export.resolve()),

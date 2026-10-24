@@ -144,3 +144,11 @@ class OptimizerRecovery(unittest.TestCase):
             self.assertEqual(len(result['optimizer_state_sha256']), 3)
             (root/'optimizer.pt').write_bytes(b'corrupt')
             with self.assertRaises(ValueError): validate_resume(root)
+
+    def test_boolean_resume_cannot_select_an_older_checkpoint(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root/'checkpoint-1').mkdir()
+            (root/'checkpoint-2').mkdir()
+            with self.assertRaisesRegex(ValueError, 'latest checkpoint'):
+                validate_resume(root/'checkpoint-1')
