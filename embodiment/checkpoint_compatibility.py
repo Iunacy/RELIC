@@ -19,11 +19,15 @@ def validate_processor(checkpoint, robot=None):
             raise ValueError('checkpoint statistics belong to another embodiment')
         expected = {'state': {'joint_position': count, 'joint_velocity': count, 'ee_position': 3, 'gripper': 1},
                     'action': {'delta_position': 3, 'gripper': 1}}
+        if kwargs.get('exclude_state') or kwargs.get('apply_sincos_state_encoding'):
+            raise ValueError('checkpoint changes the frozen raw proprioception contract')
+        if ('max_state_dim' in kwargs and kwargs['max_state_dim'] < 2*count+4) or ('max_action_dim' in kwargs and kwargs['max_action_dim'] < 4):
+            raise ValueError('checkpoint processor capacity is too small')
         for modality, groups in expected.items():
             if modalities[modality]['modality_keys'] != list(groups):
-                raise ValueError('checkpoint modality order differs from RELIC')
+                raise ValueError('checkpoint modality order differs from VIPER')
             if modalities[modality]['delta_indices'] != (list(range(16)) if modality == 'action' else [0]):
-                raise ValueError('checkpoint temporal horizon differs from RELIC')
+                raise ValueError('checkpoint temporal horizon differs from VIPER')
             for group, dimension in groups.items():
                 for field in ('mean', 'std', 'min', 'max', 'q01', 'q99'):
                     values = stats[modality][group][field]
@@ -41,8 +45,8 @@ def validate_processor(checkpoint, robot=None):
             raise ValueError('checkpoint shared action configuration mismatch')
         if modalities['video']['modality_keys'] != ['overhead'] or modalities['video']['delta_indices'] != [0]:
             raise ValueError('checkpoint camera mapping mismatch')
-        if modalities['language']['modality_keys'] != ['annotation.human.task_description']:
+        if modalities['language']['modality_keys'] != ['annotation.human.task_description'] or modalities['language']['delta_indices'] != [0]:
             raise ValueError('checkpoint instruction mapping mismatch')
         return {'embodiment': inferred, 'joint_count': count, 'action_dim': 4, 'action_horizon': 16}
     except (KeyError, TypeError, StopIteration) as error:
-        raise ValueError('checkpoint lacks compatible RELIC processor metadata') from error
+        raise ValueError('checkpoint lacks compatible VIPER processor metadata') from error

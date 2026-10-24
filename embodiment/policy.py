@@ -3,9 +3,10 @@ from pathlib import Path
 import hashlib
 import sys
 from typing import Any, Protocol
-from .benchmark import Action, Observation, TASK_GRIPPER_LIMITS, finite
+from .benchmark import Action, Observation, finite
 from .dataset import DOF, read_json
 from .upstream_validation import verify_source
+from .contract import ADAPTERS
 
 
 def validate_checkpoint(checkpoint: Path, require_processor: bool = True):
@@ -92,6 +93,7 @@ class PolicyInput:
     ee_position: tuple
     gripper_open: float
     image: Any
+    timestamp: float | None = None
 
     @classmethod
     def from_observation(cls, observation: Observation, image, embodiment: str, instruction: str):
@@ -101,10 +103,12 @@ class PolicyInput:
         finite(observation.joints,count)
         finite(observation.velocities,count)
         finite(observation.ee,3)
-        closed,opened = TASK_GRIPPER_LIMITS[embodiment]
-        aperture = max(0.,min(1.,(observation.joints[-2]-closed)/(opened-closed)))
+        finite((observation.time,), 1)
+        if observation.time < 0:
+            raise ValueError('negative observation timestamp')
+        aperture = ADAPTERS[embodiment].aperture(observation.joints)
         return cls(embodiment,instruction,tuple(observation.joints),tuple(observation.velocities),
-                   tuple(observation.ee),aperture,image)
+                   tuple(observation.ee),aperture,image,observation.time)
 
 
 class Policy(Protocol):
@@ -149,6 +153,10 @@ class GrootPolicy:
             raise ValueError('invalid observed gripper aperture')
         if not isinstance(observation.instruction,str) or not observation.instruction.strip():
             raise ValueError('missing policy instruction')
+        if observation.timestamp is not None:
+            finite((observation.timestamp,), 1)
+            if observation.timestamp < 0:
+                raise ValueError('negative policy timestamp')
         image = observation.image
         if not isinstance(image,np.ndarray) or image.dtype != np.uint8 or image.ndim != 3 or image.shape[-1] != 3:
             raise ValueError('synchronized uint8 RGB camera observation required')

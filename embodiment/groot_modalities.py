@@ -4,7 +4,7 @@ from gr00t.data.types import ActionConfig, ActionFormat, ActionRepresentation, A
 
 ACTION_HORIZON = 16
 
-RELIC_CONFIG = {
+VIPER_CONFIG = {
     'video': ModalityConfig(delta_indices=[0], modality_keys=['overhead']),
     'state': ModalityConfig(delta_indices=[0], modality_keys=['joint_position','joint_velocity','ee_position','gripper']),
     'action': ModalityConfig(delta_indices=list(range(ACTION_HORIZON)), modality_keys=['delta_position','gripper'],
@@ -15,4 +15,6 @@ RELIC_CONFIG = {
     'language': ModalityConfig(delta_indices=[0], modality_keys=['annotation.human.task_description']),
 }
 
-register_modality_config(RELIC_CONFIG, embodiment_tag=EmbodimentTag.NEW_EMBODIMENT)
+RELIC_CONFIG = VIPER_CONFIG
+
+register_modality_config(VIPER_CONFIG, embodiment_tag=EmbodimentTag.NEW_EMBODIMENT)

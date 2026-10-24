@@ -11,7 +11,7 @@ def verify_source(source: Path) -> None:
     commit = subprocess.check_output(['git','-C',str(source),'rev-parse','HEAD'],text=True).strip()
     if commit != GROOT_COMMIT:
         raise ValueError('GR00T checkout differs from the verified source revision')
-    changes = subprocess.check_output(['git','-C',str(source),'status','--porcelain','--untracked-files=all','--','gr00t'],text=True)
+    changes = subprocess.check_output(['git','-C',str(source),'status','--porcelain','--untracked-files=all','--','gr00t','uv.lock','pyproject.toml'],text=True)
     if changes:
         raise ValueError('GR00T runtime source has local modifications')
 
