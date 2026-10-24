@@ -12,6 +12,7 @@
     "open_manipulator_description/meshes/open_manipulator_x/link3.stl": "e6904447bca7888acb6a3a170d220b12e92f6dbf53c560987527cfd115f6eb19",
     "open_manipulator_description/meshes/open_manipulator_x/link4.stl": "9da72baf0854e0335bf0fe199da3676c57625e17277a4fa455b995130b29ffab",
     "open_manipulator_description/meshes/open_manipulator_x/link5.stl": "75e7596295dd5f5cbc68d81b2c875058f28721f98d7402d2d431ccf2334b57a6",
-    "open_manipulator_description/meshes/open_manipulator_x/plate.stl": "e665dce646cb07f6124846f79be0943d3a42e791b0867fb569007b49db2eb3b8"
+    "open_manipulator_description/meshes/open_manipulator_x/plate.stl": "e665dce646cb07f6124846f79be0943d3a42e791b0867fb569007b49db2eb3b8",
+    "open_manipulator_moveit_config/config/open_manipulator_x/open_manipulator_x.srdf": "3968d9c2edf97cdaa1716add827dadb5d54fcee24c9d9f941829071a43374b23"
   }
 }

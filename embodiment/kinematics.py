@@ -7,7 +7,7 @@ from pathlib import Path
 import random
 import xml.etree.ElementTree as ET
 
-from .assets import ARM, FINGERS, ROOT, URDF, MANIFEST
+from .assets import ARM, FINGERS, URDF, MANIFEST, cache_root
 from .benchmark import finite
 from .panda import ARM as PANDA_ARM, FINGERS as PANDA_FINGERS, BASE, TOOL_OFFSET
 
@@ -121,7 +121,7 @@ class Kinematics:
         raise ValueError('bounded URDF inverse kinematics did not converge')
 
 
-def simulator_model(robot, actuated=False):
+def simulator_model(robot, actuated=False, manufacturer_filters=True):
     import mujoco
     model = Kinematics(robot)
     tree = ET.parse(model.path)
@@ -130,7 +130,7 @@ def simulator_model(robot, actuated=False):
     for mesh in tree.findall('.//mesh'):
         name = mesh.get('filename')
         if name.startswith('package://open_manipulator_description/'):
-            path = ROOT/'cache'/name.removeprefix('package://')
+            path = cache_root()/name.removeprefix('package://')
             key = name.removeprefix('package://')
             if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != MANIFEST['files'].get(key):
                 raise ValueError('pinned OpenMANIPULATOR collision asset missing or altered')
@@ -141,6 +141,10 @@ def simulator_model(robot, actuated=False):
     extension = ET.SubElement(tree.getroot(), 'mujoco')
     ET.SubElement(extension, 'compiler', {'fusestatic': 'false'})
     spec = mujoco.MjSpec.from_string(ET.tostring(tree.getroot(), encoding='unicode'))
+    if robot == 'openmanipulator_x' and manufacturer_filters:
+        from .collision import pairs
+        for first, second, reason in pairs():
+            spec.add_exclude(bodyname1=first, bodyname2=second)
     if robot == 'franka_panda': spec.body('panda_link0').pos = BASE
     spec.body(model.tool).add_site(name='viper_audit_tool', pos=model.offset, size=[.001, 0., 0.])
     if actuated:
@@ -201,10 +205,10 @@ def audit(robot, samples=12):
             'scope': 'real CPU simulator FK/Jacobian and imported collision geometry; no PhysX, actuator or grasp qualification'}
 
 
-def audit_dynamics(robot):
+def audit_dynamics(robot, manufacturer_filters=True):
     import mujoco
     import numpy as np
-    chain, model = simulator_model(robot, actuated=True)
+    chain, model = simulator_model(robot, actuated=True, manufacturer_filters=manufacturer_filters)
     data = mujoco.MjData(model)
     addresses = [model.jnt_qposadr[model.joint(name).id] for name in chain.names]
     initial = (0.,)*4 if robot == 'openmanipulator_x' else (0., -.5, 0., -2., 0., 1.5, .785)
@@ -237,6 +241,7 @@ def audit_dynamics(robot):
     error = float(np.max(np.abs(data.qpos[addresses]-desired)))
     return {'schema': 'viper.cpu_dynamics_audit.v1', 'robot': robot, 'simulator': 'mujoco', 'version': mujoco.__version__,
             'simulation_seconds': float(data.time), 'actuator_names': ['drive_'+name for name in chain.names],
+            'manufacturer_collision_matrix_applied': robot == 'openmanipulator_x' and manufacturer_filters,
             'joint_limit_violating_ticks': violations, 'endpoint_joint_error_rad': error,
             'maximum_actuator_force': torque, 'robot_contact_pairs': sorted(contact_pairs),
             'joint_endpoint_errors_rad': {name: float(q-goal) for name, q, goal in zip(chain.names, data.qpos[addresses], desired, strict=True)}, 'maximum_cube_floor_normal_force_n': max_contact,

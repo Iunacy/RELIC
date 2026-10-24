@@ -57,6 +57,8 @@ class ManipulationProtocol(unittest.TestCase):
                  'infrastructure_error': 'unit_fixture'} for robot in ('openmanipulator_x', 'franka_panda')]
         result = summarize(rows, assigned)
         self.assertTrue(result['completed'])
+        self.assertFalse(result['physical_execution_complete'])
+        self.assertEqual(result['status'], 'BLOCKED')
         self.assertEqual(result['by_robot']['franka_panda']['trials'], 1)
         self.assertEqual(result['by_robot']['franka_panda']['success_rate'], 0)
         with self.assertRaises(ValueError): summarize(rows+rows, assigned)

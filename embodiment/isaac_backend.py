@@ -8,7 +8,7 @@ from isaaclab.sim.converters import UrdfConverter
 from isaaclab.assets import Articulation, ArticulationCfg, RigidObject, RigidObjectCfg
 from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.sensors import Camera, CameraCfg, ContactSensor, ContactSensorCfg
-from .assets import ARM, FINGERS, ROOT, fetch, link_masses
+from .assets import ARM, FINGERS, fetch, link_masses, cache_root
 from .benchmark import (BIN, BIN_INNER, BIN_WALL, CAMERA_EYE, CAMERA_LOOK, COLORS,
                         CONTROL_DT, CUBE, DT, Observation, TASK_GRIPPER_LIMITS, layout, workspace)
 from .openmanipulator import LIMITS, bounded_reference, fk, ik
@@ -49,7 +49,7 @@ class IsaacBackend:
             drive = sim.UrdfConverterCfg.JointDriveCfg(
                 gains=sim.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(stiffness=0,damping=0))
             converter = FaithfulUrdfConverter(sim.UrdfConverterCfg(asset_path=str(fetch()),fix_base=True,
-                usd_dir=str(ROOT/'cache/usd'),force_usd_conversion=False,
+                usd_dir=str(cache_root()/'usd'),force_usd_conversion=False,
                 merge_fixed_joints=True,convert_mimic_joints_to_normal_joints=False,
                 self_collision=True,collider_type='convex_decomposition',joint_drive=drive))
             spawn = sim.UsdFileCfg(usd_path=converter.usd_path,activate_contact_sensors=True,
@@ -69,6 +69,8 @@ class IsaacBackend:
             self.finger_limits = (-.011,.020)
             self.gripper_closed,self.gripper_open = TASK_GRIPPER_LIMITS[robot]
             self._configure_mimic()
+            from .collision import apply_usd
+            self.collision_filters = apply_usd(self.sim.stage)
         else:
             from isaaclab_assets import FRANKA_PANDA_CFG
             from .panda import ARM as PANDA_ARM, FINGERS as PANDA_FINGERS, BASE
@@ -297,7 +299,7 @@ class IsaacBackend:
                 raise RuntimeError('physical gripper opening/closing or mimic check failed')
             endpoints.append(list(q[-2:]))
         checks = self.kinematic_check()
-        return {'fixed_base':True, **checks,
+        return {'fixed_base':True, **checks, 'manufacturer_collision_matrix': getattr(self, 'collision_filters', None),
                 'empty_gripper_endpoints':endpoints,'physical_checks_executed':True,
                 'body_masses_kg':dict(zip(self.robot.body_names,self.robot.root_physx_view.get_masses()[0].cpu().tolist(),strict=True)),
                 'mass_validation':'URDF links; fixed world body excluded' if self.embodiment == 'openmanipulator_x' else 'measured USD masses; no URDF mass equivalence claim'}

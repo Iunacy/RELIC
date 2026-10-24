@@ -175,7 +175,9 @@ def summarize(trials, assigned):
             groups[robot+'/'+task] = {**metrics(rows), 'intervention_frequency': sum(bool(row.get('interventions')) for row in rows)/len(rows) if rows else None,
                 'mean_endpoint_error_m': sum(row['endpoint_error_m'] for row in measured)/len(measured) if measured else None,
                 'endpoint_measured_trials': len(measured), 'forbidden_contact_samples': sum(row.get('collisions', 0) for row in rows)}
+    physical_complete = seen == expected and all(row.get('simulation_executed') is True and not row.get('infrastructure_error') for row in trials)
     return {'by_task': groups, 'schema': 'viper.manipulation_summary.v1', 'completed': seen == expected,
+        'physical_execution_complete': physical_complete, 'status': 'COMPLETE' if physical_complete else 'BLOCKED',
         'missing_trials': sorted(expected-seen), 'trials': trials,
         'by_robot': {robot: {**metrics([row for row in trials if row['robot'] == robot]),
             'intervention_trials': sum(bool(row.get('interventions')) for row in trials if row['robot'] == robot),
@@ -225,6 +227,7 @@ def campaign(root, count=1, tasks=TASKS, starts=('home',), perturbed=False, run=
         commands = {robot: [str(python), '-m', 'embodiment.manipulation', '--worker', '--request', str(root/robot/'request.json'),
                     '--root', str(root/robot/'run')] for robot in DOF}
         if not run: return {'status': 'NOT_EXECUTED', 'simulation_executed': False, 'commands': commands}
+        if configuration['source']['relic_worktree_dirty']: raise ValueError('physical benchmarks require a clean committed revision')
         import subprocess
         probe = subprocess.run([str(python), '-m', 'embodiment.host', '--stage', 'simulation', '--volume', str(root)], text=True, capture_output=True, timeout=30)
         try: host = json.loads(probe.stdout)
@@ -235,8 +238,8 @@ def campaign(root, count=1, tasks=TASKS, starts=('home',), perturbed=False, run=
             job = root/robot
             job.mkdir(exist_ok=True)
             atomic_json(job/'request.json', {'robot': robot, 'cases': assigned})
-            if not (job/'run/report.json').exists() and not (job/'process.log').exists(): execute(command, job, 2400)
             try:
+                if not (job/'run/report.json').exists() and not (job/'process.log').exists(): execute(command, job, 2400)
                 report = read_json(job/'run/report.json')
                 if report['source_sha256'] != configuration['source']['source_sha256'] or report.get('source_changed_during_run') is not False:
                     raise ValueError('benchmark worker source changed')
@@ -271,6 +274,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.worker:
         args.root.mkdir(parents=True, exist_ok=False)
-        worker(read_json(args.request), args.root)
+        results = worker(read_json(args.request), args.root)
+        raise SystemExit(2 if any(row.get('infrastructure_error') for row in results) else 0)
     else:
-        print(json.dumps(campaign(args.root, args.episodes, args.tasks, args.starts, args.perturbed, args.execute, args.python), indent=2))
+        result = campaign(args.root, args.episodes, args.tasks, args.starts, args.perturbed, args.execute, args.python)
+        print(json.dumps(result, indent=2))
+        raise SystemExit(2 if result['status'] == 'BLOCKED' else 0)

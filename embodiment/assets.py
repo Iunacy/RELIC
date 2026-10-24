@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -54,11 +55,16 @@ def link_masses(path=URDF):
             for link in robot.findall('link') if link.find('inertial/mass') is not None}
 
 
-def fetch(cache=ROOT / 'cache'):
-    cache = Path(cache)
+def cache_root():
+    return Path(os.environ.get('VIPER_ASSET_CACHE', str(ROOT/'cache'))).resolve()
+
+
+def fetch(cache=None):
+    cache = cache_root() if cache is None else Path(cache)
     for name, expected in MANIFEST['files'].items():
         dest = cache / name
         if not dest.exists():
+            if os.environ.get('VIPER_OFFLINE') == '1': raise RuntimeError('offline robot asset cache is incomplete: '+name)
             url = f"https://raw.githubusercontent.com/ROBOTIS-GIT/open_manipulator/{MANIFEST['commit']}/{name}"
             with urllib.request.urlopen(url, timeout=60) as response:
                 data = response.read()
@@ -83,5 +89,5 @@ def fetch(cache=ROOT / 'cache'):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--cache', type=Path, default=ROOT / 'cache')
+    parser.add_argument('--cache', type=Path)
     print(fetch(parser.parse_args().cache))

@@ -4,14 +4,14 @@ import os
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-from .assets import ARM, FINGERS, ROOT, fetch
+from .assets import ARM, FINGERS, ROOT, fetch, cache_root
 from .benchmark import BIN, BIN_INNER, BIN_WALL, COLORS, CUBE
 from .dataset import DOF, file_digest, read_json
 from .panda import ARM as PANDA_ARM, BASE, FINGERS as PANDA_FINGERS, TOOL_OFFSET
 
 
 def panda_asset(source=None):
-    cache = ROOT/'cache/panda_replay'
+    cache = cache_root()/'panda_replay'
     manifest = read_json(ROOT/'assets/panda_replay_manifest.json')
     if source is None:
         source = os.environ.get('RELIC_PANDA_DESCRIPTION')
