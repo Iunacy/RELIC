@@ -25,10 +25,15 @@ def validate_run(run):
         raise ValueError('frozen runtime and fallback protocol required')
     if run.get('condition') not in ('classical', 'a', 'b_only', 'a_to_b'):
         raise ValueError('unknown evaluation condition')
-    expected = {case.scenario_id: case for case in plan('evaluation', 20)}
+    from dataclasses import asdict
+    assigned = run.get('training_run', {}).get('evaluation_scenarios')
+    count = len(assigned) if isinstance(assigned, list) else 20
+    if count not in (20, 50) or (assigned is not None and assigned != [asdict(case) for case in plan('evaluation', count)]):
+        raise ValueError('evaluation manifest differs from frozen scene schedule')
+    expected = {case.scenario_id: case for case in plan('evaluation', count)}
     trials = run['trials']
-    if len(trials) != 20:
-        raise ValueError('twenty independent held-out trials required')
+    if len(trials) != count:
+        raise ValueError('all assigned independent held-out trials required')
     seen = set()
     for row in trials:
         case = expected.get(row.get('scenario_id'))
@@ -56,6 +61,8 @@ def validate_run(run):
             values = row.get(field, [])
             if not isinstance(values, list) or any(not isinstance(value, str) or not value for value in values):
                 raise ValueError('invalid policy failure accounting')
+        if row['success'] and controller == 'vla_only' and (row.get('rejected_policy_actions') or row.get('policy_errors')):
+            raise ValueError('intervened or errored policy cannot count as VLA-only success')
         if row['success']:
             if row.get('failure_reason') is not None or row.get('pick_result') is not True or row.get('placement_result') is not True:
                 raise ValueError('success lacks pick and placement evidence')
@@ -91,11 +98,13 @@ def compare(baseline, transfer):
             raise ValueError('evaluation protocols differ: ' + key)
     if baseline.get('condition') != 'b_only' or transfer.get('condition') != 'a_to_b':
         raise ValueError('invalid comparison conditions')
-    return {'schema': 'relic.transfer_result.v1', 'matched_adaptation_signature': signature,
+    from .paired import bootstrap
+    paired = bootstrap(baseline['trials'], transfer['trials'])
+    return {'paired': paired, 'schema': 'relic.transfer_result.v1', 'matched_adaptation_signature': signature,
             'b_only': left, 'a_to_b': right,
             'success_rate_difference': right['success_rate'] - left['success_rate'],
-            'vla_only_success_rate_difference': (right['successes_by_controller']['vla_only'] - left['successes_by_controller']['vla_only']) / 20,
-            'limitations': ['twenty trials per condition; Wilson intervals describe each rate, not the paired difference']}
+            'vla_only_success_rate_difference': (right['successes_by_controller']['vla_only'] - left['successes_by_controller']['vla_only']) / len(baseline['trials']),
+            'limitations': ['scene bootstrap does not estimate variance across training seeds']}
 
 
 def main():

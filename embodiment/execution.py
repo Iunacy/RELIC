@@ -39,6 +39,7 @@ class ClosedLoop:
         self.safety_events = []
         self.rejected_policy_actions = []
         self.policy_errors = []
+        self.action_trace = []
         self.instruction = f'Pick up the {target} cube and place it in the bin.'
         self.policy.reset()
 
@@ -66,6 +67,7 @@ class ClosedLoop:
     def tick(self, obs, image):
         if self.failure or self.success:
             raise RuntimeError('episode is terminal')
+        requested_action = None
         try:
             self.guard.state(obs)
             if obs.time <= self.last_time:
@@ -93,15 +95,22 @@ class ClosedLoop:
                         if not 1 <= len(chunk) <= 16 or not all(isinstance(action,Action) for action in chunk):
                             raise ValueError('invalid policy chunk')
                         self.queue.extend(chunk[:self.config.execution_horizon])
-                    action = self.guard.command(obs,self.queue.popleft())
+                    requested_action = self.queue.popleft()
+                    action = self.guard.command(obs,requested_action)
                     reason = self.guard.progress(obs,action)
                     if reason:
                         self._fallback(reason,obs)
                 except SafetyViolation as error:
                     self.rejected_policy_actions.append(str(error))
+                    self.action_trace.append({'timestamp': obs.time,
+                                              'requested_action': [*requested_action.delta, requested_action.gripper] if requested_action else None,
+                                              'applied_action': None,
+                                              'intervention': str(error)})
                     self._fallback('unsafe_policy_action:'+str(error),obs)
                 except (ValueError,RuntimeError,TypeError,TimeoutError) as error:
                     self.policy_errors.append(type(error).__name__)
+                    self.action_trace.append({'timestamp': obs.time, 'applied_action': None,
+                                              'intervention': 'policy_error:'+type(error).__name__})
                     self._fallback('policy_error:'+type(error).__name__,obs)
             if self.failure:
                 self.backend.safe_stop()
@@ -113,7 +122,22 @@ class ClosedLoop:
                     self.backend.safe_stop()
                     return None
             action = self.guard.command(obs,action)
-            return self.backend.step(action)
+            response = self.backend.step(action)
+            target = tuple(value+delta for value, delta in zip(obs.ee, action.delta, strict=True))
+            trace = {'timestamp': obs.time,
+                     'requested_action': [*requested_action.delta, requested_action.gripper] if requested_action else None,
+                     'normalized_action': None, 'normalization_scope': 'upstream processor; decoded physical action only at execution boundary',
+                     'decoded_action': [*action.delta, action.gripper],
+                     'safety_validated_action': [*action.delta, action.gripper],
+                     'applied_action': [*action.delta, action.gripper], 'desired_ee': target,
+                     'controller': 'fallback_assisted' if self.expert is not None else 'vla_only',
+                     'fallback_reason': self.triggers[-1] if self.triggers else None,
+                     'clipping': 'none; out-of-contract commands are rejected'}
+            if hasattr(response, 'ee'):
+                trace.update(response_timestamp=response.time, observed_next_ee=response.ee,
+                             tracking_error_m=math.dist(response.ee, target))
+            self.action_trace.append(trace)
+            return response
         except SafetyViolation as error:
             self.failure = 'unsafe_movement'
             self.safety_events.append(str(error))
@@ -130,4 +154,5 @@ class ClosedLoop:
                 'placement_result':self.success,'controller':'fallback_assisted' if self.triggers else 'vla_only',
                 'fallback_triggers':list(self.triggers),'safety_events':list(self.safety_events),
                 'rejected_policy_actions':list(self.rejected_policy_actions),'policy_errors':list(self.policy_errors),
+                'action_trace_samples':len(self.action_trace),
                 'fallback_protocol_sha256':self.protocol_digest()}

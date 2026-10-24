@@ -67,6 +67,9 @@ def run_trial(backend, policy, case, output, provenance, config, running):
                 metadata['controller'] = result['controller']
                 atomic_json(output/'metadata.json', {**read_json(output/'metadata.json'), **metadata})
                 load_episode(output, expert_only=False)
+                with (output/'execution.jsonl').open('x') as stream:
+                    for trace in loop.action_trace:
+                        stream.write(json.dumps(trace, allow_nan=False)+'\n')
                 result['evidence_sha256'] = hashes(output)
                 return result
             observation = next_observation
@@ -130,7 +133,11 @@ def main():
         report['simulation_executed'] = True
         atomic_json(args.output/'articulation.json', backend.qualify_articulation())
         config = ExecutionConfig(fallback_enabled=not args.no_fallback)
-        for case in plan('evaluation', 20):
+        assigned = run['evaluation_scenarios']
+        cases = plan('evaluation', len(assigned))
+        if len(cases) not in (20, 50) or assigned != [asdict(case) for case in cases]:
+            raise ValueError('evaluation scenes differ from frozen training plan')
+        for case in cases:
             result = run_trial(backend, policy, case, args.output/f'trial_{case.seed}', provenance, config, app.is_running)
             report['trials'].append(result)
             digest = result['fallback_protocol_sha256']
